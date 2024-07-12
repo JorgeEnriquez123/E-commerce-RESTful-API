@@ -2,6 +2,7 @@ package com.jorge.ecommerce.service;
 
 import com.jorge.ecommerce.dto.CreateUserDto;
 import com.jorge.ecommerce.dto.UserDto;
+import com.jorge.ecommerce.handlers.exception.EntityNotFoundException;
 import com.jorge.ecommerce.model.User;
 import com.jorge.ecommerce.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -27,7 +28,8 @@ public class UserService {
     }
 
     public UserDto findById(Long id) {
-        User existingUser = userRepository.findById(id).orElse(null);
+        User existingUser = userRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("User with id: " + id + " not found."));
         return modelMapper.map(existingUser, UserDto.class);
     }
 
@@ -38,10 +40,12 @@ public class UserService {
     }
 
     public UserDto update(Long id, UserDto userDto) {
-        User user = userRepository.findById(id).orElse(null);
-        userDto.setId(user.getId());
-        modelMapper.map(userDto, user);
-        user = userRepository.save(user);
-        return modelMapper.map(user, UserDto.class);
+        User existingUser = userRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("User with id: " + id + " not found.")
+        );
+        userDto.setId(id);
+        modelMapper.map(userDto, existingUser);
+        User updatedUser = userRepository.save(existingUser);
+        return modelMapper.map(updatedUser, UserDto.class);
     }
 }
