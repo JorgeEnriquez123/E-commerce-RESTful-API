@@ -38,6 +38,7 @@ public class UserService {
 
     public UserDto update(Long id, UserDto userDto) {
         User user = userRepository.findById(id).orElse(null);
+        userDto.setId(user.getId());
         modelMapper.map(userDto, user);
         user = userRepository.save(user);
         return modelMapper.map(user, UserDto.class);

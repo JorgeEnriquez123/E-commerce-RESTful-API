@@ -16,14 +16,24 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @Column(nullable = false, length = 200)
     private String username;
+
     @Column(nullable = false)
     private String password;
+
     @Column(nullable = false)
-    private String firstname;
+    private String firstName;
+
     @Column(nullable = false)
-    private String lastname;
+    private String lastName;
+
     @Column(nullable = false)
     private LocalDateTime createdAt;
+
+    @PrePersist
+    protected void onCreate() {
+        createdAt = LocalDateTime.now();
+    }
 }
