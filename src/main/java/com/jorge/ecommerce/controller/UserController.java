@@ -3,6 +3,7 @@ package com.jorge.ecommerce.controller;
 import com.jorge.ecommerce.dto.CreateUserDto;
 import com.jorge.ecommerce.dto.UserDto;
 import com.jorge.ecommerce.service.UserService;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -31,7 +32,7 @@ public class UserController {
 
     @PostMapping
     @Transactional(rollbackFor = Exception.class)
-    public ResponseEntity<UserDto> save(@RequestBody CreateUserDto createUserDto){
+    public ResponseEntity<UserDto> save(@Valid @RequestBody CreateUserDto createUserDto){
         return ResponseEntity.status(HttpStatus.CREATED).body(userService.save(createUserDto));
     }
 
