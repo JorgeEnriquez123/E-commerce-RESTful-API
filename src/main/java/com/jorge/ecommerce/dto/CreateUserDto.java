@@ -2,12 +2,11 @@ package com.jorge.ecommerce.dto;
 
 import lombok.*;
 
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 @Data
 @Builder
-public class UserDto {
-    private Long id;
+public class CreateUserDto {
     private String username;
     private String password;
     private String firstName;

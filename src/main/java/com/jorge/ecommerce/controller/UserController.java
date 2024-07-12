@@ -1,5 +1,6 @@
 package com.jorge.ecommerce.controller;
 
+import com.jorge.ecommerce.dto.CreateUserDto;
 import com.jorge.ecommerce.dto.UserDto;
 import com.jorge.ecommerce.service.UserService;
 import lombok.AllArgsConstructor;
@@ -30,8 +31,8 @@ public class UserController {
 
     @PostMapping
     @Transactional(rollbackFor = Exception.class)
-    public ResponseEntity<UserDto> save(@RequestBody UserDto userDto){
-        return ResponseEntity.status(HttpStatus.CREATED).body(userService.save(userDto));
+    public ResponseEntity<UserDto> save(@RequestBody CreateUserDto createUserDto){
+        return ResponseEntity.status(HttpStatus.CREATED).body(userService.save(createUserDto));
     }
 
     @PutMapping("/{id}")

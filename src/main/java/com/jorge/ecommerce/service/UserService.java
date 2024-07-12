@@ -1,5 +1,6 @@
 package com.jorge.ecommerce.service;
 
+import com.jorge.ecommerce.dto.CreateUserDto;
 import com.jorge.ecommerce.dto.UserDto;
 import com.jorge.ecommerce.model.User;
 import com.jorge.ecommerce.repository.UserRepository;
@@ -30,8 +31,8 @@ public class UserService {
         return modelMapper.map(existingUser, UserDto.class);
     }
 
-    public UserDto save(UserDto userDto) {
-        User user = modelMapper.map(userDto, User.class);
+    public UserDto save(CreateUserDto createUserDto) {
+        User user = modelMapper.map(createUserDto, User.class);
         user = userRepository.save(user);
         return modelMapper.map(user, UserDto.class);
     }
