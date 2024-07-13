@@ -20,13 +20,19 @@ public class AddressLineController {
         return ResponseEntity.ok(addressLineService.getAddressesByUserId(userId));
     }
 
-    @PostMapping("/{idUser}")
-    public ResponseEntity<AddressLineDto> saveAddressLine(@PathVariable Long idUser, @RequestBody AddressLineDto addressLineDto) {
-        return ResponseEntity.ok(addressLineService.saveAddressLineWithUserId(idUser, addressLineDto));
+    @PostMapping("/{userId}")
+    public ResponseEntity<AddressLineDto> saveAddressLine(@PathVariable Long userId, @RequestBody AddressLineDto addressLineDto) {
+        return ResponseEntity.ok(addressLineService.saveAddressLineWithUserId(userId, addressLineDto));
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<AddressLineDto> updateAddressLine(@PathVariable Long id, @RequestBody AddressLineDto addressLineDto) {
         return ResponseEntity.ok(addressLineService.updateAddressLine(id, addressLineDto));
+    }
+
+    @PutMapping("/setDefaultAddressLine/{userId}/{addressLineId}")
+    public ResponseEntity<Void> setDefaultAddressLineOfUser(@PathVariable Long userId, @PathVariable Long addressLineId) {
+        addressLineService.setDefaultAddressLineOfUser(userId, addressLineId);
+        return ResponseEntity.noContent().build();
     }
 }
