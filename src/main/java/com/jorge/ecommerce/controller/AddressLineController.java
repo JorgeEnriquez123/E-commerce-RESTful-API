@@ -1,6 +1,7 @@
 package com.jorge.ecommerce.controller;
 
 import com.jorge.ecommerce.dto.AddressLineDto;
+import com.jorge.ecommerce.dto.CreateAddressLineDto;
 import com.jorge.ecommerce.service.AddressLineService;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
@@ -21,13 +22,13 @@ public class AddressLineController {
     }
 
     @PostMapping("/{userId}")
-    public ResponseEntity<AddressLineDto> saveAddressLine(@PathVariable Long userId, @RequestBody AddressLineDto addressLineDto) {
-        return ResponseEntity.ok(addressLineService.saveAddressLineWithUserId(userId, addressLineDto));
+    public ResponseEntity<AddressLineDto> saveAddressLine(@PathVariable Long userId, @RequestBody CreateAddressLineDto createAddressLineDto) {
+        return ResponseEntity.ok(addressLineService.saveAddressLineWithUserId(userId, createAddressLineDto));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<AddressLineDto> updateAddressLine(@PathVariable Long id, @RequestBody AddressLineDto addressLineDto) {
-        return ResponseEntity.ok(addressLineService.updateAddressLine(id, addressLineDto));
+    public ResponseEntity<AddressLineDto> updateAddressLine(@PathVariable Long id, @RequestBody CreateAddressLineDto createAddressLineDto) {
+        return ResponseEntity.ok(addressLineService.updateAddressLine(id, createAddressLineDto));
     }
 
     @PutMapping("/setDefaultAddressLine/{userId}/{addressLineId}")

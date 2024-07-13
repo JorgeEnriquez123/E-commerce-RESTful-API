@@ -1,6 +1,7 @@
 package com.jorge.ecommerce.service;
 
 import com.jorge.ecommerce.dto.AddressLineDto;
+import com.jorge.ecommerce.dto.CreateAddressLineDto;
 import com.jorge.ecommerce.handlers.exception.EntityNotFoundException;
 import com.jorge.ecommerce.model.AddressLine;
 import com.jorge.ecommerce.model.User;
@@ -10,8 +11,9 @@ import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -22,31 +24,28 @@ public class AddressLineService {
 
     public List<AddressLineDto> getAddressesByUserId(Long userId) {
         List<AddressLine> addressLines = addressLineRepository.findByUserId(userId)
-                .orElseThrow(() -> new EntityNotFoundException("No address lines found for user with Id: " + userId));
-        List<AddressLineDto> addressLineDtos = new ArrayList<>();
-        addressLines.forEach(
-                addressLine -> {
-                    AddressLineDto addressLineDto = modelMapper.map(addressLine, AddressLineDto.class);
-                    addressLineDtos.add(addressLineDto);
-                }
-        );
-        return addressLineDtos;
+                .orElse(Collections.emptyList());
+        if(addressLines.isEmpty())
+            throw new EntityNotFoundException("No address lines found for user with Id: " + userId);
+
+        return addressLines.stream()
+                .map(addressLine -> modelMapper.map(addressLine, AddressLineDto.class))
+                .collect(Collectors.toList());
     }
 
-    public AddressLineDto saveAddressLineWithUserId(Long idUser, AddressLineDto addressLineDto) {
-        User existingUser = userRepository.findById(idUser).
-                orElseThrow(() -> new EntityNotFoundException("User with Id: " + idUser + " not found"));
-        AddressLine newAddressLine = modelMapper.map(addressLineDto, AddressLine.class);
+    public AddressLineDto saveAddressLineWithUserId(Long idUser, CreateAddressLineDto createAddressLineDto) {
+        User existingUser = userRepository.findById(idUser)
+                .orElseThrow(() -> new EntityNotFoundException("User with Id: " + idUser + " not found"));
+        AddressLine newAddressLine = modelMapper.map(createAddressLineDto, AddressLine.class);
         newAddressLine.setUser(existingUser);
         addressLineRepository.save(newAddressLine);
         return modelMapper.map(newAddressLine, AddressLineDto.class);
     }
 
-    public AddressLineDto updateAddressLine(Long id, AddressLineDto addressLineDto) {
+    public AddressLineDto updateAddressLine(Long id, CreateAddressLineDto createAddressLineDto) {
         AddressLine addressLine = addressLineRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("No address line found for Id: " + id));
-        addressLineDto.setId(id);
-        modelMapper.map(addressLineDto, addressLine);
+        modelMapper.map(createAddressLineDto, addressLine);
         addressLineRepository.save(addressLine);
         return modelMapper.map(addressLine, AddressLineDto.class);
     }
