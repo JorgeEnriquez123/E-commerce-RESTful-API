@@ -3,6 +3,7 @@ package com.jorge.ecommerce.controller;
 import com.jorge.ecommerce.dto.AddressLineDto;
 import com.jorge.ecommerce.dto.create.CreateAddressLineDto;
 import com.jorge.ecommerce.service.AddressLineService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,12 +22,12 @@ public class AddressLineController {
     }
 
     @PostMapping("/{userId}")
-    public ResponseEntity<AddressLineDto> saveAddressLine(@PathVariable Long userId, @RequestBody CreateAddressLineDto createAddressLineDto) {
+    public ResponseEntity<AddressLineDto> saveAddressLine(@PathVariable Long userId, @Valid @RequestBody CreateAddressLineDto createAddressLineDto) {
         return ResponseEntity.ok(addressLineService.saveAddressLineWithUserId(userId, createAddressLineDto));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<AddressLineDto> updateAddressLine(@PathVariable Long id, @RequestBody CreateAddressLineDto createAddressLineDto) {
+    public ResponseEntity<AddressLineDto> updateAddressLine(@PathVariable Long id, @Valid @RequestBody CreateAddressLineDto createAddressLineDto) {
         return ResponseEntity.ok(addressLineService.updateAddressLine(id, createAddressLineDto));
     }
 
