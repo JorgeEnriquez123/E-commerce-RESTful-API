@@ -1,10 +1,9 @@
 package com.jorge.ecommerce.controller;
 
-import com.jorge.ecommerce.dto.CreateUserDto;
+import com.jorge.ecommerce.dto.create.CreateUserDto;
 import com.jorge.ecommerce.dto.UserDto;
 import com.jorge.ecommerce.service.UserService;
 import jakarta.validation.Valid;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -39,7 +38,7 @@ public class UserController {
 
     @PutMapping("/{id}")
     @Transactional(rollbackFor = Exception.class)
-    public ResponseEntity<UserDto> update(@PathVariable Long id, @RequestBody UserDto userDto){
-        return ResponseEntity.ok().body(userService.update(id, userDto));
+    public ResponseEntity<UserDto> update(@PathVariable Long id, @RequestBody CreateUserDto createUserDto){
+        return ResponseEntity.ok().body(userService.update(id, createUserDto));
     }
 }

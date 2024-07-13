@@ -1,4 +1,4 @@
-package com.jorge.ecommerce.dto;
+package com.jorge.ecommerce.dto.create;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;

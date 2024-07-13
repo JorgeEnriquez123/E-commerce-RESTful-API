@@ -1,9 +1,8 @@
 package com.jorge.ecommerce.controller;
 
 import com.jorge.ecommerce.dto.AddressLineDto;
-import com.jorge.ecommerce.dto.CreateAddressLineDto;
+import com.jorge.ecommerce.dto.create.CreateAddressLineDto;
 import com.jorge.ecommerce.service.AddressLineService;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
