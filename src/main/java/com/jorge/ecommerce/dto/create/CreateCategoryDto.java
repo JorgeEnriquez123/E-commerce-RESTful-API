@@ -1,4 +1,4 @@
-package com.jorge.ecommerce.dto;
+package com.jorge.ecommerce.dto.create;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,7 +9,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class CategoryDto {
-    private Long id;
+public class CreateCategoryDto {
     private String name;
 }
