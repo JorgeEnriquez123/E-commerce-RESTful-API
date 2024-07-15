@@ -2,6 +2,7 @@ package com.jorge.ecommerce.service;
 
 import com.jorge.ecommerce.dto.CategoryDto;
 import com.jorge.ecommerce.dto.create.CreateCategoryDto;
+import com.jorge.ecommerce.handlers.exception.EntityNotFoundException;
 import com.jorge.ecommerce.model.Category;
 import com.jorge.ecommerce.repository.CategoryRepository;
 import lombok.RequiredArgsConstructor;
@@ -23,7 +24,8 @@ public class CategoryService {
 
     public CategoryDto findById(Long id) {
         return categoryRepository.findById(id)
-                .map(category -> modelMapper.map(category, CategoryDto.class)).orElseThrow();
+                .map(category -> modelMapper.map(category, CategoryDto.class))
+                .orElseThrow(() -> new EntityNotFoundException("Category with id: " + id + " not found"));
     }
 
     public CategoryDto save(CreateCategoryDto createCategoryDto) {
@@ -34,7 +36,8 @@ public class CategoryService {
     }
 
     public CategoryDto update(Long categoryId, CreateCategoryDto createCategoryDto) {
-        Category existingCategory = categoryRepository.findById(categoryId).orElseThrow();
+        Category existingCategory = categoryRepository.findById(categoryId)
+                .orElseThrow(() -> new EntityNotFoundException("Category with id: " + categoryId + " not found"));
         modelMapper.map(createCategoryDto, existingCategory);
         categoryRepository.save(existingCategory);
         return modelMapper.map(existingCategory, CategoryDto.class);
