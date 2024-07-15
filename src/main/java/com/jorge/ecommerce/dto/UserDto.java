@@ -3,9 +3,9 @@ package com.jorge.ecommerce.dto;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 
-@AllArgsConstructor
-@NoArgsConstructor
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 @Builder
 public class UserDto {
     private Long id;
