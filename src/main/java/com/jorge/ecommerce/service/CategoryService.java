@@ -30,8 +30,7 @@ public class CategoryService {
 
     public CategoryDto save(CreateCategoryDto createCategoryDto) {
         Category savedCategory = categoryRepository.save(
-                modelMapper.map(createCategoryDto, Category.class)
-        );
+                modelMapper.map(createCategoryDto, Category.class));
         return modelMapper.map(savedCategory, CategoryDto.class);
     }
 

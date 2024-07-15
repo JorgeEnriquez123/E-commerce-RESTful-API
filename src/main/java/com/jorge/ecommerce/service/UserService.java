@@ -19,32 +19,29 @@ public class UserService {
     private final ModelMapper modelMapper;
 
     public List<UserDto> findAll() {
-        List<User> users = userRepository.findAll();
-        List<UserDto> userDtos = new ArrayList<>();
-        users.forEach(user -> userDtos.add(
-                modelMapper.map(user, UserDto.class)
-        ));
-        return userDtos;
+        return userRepository.findAll()
+                .stream()
+                .map(user -> modelMapper.map(user, UserDto.class))
+                .toList();
     }
 
     public UserDto findById(Long id) {
-        User existingUser = userRepository.findById(id)
+        return userRepository.findById(id)
+                .map(user -> modelMapper.map(user, UserDto.class))
                 .orElseThrow(() -> new EntityNotFoundException("User with id: " + id + " not found."));
-        return modelMapper.map(existingUser, UserDto.class);
     }
 
     public UserDto save(CreateUserDto createUserDto) {
-        User user = modelMapper.map(createUserDto, User.class);
-        user = userRepository.save(user);
+        User user = userRepository.save(
+                modelMapper.map(createUserDto, User.class));
         return modelMapper.map(user, UserDto.class);
     }
 
     public UserDto update(Long id, CreateUserDto createUserDto) {
         User existingUser = userRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("User with id: " + id + " not found.")
-        );
+                .orElseThrow(() -> new EntityNotFoundException("User with id: " + id + " not found."));
         modelMapper.map(createUserDto, existingUser);
-        User updatedUser = userRepository.save(existingUser);
-        return modelMapper.map(updatedUser, UserDto.class);
+        userRepository.save(existingUser);
+        return modelMapper.map(existingUser, UserDto.class);
     }
 }
