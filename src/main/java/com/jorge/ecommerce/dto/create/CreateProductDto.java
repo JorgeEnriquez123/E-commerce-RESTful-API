@@ -8,6 +8,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Data
@@ -15,11 +16,14 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Builder
 public class CreateProductDto {
+    @NotBlank
     @Size(min = 2, max = 50)
     private String name;
+    @NotNull
+    @DecimalMin("0.01")
+    private BigDecimal price;
     @PositiveOrZero
-    private Double price;
-    @PositiveOrZero
+    @NotNull
     private Integer stockQuantity;
     @Positive
     private Long category;

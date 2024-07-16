@@ -1,11 +1,13 @@
 package com.jorge.ecommerce.model;
 
+import com.jorge.ecommerce.dto.ProductDto;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
@@ -19,8 +21,8 @@ public class Product {
     private Long id;
     @Column(nullable = false, length = 50)
     private String name;
-    @Column(nullable = false)
-    private Double price;
+    @Column(nullable = false, precision = 10, scale = 2)
+    private BigDecimal price;
     @Column(nullable = false)
     private Integer stockQuantity;
     @Column(nullable = false)
@@ -29,7 +31,7 @@ public class Product {
     private LocalDateTime updatedAt;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(nullable = false)
+    @JoinColumn(name = "category_id")
     private Category category;
 
     @PrePersist
@@ -41,5 +43,15 @@ public class Product {
     @PreUpdate
     protected void onUpdate() {
         this.updatedAt = LocalDateTime.now();
+    }
+
+    public ProductDto toDto() {
+        return ProductDto.builder()
+                .id(this.id)
+                .name(this.name)
+                .price(this.price)
+                .stockQuantity(this.stockQuantity)
+                .category(this.category != null ? this.category.getName() : null)
+                .build();
     }
 }
