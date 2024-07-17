@@ -33,6 +33,11 @@ public class UserService {
                 .orElseThrow(() -> new EntityNotFoundException("User with id: " + id + " not found."));
     }
 
+    protected User findUserEntityById(Long id) {
+        return userRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("User with id: " + id + " not found."));
+    }
+
     @Transactional(rollbackFor = Exception.class)
     public UserDto save(CreateUserDto createUserDto) {
         User user = userRepository.save(

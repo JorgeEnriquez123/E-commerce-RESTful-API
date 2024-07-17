@@ -1,5 +1,7 @@
 package com.jorge.ecommerce.model;
 
+import com.jorge.ecommerce.dto.CartDto;
+import com.jorge.ecommerce.dto.UserDto;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
