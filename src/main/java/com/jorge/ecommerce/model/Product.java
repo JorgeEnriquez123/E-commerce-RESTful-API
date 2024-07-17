@@ -1,6 +1,7 @@
 package com.jorge.ecommerce.model;
 
 import com.jorge.ecommerce.dto.ProductDto;
+import com.jorge.ecommerce.dto.create.CreateProductDto;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -53,5 +54,17 @@ public class Product {
                 .stockQuantity(this.stockQuantity)
                 .category(this.category != null ? this.category.getName() : null)
                 .build();
+    }
+
+    public Product updateFromCreateDto(CreateProductDto dto) {
+        return Product.builder()
+                .id(this.id)
+                .name(dto.getName())
+                .price(dto.getPrice())
+                .stockQuantity(dto.getStockQuantity())
+                .createdAt(this.createdAt)
+                .category(this.category)
+                .build();
+
     }
 }

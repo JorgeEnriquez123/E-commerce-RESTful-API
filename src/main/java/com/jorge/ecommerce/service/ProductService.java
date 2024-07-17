@@ -26,6 +26,11 @@ public class ProductService {
                 .toList();
     }
 
+    public ProductDto findById(Long id) {
+        return productRepository.findById(id)
+                .map(Product::toDto)
+                .orElseThrow(() -> new EntityNotFoundException("Product with id: " + id + " not found"));
+    }
     public ProductDto save(CreateProductDto createProductDto) {
         Product newProduct = createProductDto.toEntity();
         Category assignedCategory = null;
@@ -36,5 +41,19 @@ public class ProductService {
         newProduct.setCategory(assignedCategory);
         productRepository.save(newProduct);
         return newProduct.toDto();
+    }
+
+    public ProductDto update(Long productId, CreateProductDto createProductDto) {
+        Product existingProduct = productRepository.findById(productId)
+                .orElseThrow(() -> new EntityNotFoundException("Product with id: " + productId + " not found"));
+
+        if(createProductDto.getCategoryId() != null) {
+            Category assignedCategory = categoryRepository.findById(createProductDto.getCategoryId())
+                    .orElseThrow(() -> new EntityNotFoundException("Category with id: " + createProductDto.getCategoryId() + " not found"));
+            existingProduct.setCategory(assignedCategory);
+        }
+
+        productRepository.save(existingProduct.updateFromCreateDto(createProductDto));
+        return existingProduct.toDto();
     }
 }
