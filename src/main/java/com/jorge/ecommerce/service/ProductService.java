@@ -10,11 +10,13 @@ import com.jorge.ecommerce.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class ProductService {
     private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;
@@ -31,6 +33,9 @@ public class ProductService {
                 .map(Product::toDto)
                 .orElseThrow(() -> new EntityNotFoundException("Product with id: " + id + " not found"));
     }
+
+    @Transactional(rollbackFor = Exception.class)
+
     public ProductDto save(CreateProductDto createProductDto) {
         Product newProduct = createProductDto.toEntity();
         Category assignedCategory = null;
@@ -42,6 +47,8 @@ public class ProductService {
         productRepository.save(newProduct);
         return newProduct.toDto();
     }
+
+    @Transactional(rollbackFor = Exception.class)
 
     public ProductDto update(Long productId, CreateProductDto createProductDto) {
         Product existingProduct = productRepository.findById(productId)

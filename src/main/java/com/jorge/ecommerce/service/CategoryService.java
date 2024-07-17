@@ -8,11 +8,13 @@ import com.jorge.ecommerce.repository.CategoryRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class CategoryService {
     private final CategoryRepository categoryRepository;
     private final ModelMapper modelMapper;
@@ -28,12 +30,14 @@ public class CategoryService {
                 .orElseThrow(() -> new EntityNotFoundException("Category with id: " + id + " not found"));
     }
 
+    @Transactional(rollbackFor = Exception.class)
     public CategoryDto save(CreateCategoryDto createCategoryDto) {
         Category savedCategory = categoryRepository.save(
                 modelMapper.map(createCategoryDto, Category.class));
         return modelMapper.map(savedCategory, CategoryDto.class);
     }
 
+    @Transactional(rollbackFor = Exception.class)
     public CategoryDto update(Long categoryId, CreateCategoryDto createCategoryDto) {
         Category existingCategory = categoryRepository.findById(categoryId)
                 .orElseThrow(() -> new EntityNotFoundException("Category with id: " + categoryId + " not found"));

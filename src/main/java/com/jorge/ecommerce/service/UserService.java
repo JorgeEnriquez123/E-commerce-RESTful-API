@@ -8,12 +8,14 @@ import com.jorge.ecommerce.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class UserService {
     private final UserRepository userRepository;
     private final ModelMapper modelMapper;
@@ -31,12 +33,14 @@ public class UserService {
                 .orElseThrow(() -> new EntityNotFoundException("User with id: " + id + " not found."));
     }
 
+    @Transactional(rollbackFor = Exception.class)
     public UserDto save(CreateUserDto createUserDto) {
         User user = userRepository.save(
                 modelMapper.map(createUserDto, User.class));
         return modelMapper.map(user, UserDto.class);
     }
 
+    @Transactional(rollbackFor = Exception.class)
     public UserDto update(Long id, CreateUserDto createUserDto) {
         User existingUser = userRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("User with id: " + id + " not found."));
