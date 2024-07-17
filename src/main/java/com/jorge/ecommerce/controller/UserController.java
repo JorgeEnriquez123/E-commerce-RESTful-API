@@ -19,25 +19,21 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping
-    @Transactional(readOnly = true)
     public ResponseEntity<List<UserDto>> findAll(){
         return ResponseEntity.ok(userService.findAll());
     }
 
     @GetMapping("/{id}")
-    @Transactional(readOnly = true)
     public ResponseEntity<UserDto> findById(@PathVariable Long id){
         return ResponseEntity.ok(userService.findById(id));
     }
 
     @PostMapping
-    @Transactional(rollbackFor = Exception.class)
     public ResponseEntity<UserDto> save(@Valid @RequestBody CreateUserDto createUserDto){
         return ResponseEntity.status(HttpStatus.CREATED).body(userService.save(createUserDto));
     }
 
     @PutMapping("/{id}")
-    @Transactional(rollbackFor = Exception.class)
     public ResponseEntity<UserDto> update(@PathVariable Long id, @RequestBody CreateUserDto createUserDto){
         return ResponseEntity.ok().body(userService.update(id, createUserDto));
     }
