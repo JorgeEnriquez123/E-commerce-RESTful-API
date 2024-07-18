@@ -1,9 +1,7 @@
-package com.jorge.ecommerce.configuration;
+package com.jorge.ecommerce.configuration.mapping;
 
-import com.jorge.ecommerce.dto.CartDto;
 import com.jorge.ecommerce.dto.create.CreateAddressLineDto;
 import com.jorge.ecommerce.model.AddressLine;
-import com.jorge.ecommerce.model.Cart;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;

@@ -1,4 +1,4 @@
-package com.jorge.ecommerce.configuration;
+package com.jorge.ecommerce.configuration.mapping;
 
 import com.jorge.ecommerce.dto.CartDto;
 import com.jorge.ecommerce.model.Cart;

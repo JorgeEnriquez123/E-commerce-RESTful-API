@@ -37,6 +37,11 @@ public class CartService {
                 .orElseThrow(() -> new EntityNotFoundException("Cart with id: " + id + " not found"));
     }
 
+    protected Cart findCartEntityById(Long id) {
+        return cartRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Cart with id: " + id + " not found"));
+    }
+
     @Transactional(rollbackFor = Exception.class)
     public CartDto save(CreateCartDto createCartDto) {
         Cart newCart = createCartFromDto(createCartDto);

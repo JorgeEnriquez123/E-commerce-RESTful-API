@@ -1,4 +1,4 @@
-package com.jorge.ecommerce.configuration;
+package com.jorge.ecommerce.configuration.mapping;
 
 import com.jorge.ecommerce.dto.ProductDto;
 import com.jorge.ecommerce.dto.create.CreateProductDto;
@@ -6,7 +6,6 @@ import com.jorge.ecommerce.model.Product;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
