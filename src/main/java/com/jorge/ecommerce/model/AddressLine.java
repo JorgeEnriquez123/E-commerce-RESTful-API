@@ -21,7 +21,6 @@ public class AddressLine {
     @Column(nullable = false)
     private Boolean isDefault;
 
-    @EqualsAndHashCode.Exclude
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
