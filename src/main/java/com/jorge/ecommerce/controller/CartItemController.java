@@ -22,7 +22,12 @@ public class CartItemController {
     }
 
     @PostMapping
-    public ResponseEntity<CartItemDto> saveItemToCart(@Valid @RequestBody CreateCartItemDto createCartItemDto) {
-        return ResponseEntity.ok(cartItemService.saveItemToCart(createCartItemDto));
+    public ResponseEntity<CartItemDto> saveNewItemtoCart(@Valid @RequestBody CreateCartItemDto createCartItemDto) {
+        return ResponseEntity.ok(cartItemService.saveNewItemToCart(createCartItemDto));
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<CartItemDto> updateItemQuantityByCartId(@PathVariable Long id, @RequestParam Integer quantity){
+        return ResponseEntity.ok(cartItemService.updateItemQuantityByCartId(id, quantity));
     }
 }

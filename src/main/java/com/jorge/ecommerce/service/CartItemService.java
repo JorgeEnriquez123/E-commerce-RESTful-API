@@ -24,6 +24,10 @@ public class CartItemService {
     private final ProductService productService;
     private final ModelMapper modelMapper;
 
+    protected CartItem findById(Long id) {
+        return cartItemRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("CartItem with id: " + id + " not found."));
+    }
     public List<CartItemDto> findByCartId(Long cartId) {
         List<CartItem> cartItems = cartItemRepository.findByCartId(cartId)
                 .orElse(Collections.emptyList());
@@ -36,10 +40,18 @@ public class CartItemService {
     }
 
     @Transactional(rollbackFor = Exception.class)
-    public CartItemDto saveItemToCart(CreateCartItemDto createDto) {
+    public CartItemDto saveNewItemToCart(CreateCartItemDto createDto) {
         CartItem newCartItem = createCartItemFromDto(createDto);
         CartItem savedCartItem = cartItemRepository.save(newCartItem);
         return convertToDto(savedCartItem);
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    public CartItemDto updateItemQuantityByCartId(Long cartItemId, Integer quantity) {
+        CartItem toUpdateCartItem = findById(cartItemId);
+        toUpdateCartItem.setQuantity(quantity);
+        CartItem savedUpdatedCartItem = cartItemRepository.save(toUpdateCartItem);
+        return convertToDto(savedUpdatedCartItem);
     }
 
     private CartItem createCartItemFromDto(CreateCartItemDto createCartItemDto) {
