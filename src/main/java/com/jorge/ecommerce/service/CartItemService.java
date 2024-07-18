@@ -54,6 +54,12 @@ public class CartItemService {
         return convertToDto(savedUpdatedCartItem);
     }
 
+    public void removeItemFromCartByCartItemId(Long cartItemId) {
+        CartItem cartItem = findById(cartItemId);
+        cartItemRepository.delete(cartItem);
+    }
+
+
     private CartItem createCartItemFromDto(CreateCartItemDto createCartItemDto) {
         Cart cart = cartService.findCartEntityById(createCartItemDto.getCartId());
         Product product = productService.findProductEntityById(createCartItemDto.getProductId());
