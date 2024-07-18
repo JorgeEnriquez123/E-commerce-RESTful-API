@@ -45,26 +45,4 @@ public class Product {
     protected void onUpdate() {
         this.updatedAt = LocalDateTime.now();
     }
-
-    public ProductDto toDto() {
-        return ProductDto.builder()
-                .id(this.id)
-                .name(this.name)
-                .price(this.price)
-                .stockQuantity(this.stockQuantity)
-                .category(this.category != null ? this.category.getName() : null)
-                .build();
-    }
-
-    public Product updateFromCreateDto(CreateProductDto dto) {
-        return Product.builder()
-                .id(this.id)
-                .name(dto.getName())
-                .price(dto.getPrice())
-                .stockQuantity(dto.getStockQuantity())
-                .createdAt(this.createdAt)
-                .category(this.category)
-                .build();
-
-    }
 }

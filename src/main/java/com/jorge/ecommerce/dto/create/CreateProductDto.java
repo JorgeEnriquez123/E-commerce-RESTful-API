@@ -28,13 +28,6 @@ public class CreateProductDto {
     @NotNull
     private Integer stockQuantity;
     @Positive
+    @NotNull
     private Long categoryId;
-
-    public Product toEntity() {
-        return Product.builder()
-                .name(this.getName())
-                .price(this.getPrice())
-                .stockQuantity(this.getStockQuantity())
-                .build();
-    }
 }

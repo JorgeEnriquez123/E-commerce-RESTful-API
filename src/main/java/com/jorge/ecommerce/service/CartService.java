@@ -3,8 +3,10 @@ package com.jorge.ecommerce.service;
 import com.jorge.ecommerce.dto.CartDto;
 import com.jorge.ecommerce.dto.UserDto;
 import com.jorge.ecommerce.dto.create.CreateCartDto;
+import com.jorge.ecommerce.dto.create.CreateCategoryDto;
 import com.jorge.ecommerce.handlers.exception.EntityNotFoundException;
 import com.jorge.ecommerce.model.Cart;
+import com.jorge.ecommerce.model.Category;
 import com.jorge.ecommerce.model.User;
 import com.jorge.ecommerce.repository.CartRepository;
 import lombok.RequiredArgsConstructor;
@@ -37,22 +39,19 @@ public class CartService {
 
     @Transactional(rollbackFor = Exception.class)
     public CartDto save(CreateCartDto createCartDto) {
-        User user = userService.findUserEntityById(createCartDto.getUserId());
-        Cart newCart = createCart(createCartDto, user);
+        Cart newCart = createCartFromDto(createCartDto);
         Cart savedCart = cartRepository.save(newCart);
         return convertToDto(savedCart);
     }
 
-    public Cart createCart(CreateCartDto dto, User user) {
-        Cart cart = modelMapper.map(dto, Cart.class);
-        cart.setUser(user);
-        return cart;
+    public Cart createCartFromDto(CreateCartDto createCartDto) {
+        User user = userService.findUserEntityById(createCartDto.getUserId());
+        return Cart.builder()
+                .user(user)
+                .build();
     }
 
     public CartDto convertToDto(Cart cart) {
-        return CartDto.builder()
-                .id(cart.getId())
-                .userDto(modelMapper.map(cart.getUser(), UserDto.class))
-                .build();
+        return modelMapper.map(cart, CartDto.class);
     }
 }

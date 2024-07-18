@@ -2,6 +2,7 @@ package com.jorge.ecommerce.service;
 
 import com.jorge.ecommerce.dto.AddressLineDto;
 import com.jorge.ecommerce.dto.create.CreateAddressLineDto;
+import com.jorge.ecommerce.dto.update.UpdateAddressLineDto;
 import com.jorge.ecommerce.handlers.exception.EntityNotFoundException;
 import com.jorge.ecommerce.model.AddressLine;
 import com.jorge.ecommerce.model.User;
@@ -21,9 +22,13 @@ import java.util.stream.Collectors;
 @Transactional
 public class AddressLineService {
     private final AddressLineRepository addressLineRepository;
+    private final UserService userService;
     private final ModelMapper modelMapper;
-    private final UserRepository userRepository;
 
+    protected AddressLine findAddressLineEntityById(Long id){
+        return addressLineRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("AddressLine with id: " + id + " not found"));
+    }
     public List<AddressLineDto> getAddressesByUserId(Long userId) {
         List<AddressLine> addressLines = addressLineRepository.findByUserId(userId)
                 .orElse(Collections.emptyList());
@@ -31,27 +36,22 @@ public class AddressLineService {
             throw new EntityNotFoundException("No address lines found for user with Id: " + userId);
 
         return addressLines.stream()
-                .map(addressLine -> modelMapper.map(addressLine, AddressLineDto.class))
-                .collect(Collectors.toList());
+                .map(this::convertToDto)
+                .toList();
     }
 
     @Transactional(rollbackFor = Exception.class)
-    public AddressLineDto saveAddressLineWithUserId(Long idUser, CreateAddressLineDto createAddressLineDto) {
-        User existingUser = userRepository.findById(idUser)
-                .orElseThrow(() -> new EntityNotFoundException("User with Id: " + idUser + " not found"));
-        AddressLine newAddressLine = modelMapper.map(createAddressLineDto, AddressLine.class);
-        newAddressLine.setUser(existingUser);
-        addressLineRepository.save(newAddressLine);
-        return modelMapper.map(newAddressLine, AddressLineDto.class);
+    public AddressLineDto saveAddressLineWithUserId(CreateAddressLineDto createAddressLineDto) {
+        AddressLine newAddressLine = createAddressLineFromDto(createAddressLineDto);
+        AddressLine savedAddressLine = addressLineRepository.save(newAddressLine);
+        return convertToDto(savedAddressLine);
     }
 
     @Transactional(rollbackFor = Exception.class)
-    public AddressLineDto updateAddressLine(Long id, CreateAddressLineDto createAddressLineDto) {
-        AddressLine addressLine = addressLineRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("No address line found for Id: " + id));
-        modelMapper.map(createAddressLineDto, addressLine);
-        addressLineRepository.save(addressLine);
-        return modelMapper.map(addressLine, AddressLineDto.class);
+    public AddressLineDto updateAddressLine(Long id, UpdateAddressLineDto updateAddressLineDto) {
+        AddressLine toUpdateAddressLine = updateAddressLineFromDto(id, updateAddressLineDto);
+        AddressLine savedUpdatedAddressLine = addressLineRepository.save(toUpdateAddressLine);
+        return convertToDto(savedUpdatedAddressLine);
     }
     @Transactional(rollbackFor = Exception.class)
     public void setDefaultAddressLineOfUser(Long userId, Long addressLineId) {
@@ -74,5 +74,22 @@ public class AddressLineService {
             newDefaultAddress.setIsDefault(true);
             addressLineRepository.save(newDefaultAddress);
         }
+    }
+
+    public AddressLine createAddressLineFromDto(CreateAddressLineDto createAddressLineDto) {
+        User user = userService.findUserEntityById(createAddressLineDto.getUserId());
+        AddressLine newAddressLine = modelMapper.map(createAddressLineDto, AddressLine.class);
+        newAddressLine.setUser(user);
+        return newAddressLine;
+    }
+
+    public AddressLine updateAddressLineFromDto(Long addressLineId, UpdateAddressLineDto updateAddressLineDto) {
+        AddressLine toUpdateAddressLine = findAddressLineEntityById(addressLineId);
+        modelMapper.map(updateAddressLineDto, toUpdateAddressLine);
+        return toUpdateAddressLine;
+    }
+
+    public AddressLineDto convertToDto(AddressLine addressLine) {
+        return modelMapper.map(addressLine, AddressLineDto.class);
     }
 }

@@ -23,13 +23,13 @@ public class UserService {
     public List<UserDto> findAll() {
         return userRepository.findAll()
                 .stream()
-                .map(user -> modelMapper.map(user, UserDto.class))
+                .map(this::convertToDto)
                 .toList();
     }
 
     public UserDto findById(Long id) {
         return userRepository.findById(id)
-                .map(user -> modelMapper.map(user, UserDto.class))
+                .map(this::convertToDto)
                 .orElseThrow(() -> new EntityNotFoundException("User with id: " + id + " not found."));
     }
 
@@ -40,17 +40,29 @@ public class UserService {
 
     @Transactional(rollbackFor = Exception.class)
     public UserDto save(CreateUserDto createUserDto) {
-        User user = userRepository.save(
-                modelMapper.map(createUserDto, User.class));
-        return modelMapper.map(user, UserDto.class);
+        User newUser = createUserFromDto(createUserDto);
+        User savedUser = userRepository.save(newUser);
+        return convertToDto(savedUser);
     }
 
     @Transactional(rollbackFor = Exception.class)
-    public UserDto update(Long id, CreateUserDto createUserDto) {
-        User existingUser = userRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("User with id: " + id + " not found."));
-        modelMapper.map(createUserDto, existingUser);
-        userRepository.save(existingUser);
-        return modelMapper.map(existingUser, UserDto.class);
+    public UserDto update(Long userId, CreateUserDto createUserDto) {
+        User toUpdateUser = updateUserFromDto(userId, createUserDto);
+        User savedUpdatedUser = userRepository.save(toUpdateUser);
+        return convertToDto(savedUpdatedUser);
+    }
+
+    private User createUserFromDto(CreateUserDto createUserDto) {
+        return modelMapper.map(createUserDto, User.class);
+    }
+
+    private User updateUserFromDto(Long userId, CreateUserDto createUserDto){
+        User toUpdateUser = findUserEntityById(userId);
+        modelMapper.map(createUserDto, toUpdateUser);
+        return toUpdateUser;
+    }
+
+    public UserDto convertToDto(User user) {
+        return modelMapper.map(user, UserDto.class);
     }
 }

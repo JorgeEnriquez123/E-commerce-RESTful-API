@@ -1,4 +1,4 @@
-package com.jorge.ecommerce.dto.create;
+package com.jorge.ecommerce.dto.update;
 
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -11,13 +11,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class CreateAddressLineDto {
+public class UpdateAddressLineDto {
     @Size(min = 2, max = 100)
     private String addressLine;
     @Size(min = 2, max = 50)
     private String city;
     @Size(min = 2, max = 50)
     private String district;
-    @NotNull
-    private Long userId;
 }
