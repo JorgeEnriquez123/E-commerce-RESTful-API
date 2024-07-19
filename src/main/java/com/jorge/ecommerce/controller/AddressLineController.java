@@ -28,8 +28,8 @@ public class AddressLineController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<AddressLineDto> updateAddressLine(@PathVariable Long id, @Valid @RequestBody UpdateAddressLineDto updateAddressLineDto) {
-        return ResponseEntity.ok(addressLineService.updateAddressLine(id, updateAddressLineDto));
+    public ResponseEntity<AddressLineDto> updateAddressLine(@PathVariable Long id, @Valid @RequestBody CreateAddressLineDto createAddressLineDto) {
+        return ResponseEntity.ok(addressLineService.updateAddressLine(id, createAddressLineDto));
     }
 
     @PutMapping("/setDefaultAddressLine/{userId}/{addressLineId}")

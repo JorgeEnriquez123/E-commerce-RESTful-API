@@ -48,8 +48,8 @@ public class AddressLineService {
     }
 
     @Transactional(rollbackFor = Exception.class)
-    public AddressLineDto updateAddressLine(Long id, UpdateAddressLineDto updateAddressLineDto) {
-        AddressLine toUpdateAddressLine = updateAddressLineFromDto(id, updateAddressLineDto);
+    public AddressLineDto updateAddressLine(Long id, CreateAddressLineDto createAddressLineDto) {
+        AddressLine toUpdateAddressLine = updateAddressLineFromDto(id, createAddressLineDto);
         AddressLine savedUpdatedAddressLine = addressLineRepository.save(toUpdateAddressLine);
         return convertToDto(savedUpdatedAddressLine);
     }
@@ -83,9 +83,15 @@ public class AddressLineService {
         return newAddressLine;
     }
 
-    public AddressLine updateAddressLineFromDto(Long addressLineId, UpdateAddressLineDto updateAddressLineDto) {
+    public AddressLine updateAddressLineFromDto(Long addressLineId, CreateAddressLineDto createAddressLineDto) {
         AddressLine toUpdateAddressLine = findAddressLineEntityById(addressLineId);
-        modelMapper.map(updateAddressLineDto, toUpdateAddressLine);
+        modelMapper.map(createAddressLineDto, toUpdateAddressLine);
+
+        // Not updating the User the AddressLine is linked to.
+        // Might as well use an 'UpdateAddressLineDto'
+        // User user = userService.findUserEntityById(createAddressLineDto.getUserId());
+        // toUpdateAddressLine.setUser(user);
+
         return toUpdateAddressLine;
     }
 
