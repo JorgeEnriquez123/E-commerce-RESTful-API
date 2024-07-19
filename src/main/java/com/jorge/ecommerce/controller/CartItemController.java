@@ -30,9 +30,10 @@ public class CartItemController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<CartItemDto> updateItemQuantityByCartId(@PathVariable Long id,
-                                                                  @RequestParam @Min(value = 1, message = "El valor debe de ser minimo 1") Integer quantity){
-        return ResponseEntity.ok(cartItemService.updateItemQuantityByCartId(id, quantity));
+    public ResponseEntity<CartItemDto> updateItemQuantityByCartItemId(@PathVariable Long id,
+                                                                  @RequestParam @Min(value = 1, message = "quantity must be greater then or equal to 1")
+                                                                  Integer quantity){
+        return ResponseEntity.ok(cartItemService.updateItemQuantityByCartItemId(id, quantity));
     }
 
     @DeleteMapping("/{id}")

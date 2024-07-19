@@ -2,7 +2,6 @@ package com.jorge.ecommerce.service;
 
 import com.jorge.ecommerce.dto.AddressLineDto;
 import com.jorge.ecommerce.dto.create.CreateAddressLineDto;
-import com.jorge.ecommerce.dto.update.UpdateAddressLineDto;
 import com.jorge.ecommerce.handlers.exception.EntityNotFoundException;
 import com.jorge.ecommerce.model.AddressLine;
 import com.jorge.ecommerce.model.User;

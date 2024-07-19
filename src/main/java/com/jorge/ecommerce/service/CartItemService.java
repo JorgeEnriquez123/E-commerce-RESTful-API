@@ -47,7 +47,7 @@ public class CartItemService {
     }
 
     @Transactional(rollbackFor = Exception.class)
-    public CartItemDto updateItemQuantityByCartId(Long cartItemId, Integer quantity) {
+    public CartItemDto updateItemQuantityByCartItemId(Long cartItemId, Integer quantity) {
         CartItem toUpdateCartItem = findById(cartItemId);
         toUpdateCartItem.setQuantity(quantity);
         CartItem savedUpdatedCartItem = cartItemRepository.save(toUpdateCartItem);

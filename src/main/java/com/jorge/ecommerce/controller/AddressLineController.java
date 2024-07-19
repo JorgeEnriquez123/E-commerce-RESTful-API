@@ -2,7 +2,6 @@ package com.jorge.ecommerce.controller;
 
 import com.jorge.ecommerce.dto.AddressLineDto;
 import com.jorge.ecommerce.dto.create.CreateAddressLineDto;
-import com.jorge.ecommerce.dto.update.UpdateAddressLineDto;
 import com.jorge.ecommerce.service.AddressLineService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +16,7 @@ import java.util.List;
 public class AddressLineController {
     private final AddressLineService addressLineService;
 
-    @GetMapping("/{userId}")
+    @GetMapping("/user/{userId}")
     public ResponseEntity<List<AddressLineDto>> getAddressLineByUserId(@PathVariable Long userId) {
         return ResponseEntity.ok(addressLineService.getAddressesByUserId(userId));
     }
@@ -32,7 +31,7 @@ public class AddressLineController {
         return ResponseEntity.ok(addressLineService.updateAddressLine(id, createAddressLineDto));
     }
 
-    @PutMapping("/setDefaultAddressLine/{userId}/{addressLineId}")
+    @PutMapping("/setDefaultAddressLine/user/{userId}/addressline/{addressLineId}")
     public ResponseEntity<Void> setDefaultAddressLineOfUser(@PathVariable Long userId, @PathVariable Long addressLineId) {
         addressLineService.setDefaultAddressLineOfUser(userId, addressLineId);
         return ResponseEntity.noContent().build();

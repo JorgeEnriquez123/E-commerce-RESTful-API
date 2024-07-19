@@ -17,11 +17,5 @@ public class CartItemMappingConfig {
     public void setupCartItemMappings() {
         modelMapper.createTypeMap(CartItem.class, CartItemDto.class)
                 .addMapping(CartItem::getProduct, CartItemDto::setProductDto);
-        modelMapper.createTypeMap(CreateCartItemDto.class, CartItem.class)
-                .addMappings(mapper -> {
-                    mapper.skip(CartItem::setId);
-                    mapper.skip(CartItem::setProduct);
-                    mapper.skip(CartItem::setCart);
-                });
     }
 }
