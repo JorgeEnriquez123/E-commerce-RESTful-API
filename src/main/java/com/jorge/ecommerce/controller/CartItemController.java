@@ -5,7 +5,6 @@ import com.jorge.ecommerce.dto.create.CreateCartItemDto;
 import com.jorge.ecommerce.service.CartItemService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -34,5 +33,11 @@ public class CartItemController {
     public ResponseEntity<CartItemDto> updateItemQuantityByCartId(@PathVariable Long id,
                                                                   @RequestParam @Min(value = 1, message = "El valor debe de ser minimo 1") Integer quantity){
         return ResponseEntity.ok(cartItemService.updateItemQuantityByCartId(id, quantity));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteItemByCartItemId(@PathVariable Long id){
+        cartItemService.removeItemFromCartByCartItemId(id);
+        return ResponseEntity.noContent().build();
     }
 }
