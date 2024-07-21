@@ -16,17 +16,24 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
-    
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(SQLIntegrityConstraintViolationException.class)
+    public ErrorResponse handleSQLIntegrityConstraintViolationException(SQLIntegrityConstraintViolationException ex) {
+        return new ErrorResponse(HttpStatus.BAD_REQUEST, "Integrity Constraint Violation", ex.getMessage());
+    }
+
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ErrorResponse handleHttpMessageNotReadableException(HttpMessageNotReadableException ex) {
-        return new ErrorResponse(HttpStatus.BAD_REQUEST, ex.getLocalizedMessage(), "Invalid JSON");
+        return new ErrorResponse(HttpStatus.BAD_REQUEST, "Invalid JSON", ex.getMessage());
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
