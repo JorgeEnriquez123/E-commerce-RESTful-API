@@ -26,19 +26,19 @@ public class GlobalExceptionHandler {
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(SQLIntegrityConstraintViolationException.class)
-    public ErrorResponse handleSQLIntegrityConstraintViolationException(SQLIntegrityConstraintViolationException ex) {
+    public ErrorResponse sqlIntegrityConstraintViolationExceptionHandler(SQLIntegrityConstraintViolationException ex) {
         return new ErrorResponse(HttpStatus.BAD_REQUEST, "Integrity Constraint Violation", ex.getMessage());
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(HttpMessageNotReadableException.class)
-    public ErrorResponse handleHttpMessageNotReadableException(HttpMessageNotReadableException ex) {
+    public ErrorResponse httpMessageNotReadableExceptionHandler(HttpMessageNotReadableException ex) {
         return new ErrorResponse(HttpStatus.BAD_REQUEST, "Invalid JSON", ex.getMessage());
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(ConstraintViolationException.class)
-    public ErrorResponse handleConstraintViolationException(ConstraintViolationException ex) {
+    public ErrorResponse constraintViolationExceptionHandler(ConstraintViolationException ex) {
         List<String> errors = ex.getConstraintViolations().stream()
                 .map(violation -> violation.getPropertyPath() + ": " + violation.getMessage())
                 .collect(Collectors.toList());
@@ -47,7 +47,7 @@ public class GlobalExceptionHandler {
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ErrorResponse handleMethodArgumentNotValidException(MethodArgumentNotValidException ex) {
+    public ErrorResponse methodArgumentNotValidExceptionHandler(MethodArgumentNotValidException ex) {
         List<String> errors = new ArrayList<>();
         ex.getBindingResult().getFieldErrors().forEach(error -> {
             errors.add(error.getField() + ": " + error.getDefaultMessage());
@@ -59,5 +59,11 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(EntityNotFoundException.class)
     public ErrorResponse EntityNotFoundExceptionHandler(EntityNotFoundException ex){
         return new ErrorResponse(HttpStatus.NOT_FOUND, "Entity not found", ex.getMessage());
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(ValueAlreadyExistsException.class)
+    public ErrorResponse ValueAlreadyExistsExceptionHandler(ValueAlreadyExistsException ex){
+        return new ErrorResponse(HttpStatus.BAD_REQUEST, "Value already exists", ex.getMessage());
     }
 }
