@@ -2,10 +2,8 @@ package com.jorge.ecommerce.service;
 
 import com.jorge.ecommerce.dto.CategoryDto;
 import com.jorge.ecommerce.dto.create.CreateCategoryDto;
-import com.jorge.ecommerce.dto.create.CreateProductDto;
 import com.jorge.ecommerce.handlers.exception.EntityNotFoundException;
 import com.jorge.ecommerce.model.Category;
-import com.jorge.ecommerce.model.Product;
 import com.jorge.ecommerce.repository.CategoryRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -16,11 +14,11 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-@Transactional
 public class CategoryService {
     private final CategoryRepository categoryRepository;
     private final ModelMapper modelMapper;
 
+    @Transactional(readOnly = true)
     public List<CategoryDto> findAll() {
         return categoryRepository.findAll()
                 .stream()
@@ -28,15 +26,16 @@ public class CategoryService {
                 .toList();
     }
 
-    public CategoryDto findById(Long id) {
+    @Transactional(readOnly = true)
+    public Category findById(Long id) {
         return categoryRepository.findById(id)
-                .map(this::convertToDto)
                 .orElseThrow(() -> new EntityNotFoundException("Category with id: " + id + " not found"));
     }
 
-    protected Category findCategoryEntityById(Long id) {
-        return categoryRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Category with id: " + id + " not found"));
+    @Transactional(readOnly = true)
+    public CategoryDto getCategoryById(Long id) {
+        Category category = findById(id);
+        return convertToDto(category);
     }
 
     @Transactional(rollbackFor = Exception.class)
@@ -48,7 +47,9 @@ public class CategoryService {
 
     @Transactional(rollbackFor = Exception.class)
     public CategoryDto update(Long categoryId, CreateCategoryDto createCategoryDto) {
-        Category toUpdateCategory = updateCategoryFromDto(categoryId, createCategoryDto);
+        Category toUpdateCategory = findById(categoryId);
+        updateCategoryFromDto(toUpdateCategory, createCategoryDto);
+
         Category savedUpdatedCategory = categoryRepository.save(toUpdateCategory);
         return convertToDto(savedUpdatedCategory);
     }
@@ -57,10 +58,8 @@ public class CategoryService {
         return modelMapper.map(createCategoryDto, Category.class);
     }
 
-    public Category updateCategoryFromDto(Long categoryId, CreateCategoryDto createCategoryDto) {
-        Category existingCategory = this.findCategoryEntityById(categoryId);
-        modelMapper.map(createCategoryDto, existingCategory);
-        return existingCategory;
+    public void updateCategoryFromDto(Category category, CreateCategoryDto createCategoryDto) {
+        modelMapper.map(createCategoryDto, category);
     }
 
     public CategoryDto convertToDto(Category category) {

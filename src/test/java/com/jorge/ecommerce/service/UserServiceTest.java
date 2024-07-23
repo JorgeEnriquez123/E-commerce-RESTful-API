@@ -48,7 +48,7 @@ public class UserServiceTest {
         when(userRepository.findById(userId)).thenReturn(Optional.of(user));
         when(modelMapper.map(user, UserDto.class)).thenReturn(expectedUserDto);
 
-        UserDto returnedUserDto = userService.findById(1L);
+        UserDto returnedUserDto = userService.getUserById(1L);
 
         assertNotNull(returnedUserDto);
         assertEquals(expectedUserDto, returnedUserDto);

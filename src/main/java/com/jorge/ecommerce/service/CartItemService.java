@@ -17,23 +17,31 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-@Transactional
 public class CartItemService {
     private final CartItemRepository cartItemRepository;
     private final CartService cartService;
     private final ProductService productService;
     private final ModelMapper modelMapper;
 
-    protected CartItem findById(Long id) {
+    @Transactional(readOnly = true)
+    public CartItem findById(Long id) {
         return cartItemRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("CartItem with id: " + id + " not found."));
     }
-    public List<CartItemDto> findByCartId(Long cartId) {
+
+    @Transactional(readOnly = true)
+    public List<CartItem> findByCartId(Long cartId) {
         List<CartItem> cartItems = cartItemRepository.findByCartId(cartId)
                 .orElse(Collections.emptyList());
-        if(cartItems.isEmpty())
-            throw new EntityNotFoundException("No Cart items found for Cart with id: " + cartId);
+        if(cartItems.isEmpty()) {
+            throw new EntityNotFoundException("No items found from Cart with id: " + cartId);
+        }
+        return cartItems;
+    }
 
+    @Transactional(readOnly = true)
+    public List<CartItemDto> getByCartId(Long cartId) {
+        List<CartItem> cartItems = findByCartId(cartId);
         return cartItems.stream()
                 .map(this::convertToDto)
                 .toList();
@@ -54,6 +62,7 @@ public class CartItemService {
         return convertToDto(savedUpdatedCartItem);
     }
 
+    @Transactional
     public void removeItemFromCartByCartItemId(Long cartItemId) {
         CartItem cartItem = findById(cartItemId);
         cartItemRepository.delete(cartItem);
@@ -61,8 +70,8 @@ public class CartItemService {
 
 
     private CartItem createCartItemFromDto(CreateCartItemDto createCartItemDto) {
-        Cart cart = cartService.findCartEntityById(createCartItemDto.getCartId());
-        Product product = productService.findProductEntityById(createCartItemDto.getProductId());
+        Cart cart = cartService.findById(createCartItemDto.getCartId());
+        Product product = productService.findById(createCartItemDto.getProductId());
 
         CartItem newCartItem = modelMapper.map(createCartItemDto, CartItem.class);
         newCartItem.setCart(cart);

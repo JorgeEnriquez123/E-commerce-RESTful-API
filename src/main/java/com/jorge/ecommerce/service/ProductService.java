@@ -5,7 +5,6 @@ import com.jorge.ecommerce.dto.create.CreateProductDto;
 import com.jorge.ecommerce.handlers.exception.EntityNotFoundException;
 import com.jorge.ecommerce.model.Category;
 import com.jorge.ecommerce.model.Product;
-import com.jorge.ecommerce.repository.CategoryRepository;
 import com.jorge.ecommerce.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -16,11 +15,12 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-@Transactional
 public class ProductService {
     private final ProductRepository productRepository;
     private final CategoryService categoryService;
     private final ModelMapper modelMapper;
+
+    @Transactional(readOnly = true)
     public List<ProductDto> findAll() {
         return productRepository.findAll()
                 .stream()
@@ -28,46 +28,45 @@ public class ProductService {
                 .toList();
     }
 
-    public ProductDto findById(Long id) {
+    @Transactional(readOnly = true)
+    public Product findById(Long id) {
         return productRepository.findById(id)
-                .map(this::convertToDto)
                 .orElseThrow(() -> new EntityNotFoundException("Product with id: " + id + " not found"));
     }
 
-    protected Product findProductEntityById(Long id) {
-        return productRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Product with id: " + id + " not found"));
+    @Transactional(readOnly = true)
+    public ProductDto getProductById(Long id) {
+        Product product = findById(id);
+        return convertToDto(product);
     }
 
     @Transactional(rollbackFor = Exception.class)
     public ProductDto save(CreateProductDto createProductDto) {
-        Product newProduct = this.createProductFromDto(createProductDto);
+        Product newProduct = createProductFromDto(createProductDto);
         Product savedProduct = productRepository.save(newProduct);
-        return this.convertToDto(savedProduct);
+        return convertToDto(savedProduct);
     }
 
     @Transactional(rollbackFor = Exception.class)
     public ProductDto update(Long productId, CreateProductDto createProductDto) {
-        Product toUpdateProduct = this.updateProductFromDto(productId, createProductDto);
+        Product toUpdateProduct = findById(productId);
+        updateProductFromDto(toUpdateProduct, createProductDto);
+
         Product savedUpdatedProduct = productRepository.save(toUpdateProduct);
-        return this.convertToDto(savedUpdatedProduct);
+        return convertToDto(savedUpdatedProduct);
     }
 
     public Product createProductFromDto(CreateProductDto createProductDto) {
-        Category category = categoryService.findCategoryEntityById(createProductDto.getCategoryId());
+        Category category = categoryService.findById(createProductDto.getCategoryId());
         Product newProduct = modelMapper.map(createProductDto, Product.class);
         newProduct.setCategory(category);
         return newProduct;
     }
 
-    public Product updateProductFromDto(Long productId, CreateProductDto createProductDto) {
-        Product toUpdateProduct = this.findProductEntityById(productId);
-        modelMapper.map(createProductDto, toUpdateProduct);
-
-        Category category = categoryService.findCategoryEntityById(createProductDto.getCategoryId());
-        toUpdateProduct.setCategory(category);
-
-        return toUpdateProduct;
+    public void updateProductFromDto(Product product, CreateProductDto createProductDto) {
+        modelMapper.map(createProductDto, product);
+        Category category = categoryService.findById(createProductDto.getCategoryId());
+        product.setCategory(category);
     }
 
     public ProductDto convertToDto(Product product) {

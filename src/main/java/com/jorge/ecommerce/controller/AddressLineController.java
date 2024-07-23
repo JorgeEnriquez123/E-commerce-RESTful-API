@@ -18,7 +18,7 @@ public class AddressLineController {
 
     @GetMapping("/user/{userId}")
     public ResponseEntity<List<AddressLineDto>> getAddressLineByUserId(@PathVariable Long userId) {
-        return ResponseEntity.ok(addressLineService.getAddressesByUserId(userId));
+        return ResponseEntity.ok(addressLineService.getByUserId(userId));
     }
 
     @PostMapping

@@ -1,7 +1,6 @@
 package com.jorge.ecommerce.controller;
 
 import com.jorge.ecommerce.dto.UserDto;
-import com.jorge.ecommerce.model.User;
 import com.jorge.ecommerce.service.UserService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,7 +33,7 @@ public class UserControllerTest {
                 .lastName("Enriquez")
                 .build();
 
-        when(userService.findById(userId)).thenReturn(expectedUserDto);
+        when(userService.getUserById(userId)).thenReturn(expectedUserDto);
 
         mockMvc.perform(get("/user/" + userId))
                 .andExpect(status().isOk())

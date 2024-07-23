@@ -23,7 +23,7 @@ public class CartController {
 
     @GetMapping("/{id}")
     public ResponseEntity<CartDto> findById(@PathVariable Long id){
-        return ResponseEntity.ok(cartService.findById(id));
+        return ResponseEntity.ok(cartService.getCartById(id));
     }
 
     @PostMapping

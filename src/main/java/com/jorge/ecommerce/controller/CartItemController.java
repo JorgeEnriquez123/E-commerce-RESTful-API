@@ -21,7 +21,7 @@ public class CartItemController {
 
     @GetMapping("/cart/{cartId}")
     public ResponseEntity<List<CartItemDto>> findByCartId(@PathVariable Long cartId) {
-        return ResponseEntity.ok(cartItemService.findByCartId(cartId));
+        return ResponseEntity.ok(cartItemService.getByCartId(cartId));
     }
 
     @PostMapping

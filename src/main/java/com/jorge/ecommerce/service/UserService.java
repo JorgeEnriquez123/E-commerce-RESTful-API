@@ -15,11 +15,11 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-@Transactional
 public class UserService {
     private final UserRepository userRepository;
     private final ModelMapper modelMapper;
 
+    @Transactional(readOnly = true)
     public List<UserDto> findAll() {
         return userRepository.findAll()
                 .stream()
@@ -27,15 +27,16 @@ public class UserService {
                 .toList();
     }
 
-    public UserDto findById(Long id) {
+    @Transactional(readOnly = true)
+    public User findById(Long id) {
         return userRepository.findById(id)
-                .map(this::convertToDto)
                 .orElseThrow(() -> new EntityNotFoundException("User with id: " + id + " not found."));
     }
 
-    protected User findUserEntityById(Long id) {
-        return userRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("User with id: " + id + " not found."));
+    @Transactional(readOnly = true)
+    public UserDto getUserById(Long id) {
+        User user = findById(id);
+        return convertToDto(user);
     }
 
     @Transactional(rollbackFor = Exception.class)
@@ -52,7 +53,9 @@ public class UserService {
 
     @Transactional(rollbackFor = Exception.class)
     public UserDto update(Long userId, CreateUserDto createUserDto) {
-        User toUpdateUser = updateUserFromDto(userId, createUserDto);
+        User toUpdateUser = findById(userId);
+        updateUserFromDto(toUpdateUser, createUserDto);
+
         User savedUpdatedUser = userRepository.save(toUpdateUser);
         return convertToDto(savedUpdatedUser);
     }
@@ -65,10 +68,8 @@ public class UserService {
         return modelMapper.map(createUserDto, User.class);
     }
 
-    private User updateUserFromDto(Long userId, CreateUserDto createUserDto){
-        User toUpdateUser = findUserEntityById(userId);
-        modelMapper.map(createUserDto, toUpdateUser);
-        return toUpdateUser;
+    private void updateUserFromDto(User user, CreateUserDto createUserDto){
+        modelMapper.map(createUserDto, user);
     }
 
     public UserDto convertToDto(User user) {

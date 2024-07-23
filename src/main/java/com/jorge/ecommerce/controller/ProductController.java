@@ -2,7 +2,6 @@ package com.jorge.ecommerce.controller;
 
 import com.jorge.ecommerce.dto.ProductDto;
 import com.jorge.ecommerce.dto.create.CreateProductDto;
-import com.jorge.ecommerce.model.Product;
 import com.jorge.ecommerce.service.ProductService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -25,7 +24,7 @@ public class ProductController {
 
     @GetMapping("/{id}")
     public ResponseEntity<ProductDto> findById(@PathVariable Long id){
-        return ResponseEntity.ok(productService.findById(id));
+        return ResponseEntity.ok(productService.getProductById(id));
     }
 
     @PostMapping
