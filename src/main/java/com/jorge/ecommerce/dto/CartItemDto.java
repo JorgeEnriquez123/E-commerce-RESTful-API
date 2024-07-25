@@ -1,6 +1,5 @@
 package com.jorge.ecommerce.dto;
 
-import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -12,6 +11,6 @@ import lombok.NoArgsConstructor;
 @Builder
 public class CartItemDto {
     private Long id;
-    private ProductDto productDto;
+    private ProductDto product;
     private Integer quantity;
 }

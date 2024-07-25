@@ -1,7 +1,5 @@
 package com.jorge.ecommerce.dto;
 
-import com.jorge.ecommerce.model.User;
-import jakarta.persistence.Entity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -13,5 +11,5 @@ import lombok.NoArgsConstructor;
 @Builder
 public class CartDto {
     private Long id;
-    private UserDto userDto;
+    private UserDto user;
 }
