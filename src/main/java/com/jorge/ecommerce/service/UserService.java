@@ -8,6 +8,9 @@ import com.jorge.ecommerce.model.User;
 import com.jorge.ecommerce.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,11 +23,10 @@ public class UserService {
     private final ModelMapper modelMapper;
 
     @Transactional(readOnly = true)
-    public List<UserDto> findAll() {
-        return userRepository.findAll()
-                .stream()
-                .map(this::convertToDto)
-                .toList();
+    public Page<UserDto> findAll(Integer pageNumber, Integer pageSize) {
+        Pageable pageable = PageRequest.of(pageNumber - 1, pageSize);
+        Page<User> users = userRepository.findAll(pageable);
+        return users.map(user -> modelMapper.map(user, UserDto.class));
     }
 
     @Transactional(readOnly = true)
@@ -48,6 +50,7 @@ public class UserService {
         }
         User newUser = createUserFromDto(createUserDto);
         User savedUser = userRepository.save(newUser);
+
         return convertToDto(savedUser);
     }
 
