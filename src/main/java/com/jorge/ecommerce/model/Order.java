@@ -14,12 +14,13 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@Table(name = "Orders")
 public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(nullable = false, precision = 10, scale = 2)
-    private BigDecimal total;
+    private BigDecimal total = BigDecimal.ZERO;
     @Column(nullable = false)
     private String status;
     @Column(nullable = false)
@@ -32,4 +33,10 @@ public class Order {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "shipping_address_id", nullable = false)
     private AddressLine shippingAddress;
+
+    @PrePersist
+    protected void onCreate() {
+        dateTime = LocalDateTime.now();
+        status = "PENDING";
+    }
 }

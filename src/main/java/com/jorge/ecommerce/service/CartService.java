@@ -35,6 +35,12 @@ public class CartService {
     }
 
     @Transactional(readOnly = true)
+    public Cart findByUserId(Long userId) {
+        return cartRepository.findByUserId(userId)
+                .orElseThrow(() -> new EntityNotFoundException("Cart of User with id: " + userId + " not found"));
+    }
+
+    @Transactional(readOnly = true)
     public CartDto getCartById(Long id) {
         Cart cart = findById(id);
         return convertToDto(cart);

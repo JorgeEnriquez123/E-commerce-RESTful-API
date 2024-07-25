@@ -68,6 +68,11 @@ public class CartItemService {
         cartItemRepository.delete(cartItem);
     }
 
+    @Transactional
+    public void deleteById(Long cartItemId){
+        cartItemRepository.deleteById(cartItemId);
+    }
+
 
     private CartItem createCartItemFromDto(CreateCartItemDto createCartItemDto) {
         Cart cart = cartService.findById(createCartItemDto.getCartId());

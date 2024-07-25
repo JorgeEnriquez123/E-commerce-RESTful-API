@@ -1,10 +1,9 @@
 package com.jorge.ecommerce.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Data
 @Entity
@@ -17,10 +16,14 @@ public class CartItem {
     private Long id;
     @Column(nullable = false)
     private Integer quantity;
-    @ManyToOne
+
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(nullable = false, name = "product_id")
     private Product product;
-    @ManyToOne
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(nullable = false, name = "cart_id")
+    @JsonBackReference
+    @ToString.Exclude
     private Cart cart;
 }
