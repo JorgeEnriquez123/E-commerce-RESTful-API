@@ -28,12 +28,7 @@ public class OrderService {
     private final CartItemService cartItemService;
 
     @Transactional(readOnly = true)
-    public List<Order> findAll(){
-        return orderRepository.findAll();
-    }
-
-    @Transactional(readOnly = true)
-    public Order findById(Long id){
+    protected Order findById(Long id){
         return orderRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Order with id: " + id + " not found"));
     }
@@ -45,10 +40,8 @@ public class OrderService {
     }
 
     @Transactional(rollbackFor = Exception.class)
-    public OrderDto save(CreateOrderDto createOrderDto){
-        Order newOrder = createOrderFromDto(createOrderDto);
-        Order savedOrder = orderRepository.save(newOrder);
-        return convertToDto(savedOrder);
+    protected Order save(Order order){
+        return orderRepository.save(order);
     }
 
     @Transactional(rollbackFor = Exception.class)
@@ -58,6 +51,7 @@ public class OrderService {
 
         User user = userService.findById(userId);
         AddressLine addressLine = addressLineService.findById(shippingAddressId);
+
         Cart cartFromUser = cartService.findByUserId(userId);
         BigDecimal total = calculateTotal(cartFromUser);
 
@@ -65,7 +59,7 @@ public class OrderService {
         order.setUser(user);
         order.setShippingAddress(addressLine);
         order.setTotal(total);
-        Order savedOrder = orderRepository.save(order);
+        Order savedOrder = save(order);
 
         Set<CartItem> cartItems = cartFromUser.getCartItems();
         cartItems.forEach(
@@ -80,6 +74,7 @@ public class OrderService {
                     cartItemService.deleteById(cartItem.getId());
                 }
         );
+
         return convertToDto(savedOrder);
     }
 
@@ -94,17 +89,7 @@ public class OrderService {
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
-    private Order createOrderFromDto(CreateOrderDto createOrderDto) {
-        User user = userService.findById(createOrderDto.getUserId());
-        AddressLine addressLine = addressLineService.findById(createOrderDto.getUserId());
-
-        Order order = modelMapper.map(createOrderDto, Order.class);
-        order.setUser(user);
-        order.setShippingAddress(addressLine);
-        return order;
-    }
-
-    public OrderDto convertToDto(Order order){
+    private OrderDto convertToDto(Order order){
         return modelMapper.map(order, OrderDto.class);
     }
 }

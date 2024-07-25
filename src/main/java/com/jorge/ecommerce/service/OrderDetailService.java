@@ -18,18 +18,10 @@ import java.util.List;
 public class OrderDetailService {
     private final OrderDetailRepository orderDetailRepository;
     private final ModelMapper modelMapper;
-    public List<OrderDetail> findAll() {
-        return orderDetailRepository.findAll();
-    }
 
     public OrderDetail findById(Long id) {
         return orderDetailRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("OrderDetail with id: " + id + " not found"));
-    }
-
-    public OrderDetailDto getOrderDetailById(Long id) {
-        OrderDetail orderDetail = findById(id);
-        return convertToDto(orderDetail);
     }
 
     public OrderDetail save(OrderDetail orderDetail) {
