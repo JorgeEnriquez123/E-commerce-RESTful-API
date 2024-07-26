@@ -1,5 +1,8 @@
-package com.jorge.ecommerce.handler.exception;
+package com.jorge.ecommerce.handler;
 
+import com.jorge.ecommerce.handler.exception.EntityNotFoundException;
+import com.jorge.ecommerce.handler.exception.FailedLoginException;
+import com.jorge.ecommerce.handler.exception.ValueAlreadyExistsException;
 import com.jorge.ecommerce.handler.response.ErrorResponse;
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
@@ -16,6 +19,11 @@ import java.util.stream.Collectors;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    @ExceptionHandler(FailedLoginException.class)
+    public ErrorResponse failedLoginExceptionHandler(FailedLoginException ex) {
+        return new ErrorResponse(HttpStatus.UNAUTHORIZED, "Unsuccesful Login", ex.getMessage());
+    }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(SQLIntegrityConstraintViolationException.class)

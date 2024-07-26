@@ -20,11 +20,13 @@ public class UserService {
     private final UserRepository userRepository;
     private final ModelMapper modelMapper;
     private final CartService cartService;
+    private final AuthService authService;
 
-    public UserService(UserRepository userRepository, ModelMapper modelMapper, @Lazy CartService cartService) {
+    public UserService(UserRepository userRepository, ModelMapper modelMapper, @Lazy CartService cartService, AuthService authService) {
         this.userRepository = userRepository;
         this.modelMapper = modelMapper;
         this.cartService = cartService;
+        this.authService = authService;
     }
 
     @Transactional(readOnly = true)
@@ -40,6 +42,7 @@ public class UserService {
                 .orElseThrow(() -> new EntityNotFoundException("User with id: " + id + " not found."));
     }
 
+    @Transactional(readOnly = true)
     public User findByUsername(String username) {
         return userRepository.findByUsername(username)
                 .orElseThrow(() -> new EntityNotFoundException("User with username: " + username + " not found."));
@@ -53,11 +56,11 @@ public class UserService {
     @Transactional(rollbackFor = Exception.class)
     public UserDto save(CreateUserDto createUserDto) {
         String username = createUserDto.getUsername();
-        boolean usernameAlreadyExists = checkIfUsernameAlreadyExists(username);
-        if(usernameAlreadyExists) {
-            throw new ValueAlreadyExistsException("User with username: " + username + " already exists.");
-        }
+        checkIfUsernameAlreadyExists(username);
+
         User newUser = createUserFromDto(createUserDto);
+        encryptUserPassword(newUser);
+
         User savedUser = userRepository.save(newUser);
 
         // Creating a Cart for the User
@@ -71,13 +74,21 @@ public class UserService {
     public UserDto update(Long userId, CreateUserDto createUserDto) {
         User toUpdateUser = findById(userId);
         updateUserFromDto(toUpdateUser, createUserDto);
+        encryptUserPassword(toUpdateUser);
 
         User savedUpdatedUser = userRepository.save(toUpdateUser);
         return convertToDto(savedUpdatedUser);
     }
 
-    private boolean checkIfUsernameAlreadyExists(String username) {
-        return userRepository.findByUsername(username).isPresent();
+    @Transactional(readOnly = true)
+    protected void checkIfUsernameAlreadyExists(String username) {
+        if (findByUsername(username) != null){
+            throw new ValueAlreadyExistsException("User with username: " + username + " already exists.");
+        }
+    }
+
+    private void encryptUserPassword(User user){
+        user.setPassword(authService.encryptPassword(user.getPassword()));
     }
 
     private User createUserFromDto(CreateUserDto createUserDto) {
