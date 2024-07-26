@@ -28,7 +28,7 @@ public class CartController {
 
     @PostMapping
     public ResponseEntity<CartDto> save(@RequestBody CreateCartDto dto){
-        return ResponseEntity.status(HttpStatus.CREATED).body(cartService.save(dto));
+        return ResponseEntity.status(HttpStatus.CREATED).body(cartService.createCart(dto));
     }
 
 

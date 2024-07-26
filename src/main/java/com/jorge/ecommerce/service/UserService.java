@@ -4,10 +4,12 @@ import com.jorge.ecommerce.dto.create.CreateUserDto;
 import com.jorge.ecommerce.dto.UserDto;
 import com.jorge.ecommerce.handlers.exception.EntityNotFoundException;
 import com.jorge.ecommerce.handlers.exception.ValueAlreadyExistsException;
+import com.jorge.ecommerce.model.Cart;
 import com.jorge.ecommerce.model.User;
 import com.jorge.ecommerce.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -15,10 +17,16 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-@RequiredArgsConstructor
 public class UserService {
     private final UserRepository userRepository;
     private final ModelMapper modelMapper;
+    private final CartService cartService;
+
+    public UserService(UserRepository userRepository, ModelMapper modelMapper, @Lazy CartService cartService) {
+        this.userRepository = userRepository;
+        this.modelMapper = modelMapper;
+        this.cartService = cartService;
+    }
 
     @Transactional(readOnly = true)
     public Page<UserDto> findAll(Integer pageNumber, Integer pageSize) {
@@ -47,6 +55,10 @@ public class UserService {
         }
         User newUser = createUserFromDto(createUserDto);
         User savedUser = userRepository.save(newUser);
+
+        // Creating a Cart for the User
+        Cart cart = Cart.builder().user(savedUser).build();
+        cartService.save(cart);
 
         return convertToDto(savedUser);
     }

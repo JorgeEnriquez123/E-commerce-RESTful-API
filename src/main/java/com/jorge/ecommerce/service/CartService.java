@@ -8,17 +8,23 @@ import com.jorge.ecommerce.model.User;
 import com.jorge.ecommerce.repository.CartRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
-@RequiredArgsConstructor
 public class CartService {
     private final CartRepository cartRepository;
     private final UserService userService;
     private final ModelMapper modelMapper;
+
+    public CartService(CartRepository cartRepository, @Lazy UserService userService, ModelMapper modelMapper) {
+        this.cartRepository = cartRepository;
+        this.userService = userService;
+        this.modelMapper = modelMapper;
+    }
 
     @Transactional(readOnly = true)
     public List<CartDto> findAll(){
@@ -46,10 +52,15 @@ public class CartService {
         return convertToDto(cart);
     }
 
+    @Transactional
+    public Cart save(Cart cart){
+        return cartRepository.save(cart);
+    }
+
     @Transactional(rollbackFor = Exception.class)
-    public CartDto save(CreateCartDto createCartDto) {
+    public CartDto createCart(CreateCartDto createCartDto) {
         Cart newCart = createCartFromDto(createCartDto);
-        Cart savedCart = cartRepository.save(newCart);
+        Cart savedCart = save(newCart);
         return convertToDto(savedCart);
     }
 
