@@ -1,11 +1,7 @@
 package com.jorge.ecommerce.service;
 
-import com.jorge.ecommerce.dto.OrderDetailDto;
-import com.jorge.ecommerce.dto.create.CreateOrderDetailDto;
 import com.jorge.ecommerce.handlers.exception.EntityNotFoundException;
-import com.jorge.ecommerce.model.Order;
 import com.jorge.ecommerce.model.OrderDetail;
-import com.jorge.ecommerce.model.Product;
 import com.jorge.ecommerce.repository.OrderDetailRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
