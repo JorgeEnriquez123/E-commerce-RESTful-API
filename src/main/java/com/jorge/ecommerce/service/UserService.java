@@ -40,6 +40,11 @@ public class UserService {
                 .orElseThrow(() -> new EntityNotFoundException("User with id: " + id + " not found."));
     }
 
+    public User findByUsername(String username) {
+        return userRepository.findByUsername(username)
+                .orElseThrow(() -> new EntityNotFoundException("User with username: " + username + " not found."));
+    }
+
     @Transactional(readOnly = true)
     public UserDto getUserById(Long id) {
         User user = findById(id);
