@@ -1,4 +1,4 @@
-package com.jorge.ecommerce.handlers.exception;
+package com.jorge.ecommerce.handler.exception;
 
 public class EntityNotFoundException extends RuntimeException{
     public EntityNotFoundException() {

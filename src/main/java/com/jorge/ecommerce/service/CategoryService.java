@@ -2,7 +2,7 @@ package com.jorge.ecommerce.service;
 
 import com.jorge.ecommerce.dto.CategoryDto;
 import com.jorge.ecommerce.dto.create.CreateCategoryDto;
-import com.jorge.ecommerce.handlers.exception.EntityNotFoundException;
+import com.jorge.ecommerce.handler.exception.EntityNotFoundException;
 import com.jorge.ecommerce.model.Category;
 import com.jorge.ecommerce.repository.CategoryRepository;
 import lombok.RequiredArgsConstructor;

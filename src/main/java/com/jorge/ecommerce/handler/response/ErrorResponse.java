@@ -1,4 +1,4 @@
-package com.jorge.ecommerce.handlers.response;
+package com.jorge.ecommerce.handler.response;
 
 import lombok.*;
 import org.springframework.http.HttpStatus;

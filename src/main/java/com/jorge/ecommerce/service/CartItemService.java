@@ -2,7 +2,7 @@ package com.jorge.ecommerce.service;
 
 import com.jorge.ecommerce.dto.CartItemDto;
 import com.jorge.ecommerce.dto.create.CreateCartItemDto;
-import com.jorge.ecommerce.handlers.exception.EntityNotFoundException;
+import com.jorge.ecommerce.handler.exception.EntityNotFoundException;
 import com.jorge.ecommerce.model.Cart;
 import com.jorge.ecommerce.model.CartItem;
 import com.jorge.ecommerce.model.Product;

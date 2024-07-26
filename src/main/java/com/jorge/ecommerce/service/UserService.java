@@ -2,12 +2,11 @@ package com.jorge.ecommerce.service;
 
 import com.jorge.ecommerce.dto.create.CreateUserDto;
 import com.jorge.ecommerce.dto.UserDto;
-import com.jorge.ecommerce.handlers.exception.EntityNotFoundException;
-import com.jorge.ecommerce.handlers.exception.ValueAlreadyExistsException;
+import com.jorge.ecommerce.handler.exception.EntityNotFoundException;
+import com.jorge.ecommerce.handler.exception.ValueAlreadyExistsException;
 import com.jorge.ecommerce.model.Cart;
 import com.jorge.ecommerce.model.User;
 import com.jorge.ecommerce.repository.UserRepository;
-import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;

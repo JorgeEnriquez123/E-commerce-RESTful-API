@@ -2,11 +2,10 @@ package com.jorge.ecommerce.service;
 
 import com.jorge.ecommerce.dto.CartDto;
 import com.jorge.ecommerce.dto.create.CreateCartDto;
-import com.jorge.ecommerce.handlers.exception.EntityNotFoundException;
+import com.jorge.ecommerce.handler.exception.EntityNotFoundException;
 import com.jorge.ecommerce.model.Cart;
 import com.jorge.ecommerce.model.User;
 import com.jorge.ecommerce.repository.CartRepository;
-import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
