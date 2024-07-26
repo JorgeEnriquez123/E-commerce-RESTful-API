@@ -1,14 +1,10 @@
 package com.jorge.ecommerce.model;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.jorge.ecommerce.dto.CartDto;
-import com.jorge.ecommerce.dto.UserDto;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.HashSet;
-import java.util.List;
-import java.util.Objects;
 import java.util.Set;
 
 @Data

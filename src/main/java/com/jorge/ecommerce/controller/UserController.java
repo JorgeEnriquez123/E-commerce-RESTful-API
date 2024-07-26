@@ -1,7 +1,7 @@
 package com.jorge.ecommerce.controller;
 
-import com.jorge.ecommerce.dto.create.CreateUserDto;
 import com.jorge.ecommerce.dto.UserDto;
+import com.jorge.ecommerce.dto.create.CreateUserDto;
 import com.jorge.ecommerce.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

@@ -1,6 +1,5 @@
 package com.jorge.ecommerce.dto.create;
 
-import com.jorge.ecommerce.model.User;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

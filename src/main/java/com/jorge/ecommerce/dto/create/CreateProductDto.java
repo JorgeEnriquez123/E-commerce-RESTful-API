@@ -1,9 +1,5 @@
 package com.jorge.ecommerce.dto.create;
 
-import com.jorge.ecommerce.dto.ProductDto;
-import com.jorge.ecommerce.model.Category;
-import com.jorge.ecommerce.model.Product;
-import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,7 +7,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 
 @Data
 @NoArgsConstructor
