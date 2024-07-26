@@ -22,13 +22,13 @@ public class AddressLineService {
     private final ModelMapper modelMapper;
 
     @Transactional(readOnly = true)
-    public AddressLine findById(Long id){
+    protected AddressLine findById(Long id){
         return addressLineRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("AddressLine with id: " + id + " not found"));
     }
 
     @Transactional(readOnly = true)
-    public List<AddressLine> findByUserId(Long userId){
+    protected List<AddressLine> findByUserId(Long userId){
         List<AddressLine> addressLines = addressLineRepository.findByUserId(userId)
                 .orElse(Collections.emptyList());
         if(addressLines.isEmpty()){
@@ -81,19 +81,19 @@ public class AddressLineService {
         }
     }
 
-    public AddressLine createAddressLineFromDto(CreateAddressLineDto createAddressLineDto) {
+    private AddressLine createAddressLineFromDto(CreateAddressLineDto createAddressLineDto) {
         User user = userService.findById(createAddressLineDto.getUserId());
         AddressLine newAddressLine = modelMapper.map(createAddressLineDto, AddressLine.class);
         newAddressLine.setUser(user);
         return newAddressLine;
     }
 
-    public void updateAddressLineFromDto(AddressLine addressLine, CreateAddressLineDto createAddressLineDto) {
+    private void updateAddressLineFromDto(AddressLine addressLine, CreateAddressLineDto createAddressLineDto) {
         modelMapper.map(createAddressLineDto, addressLine);
         // Not updating the User the AddressLine is linked to.
     }
 
-    public AddressLineDto convertToDto(AddressLine addressLine) {
+    private AddressLineDto convertToDto(AddressLine addressLine) {
         return modelMapper.map(addressLine, AddressLineDto.class);
     }
 }

@@ -29,7 +29,7 @@ public class ProductService {
     }
 
     @Transactional(readOnly = true)
-    public Product findById(Long id) {
+    protected Product findById(Long id) {
         return productRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Product with id: " + id + " not found"));
     }
@@ -56,20 +56,20 @@ public class ProductService {
         return convertToDto(savedUpdatedProduct);
     }
 
-    public Product createProductFromDto(CreateProductDto createProductDto) {
+    private Product createProductFromDto(CreateProductDto createProductDto) {
         Category category = categoryService.findById(createProductDto.getCategoryId());
         Product newProduct = modelMapper.map(createProductDto, Product.class);
         newProduct.setCategory(category);
         return newProduct;
     }
 
-    public void updateProductFromDto(Product product, CreateProductDto createProductDto) {
+    private void updateProductFromDto(Product product, CreateProductDto createProductDto) {
         modelMapper.map(createProductDto, product);
         Category category = categoryService.findById(createProductDto.getCategoryId());
         product.setCategory(category);
     }
 
-    public ProductDto convertToDto(Product product) {
+    private ProductDto convertToDto(Product product) {
         return modelMapper.map(product, ProductDto.class);
     }
 }

@@ -2,7 +2,6 @@ package com.jorge.ecommerce.controller;
 
 import com.jorge.ecommerce.dto.create.CreateUserDto;
 import com.jorge.ecommerce.dto.UserDto;
-import com.jorge.ecommerce.model.User;
 import com.jorge.ecommerce.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -10,8 +9,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RequiredArgsConstructor
 @RestController

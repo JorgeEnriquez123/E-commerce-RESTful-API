@@ -24,13 +24,13 @@ public class CartItemService {
     private final ModelMapper modelMapper;
 
     @Transactional(readOnly = true)
-    public CartItem findById(Long id) {
+    protected CartItem findById(Long id) {
         return cartItemRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("CartItem with id: " + id + " not found."));
     }
 
     @Transactional(readOnly = true)
-    public List<CartItem> findByCartId(Long cartId) {
+    protected List<CartItem> findByCartId(Long cartId) {
         List<CartItem> cartItems = cartItemRepository.findByCartId(cartId)
                 .orElse(Collections.emptyList());
         if(cartItems.isEmpty()) {
@@ -72,7 +72,6 @@ public class CartItemService {
     public void deleteById(Long cartItemId){
         cartItemRepository.deleteById(cartItemId);
     }
-
 
     private CartItem createCartItemFromDto(CreateCartItemDto createCartItemDto) {
         Cart cart = cartService.findById(createCartItemDto.getCartId());

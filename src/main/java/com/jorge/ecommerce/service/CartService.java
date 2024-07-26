@@ -29,13 +29,13 @@ public class CartService {
     }
 
     @Transactional(readOnly = true)
-    public Cart findById(Long id) {
+    protected Cart findById(Long id) {
         return cartRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Cart with id: " + id + " not found"));
     }
 
     @Transactional(readOnly = true)
-    public Cart findByUserId(Long userId) {
+    protected Cart findByUserId(Long userId) {
         return cartRepository.findByUserId(userId)
                 .orElseThrow(() -> new EntityNotFoundException("Cart of User with id: " + userId + " not found"));
     }
@@ -53,14 +53,14 @@ public class CartService {
         return convertToDto(savedCart);
     }
 
-    public Cart createCartFromDto(CreateCartDto createCartDto) {
+    private Cart createCartFromDto(CreateCartDto createCartDto) {
         User user = userService.findById(createCartDto.getUserId());
         return Cart.builder()
                 .user(user)
                 .build();
     }
 
-    public CartDto convertToDto(Cart cart) {
+    private CartDto convertToDto(Cart cart) {
         return modelMapper.map(cart, CartDto.class);
     }
 }

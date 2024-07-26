@@ -27,9 +27,4 @@ public class OrderDetailService {
     public OrderDetail save(OrderDetail orderDetail) {
         return orderDetailRepository.save(orderDetail);
     }
-
-    private OrderDetailDto convertToDto(OrderDetail orderDetail) {
-        return modelMapper.map(orderDetail, OrderDetailDto.class);
-    }
-
 }

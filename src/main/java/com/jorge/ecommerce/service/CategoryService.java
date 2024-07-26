@@ -27,7 +27,7 @@ public class CategoryService {
     }
 
     @Transactional(readOnly = true)
-    public Category findById(Long id) {
+    protected Category findById(Long id) {
         return categoryRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Category with id: " + id + " not found"));
     }
@@ -54,15 +54,15 @@ public class CategoryService {
         return convertToDto(savedUpdatedCategory);
     }
 
-    public Category createCategoryFromDto(CreateCategoryDto createCategoryDto) {
+    private Category createCategoryFromDto(CreateCategoryDto createCategoryDto) {
         return modelMapper.map(createCategoryDto, Category.class);
     }
 
-    public void updateCategoryFromDto(Category category, CreateCategoryDto createCategoryDto) {
+    private void updateCategoryFromDto(Category category, CreateCategoryDto createCategoryDto) {
         modelMapper.map(createCategoryDto, category);
     }
 
-    public CategoryDto convertToDto(Category category) {
+    private CategoryDto convertToDto(Category category) {
         return modelMapper.map(category, CategoryDto.class);
     }
 }

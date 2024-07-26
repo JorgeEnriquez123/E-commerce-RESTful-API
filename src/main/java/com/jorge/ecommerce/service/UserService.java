@@ -14,8 +14,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-
 @Service
 @RequiredArgsConstructor
 public class UserService {
@@ -30,7 +28,7 @@ public class UserService {
     }
 
     @Transactional(readOnly = true)
-    public User findById(Long id) {
+    protected User findById(Long id) {
         return userRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("User with id: " + id + " not found."));
     }
@@ -40,7 +38,6 @@ public class UserService {
         User user = findById(id);
         return convertToDto(user);
     }
-
     @Transactional(rollbackFor = Exception.class)
     public UserDto save(CreateUserDto createUserDto) {
         String username = createUserDto.getUsername();
@@ -75,7 +72,7 @@ public class UserService {
         modelMapper.map(createUserDto, user);
     }
 
-    public UserDto convertToDto(User user) {
+    private UserDto convertToDto(User user) {
         return modelMapper.map(user, UserDto.class);
     }
 }
