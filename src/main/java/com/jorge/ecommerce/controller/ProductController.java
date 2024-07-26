@@ -29,7 +29,7 @@ public class ProductController {
 
     @PostMapping
     public ResponseEntity<ProductDto> save(@Valid @RequestBody CreateProductDto dto){
-        return ResponseEntity.status(HttpStatus.CREATED).body(productService.save(dto));
+        return ResponseEntity.status(HttpStatus.CREATED).body(productService.createProduct(dto));
     }
 
     @PutMapping("/{id}")

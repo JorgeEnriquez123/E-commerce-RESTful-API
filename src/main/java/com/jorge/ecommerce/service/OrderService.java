@@ -26,6 +26,7 @@ public class OrderService {
     private final CartService cartService;
     private final OrderDetailService orderDetailService;
     private final CartItemService cartItemService;
+    private final ProductService productService;
 
     @Transactional(readOnly = true)
     protected Order findById(Long id){
@@ -72,6 +73,8 @@ public class OrderService {
                             .build();
                     orderDetailService.save(orderDetail);
                     cartItemService.deleteById(cartItem.getId());
+
+                    productService.reduceStock(cartItem.getProduct().getId(), cartItem.getQuantity());
                 }
         );
 

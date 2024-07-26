@@ -3,6 +3,7 @@ package com.jorge.ecommerce.service;
 import com.jorge.ecommerce.dto.ProductDto;
 import com.jorge.ecommerce.dto.create.CreateProductDto;
 import com.jorge.ecommerce.handlers.exception.EntityNotFoundException;
+import com.jorge.ecommerce.handlers.exception.InsufficientProductStock;
 import com.jorge.ecommerce.model.Category;
 import com.jorge.ecommerce.model.Product;
 import com.jorge.ecommerce.repository.ProductRepository;
@@ -40,8 +41,14 @@ public class ProductService {
         return convertToDto(product);
     }
 
+    @Transactional
+    public Product save(Product product){
+        return productRepository.save(product);
+    }
+
+
     @Transactional(rollbackFor = Exception.class)
-    public ProductDto save(CreateProductDto createProductDto) {
+    public ProductDto createProduct(CreateProductDto createProductDto) {
         Product newProduct = createProductFromDto(createProductDto);
         Product savedProduct = productRepository.save(newProduct);
         return convertToDto(savedProduct);
@@ -54,6 +61,17 @@ public class ProductService {
 
         Product savedUpdatedProduct = productRepository.save(toUpdateProduct);
         return convertToDto(savedUpdatedProduct);
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    public void reduceStock(Long productId, Integer quantity) {
+        // Check latest stock availability
+        Product product = findById(productId);
+        product.setStockQuantity(product.getStockQuantity() - quantity);
+        if(product.getStockQuantity() < 0) {
+            throw new InsufficientProductStock("Product with Id: " + productId + " has insufficient stock");
+        }
+        save(product);
     }
 
     private Product createProductFromDto(CreateProductDto createProductDto) {
