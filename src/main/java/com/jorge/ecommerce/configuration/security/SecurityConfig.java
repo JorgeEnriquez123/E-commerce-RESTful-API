@@ -1,6 +1,8 @@
 package com.jorge.ecommerce.configuration.security;
 
 import com.jorge.ecommerce.configuration.filter.JwtAuthenticationFilter;
+import com.jorge.ecommerce.handler.CustomAccessDenied;
+import com.jorge.ecommerce.handler.CustomAuthenticationEntryPoint;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -10,6 +12,7 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
@@ -33,8 +36,21 @@ public class SecurityConfig {
                         .requestMatchers("/auth/**").permitAll()
                         .anyRequest()
                         .authenticated())
+                .exceptionHandling(ex -> ex
+                        .accessDeniedHandler(customAccessDeniedHandler())
+                        .authenticationEntryPoint(customAuthenticationEntryPointHandler()))
                 .authenticationProvider(authenticationProvider)
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
+    }
+
+    @Bean
+    public CustomAccessDenied customAccessDeniedHandler(){
+        return new CustomAccessDenied();
+    }
+
+    @Bean
+    public CustomAuthenticationEntryPoint customAuthenticationEntryPointHandler(){
+        return new CustomAuthenticationEntryPoint();
     }
 }
