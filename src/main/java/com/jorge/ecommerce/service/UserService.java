@@ -22,7 +22,7 @@ public class UserService {
     private final CartService cartService;
     private final AuthService authService;
 
-    public UserService(UserRepository userRepository, ModelMapper modelMapper, @Lazy CartService cartService, AuthService authService) {
+    public UserService(UserRepository userRepository, ModelMapper modelMapper, @Lazy CartService cartService, @Lazy AuthService authService) {
         this.userRepository = userRepository;
         this.modelMapper = modelMapper;
         this.cartService = cartService;
@@ -53,21 +53,31 @@ public class UserService {
         User user = findById(id);
         return convertToDto(user);
     }
+
     @Transactional(rollbackFor = Exception.class)
-    public UserDto save(CreateUserDto createUserDto) {
-        String username = createUserDto.getUsername();
-        checkIfUsernameAlreadyExists(username);
+    public User save(User user) {
+        checkIfUsernameAlreadyExists(user.getUsername());
+        encryptUserPassword(user);
 
-        User newUser = createUserFromDto(createUserDto);
-        encryptUserPassword(newUser);
-
-        User savedUser = userRepository.save(newUser);
+        User savedUser = userRepository.save(user);
 
         // Creating a Cart for the User
         Cart cart = Cart.builder().user(savedUser).build();
         cartService.save(cart);
 
-        return convertToDto(savedUser);
+        return user;
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    public UserDto createUser(CreateUserDto createUserDto) {
+        User newUser = registerUser(createUserDto);
+        return convertToDto(newUser);
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    public User registerUser(CreateUserDto createUserDto) {
+        User newUser = createUserFromDto(createUserDto);
+        return save(newUser);
     }
 
     @Transactional(rollbackFor = Exception.class)
@@ -82,9 +92,9 @@ public class UserService {
 
     @Transactional(readOnly = true)
     protected void checkIfUsernameAlreadyExists(String username) {
-        if (findByUsername(username) != null){
+        userRepository.findByUsername(username).ifPresent(user -> {
             throw new ValueAlreadyExistsException("User with username: " + username + " already exists.");
-        }
+        });
     }
 
     private void encryptUserPassword(User user){
