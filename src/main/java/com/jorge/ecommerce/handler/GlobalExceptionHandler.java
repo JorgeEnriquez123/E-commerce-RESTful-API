@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -22,19 +24,31 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     @ExceptionHandler(FailedLoginException.class)
     public ErrorResponse failedLoginExceptionHandler(FailedLoginException ex) {
-        return new ErrorResponse(HttpStatus.UNAUTHORIZED, "Unsuccesful Login", ex.getMessage());
+        return ErrorResponse.builder()
+                .httpStatus(HttpStatus.UNAUTHORIZED)
+                .message("Unsuccessful Login")
+                .errors(Collections.singletonList(ex.getMessage()))
+                .build();
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(SQLIntegrityConstraintViolationException.class)
     public ErrorResponse sqlIntegrityConstraintViolationExceptionHandler(SQLIntegrityConstraintViolationException ex) {
-        return new ErrorResponse(HttpStatus.BAD_REQUEST, "Integrity Constraint Violation", ex.getMessage());
+        return ErrorResponse.builder()
+                .httpStatus(HttpStatus.BAD_REQUEST)
+                .message("Integrity Constraint Violation")
+                .errors(Collections.singletonList(ex.getMessage()))
+                .build();
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ErrorResponse httpMessageNotReadableExceptionHandler(HttpMessageNotReadableException ex) {
-        return new ErrorResponse(HttpStatus.BAD_REQUEST, "Invalid JSON", ex.getMessage());
+        return ErrorResponse.builder()
+                .httpStatus(HttpStatus.BAD_REQUEST)
+                .message("Invalid JSON")
+                .errors(Collections.singletonList(ex.getMessage()))
+                .build();
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
@@ -43,7 +57,11 @@ public class GlobalExceptionHandler {
         List<String> errors = ex.getConstraintViolations().stream()
                 .map(violation -> violation.getPropertyPath() + ": " + violation.getMessage())
                 .collect(Collectors.toList());
-        return new ErrorResponse(HttpStatus.BAD_REQUEST, "Validation failed", errors);
+        return ErrorResponse.builder()
+                .httpStatus(HttpStatus.BAD_REQUEST)
+                .message("Validation failed")
+                .errors(errors)
+                .build();
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
@@ -53,18 +71,30 @@ public class GlobalExceptionHandler {
         ex.getBindingResult().getFieldErrors().forEach(error -> {
             errors.add(error.getField() + ": " + error.getDefaultMessage());
         });
-        return new ErrorResponse(HttpStatus.BAD_REQUEST, "Validation failed", errors);
+        return ErrorResponse.builder()
+                .httpStatus(HttpStatus.BAD_REQUEST)
+                .message("Validation failed")
+                .errors(errors)
+                .build();
     }
 
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(EntityNotFoundException.class)
     public ErrorResponse EntityNotFoundExceptionHandler(EntityNotFoundException ex){
-        return new ErrorResponse(HttpStatus.NOT_FOUND, "Entity not found", ex.getMessage());
+        return ErrorResponse.builder()
+                .httpStatus(HttpStatus.NOT_FOUND)
+                .message("Entity not found")
+                .errors(Collections.singletonList(ex.getMessage()))
+                .build();
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(ValueAlreadyExistsException.class)
     public ErrorResponse ValueAlreadyExistsExceptionHandler(ValueAlreadyExistsException ex){
-        return new ErrorResponse(HttpStatus.BAD_REQUEST, "Value already exists", ex.getMessage());
+        return ErrorResponse.builder()
+                .httpStatus(HttpStatus.BAD_REQUEST)
+                .message("Value already exists")
+                .errors(Collections.singletonList(ex.getMessage()))
+                .build();
     }
 }

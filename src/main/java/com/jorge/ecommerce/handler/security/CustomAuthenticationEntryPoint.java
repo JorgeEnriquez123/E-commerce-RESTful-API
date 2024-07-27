@@ -1,4 +1,4 @@
-package com.jorge.ecommerce.handler;
+package com.jorge.ecommerce.handler.security;
 
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
