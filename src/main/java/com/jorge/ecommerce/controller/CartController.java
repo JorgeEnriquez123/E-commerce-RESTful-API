@@ -5,6 +5,7 @@ import com.jorge.ecommerce.dto.CartItemDto;
 import com.jorge.ecommerce.dto.create.CreateCartItemDto;
 import com.jorge.ecommerce.dto.create.CreateCartDto;
 import com.jorge.ecommerce.service.CartService;
+import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,14 +29,16 @@ public class CartController {
         return ResponseEntity.status(HttpStatus.CREATED).body(cartService.addItem(cartId, request));
     }
 
+    @PutMapping("/items/{itemId}")
+    public ResponseEntity<CartItemDto> updateItemQuantityFromCart(@PathVariable Long itemId,
+                                                                  @Min(value = 1, message = "quantity must be greater then or equal to 1")
+                                                                  @RequestParam Integer quantity) {
+        return ResponseEntity.ok(cartService.updateItemQuantity(itemId, quantity));
+    }
+
     @DeleteMapping("/items/{itemId}")
     public ResponseEntity<Void> removeItemFromCart(@PathVariable Long itemId) {
         cartService.removeItem(itemId);
         return ResponseEntity.noContent().build();
-    }
-
-    @PutMapping("/items/{itemId}")
-    public ResponseEntity<CartItemDto> updateItemQuantityFromCart(@PathVariable Long itemId, @RequestParam Integer quantity) {
-        return ResponseEntity.ok(cartService.updateItemQuantity(itemId, quantity));
     }
 }
