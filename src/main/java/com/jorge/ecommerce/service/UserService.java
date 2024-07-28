@@ -12,6 +12,7 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,18 +23,12 @@ public class UserService {
     private final CartService cartService;
     private final AuthService authService;
 
-    public UserService(UserRepository userRepository, ModelMapper modelMapper, @Lazy CartService cartService, @Lazy AuthService authService) {
+    public UserService(UserRepository userRepository, ModelMapper modelMapper,
+                       @Lazy CartService cartService, @Lazy AuthService authService) {
         this.userRepository = userRepository;
         this.modelMapper = modelMapper;
         this.cartService = cartService;
         this.authService = authService;
-    }
-
-    @Transactional(readOnly = true)
-    public Page<UserDto> findAll(Integer pageNumber, Integer pageSize) {
-        Pageable pageable = PageRequest.of(pageNumber - 1, pageSize);
-        Page<User> users = userRepository.findAll(pageable);
-        return users.map(user -> modelMapper.map(user, UserDto.class));
     }
 
     @Transactional(readOnly = true)
@@ -42,20 +37,8 @@ public class UserService {
                 .orElseThrow(() -> new EntityNotFoundException("User with id: " + id + " not found."));
     }
 
-    @Transactional(readOnly = true)
-    public User findByUsername(String username) {
-        return userRepository.findByUsername(username)
-                .orElseThrow(() -> new EntityNotFoundException("User with username: " + username + " not found."));
-    }
-
-    @Transactional(readOnly = true)
-    public UserDto getUserById(Long id) {
-        User user = findById(id);
-        return convertToDto(user);
-    }
-
     @Transactional(rollbackFor = Exception.class)
-    public User save(User user) {
+    protected User save(User user) {
         checkIfUsernameAlreadyExists(user.getUsername());
         encryptUserPassword(user);
 
@@ -68,25 +51,33 @@ public class UserService {
         return user;
     }
 
-    @Transactional(rollbackFor = Exception.class)
-    public UserDto createUser(CreateUserDto createUserDto) {
-        User newUser = registerUser(createUserDto);
-        return convertToDto(newUser);
+    @Transactional(readOnly = true)
+    public Page<UserDto> findAll(Integer pageNumber, Integer pageSize) {
+        Pageable pageable = PageRequest.of(pageNumber - 1, pageSize);
+        Page<User> users = userRepository.findAll(pageable);
+        return users.map(user -> modelMapper.map(user, UserDto.class));
+    }
+
+    @Transactional(readOnly = true)
+    public UserDto getUserById(Long id) {
+        User user = findById(id);
+        return convertToDto(user);
     }
 
     @Transactional(rollbackFor = Exception.class)
-    public User registerUser(CreateUserDto createUserDto) {
+    public UserDto registerUser(CreateUserDto createUserDto) {
         User newUser = createUserFromDto(createUserDto);
-        return save(newUser);
+        User savedUser = save(newUser);
+        return convertToDto(savedUser);
     }
 
     @Transactional(rollbackFor = Exception.class)
-    public UserDto update(Long userId, CreateUserDto createUserDto) {
-        User toUpdateUser = findById(userId);
-        updateUserFromDto(toUpdateUser, createUserDto);
-        encryptUserPassword(toUpdateUser);
+    public UserDto updateUser(Long userId, CreateUserDto createUserDto) {
+        User userToUpdate = findById(userId);
+        updateUserFromDto(createUserDto, userToUpdate);
+        encryptUserPassword(userToUpdate);
 
-        User savedUpdatedUser = userRepository.save(toUpdateUser);
+        User savedUpdatedUser = userRepository.save(userToUpdate);
         return convertToDto(savedUpdatedUser);
     }
 
@@ -105,8 +96,8 @@ public class UserService {
         return modelMapper.map(createUserDto, User.class);
     }
 
-    private void updateUserFromDto(User user, CreateUserDto createUserDto){
-        modelMapper.map(createUserDto, user);
+    private void updateUserFromDto(CreateUserDto createUserDto, User userToUpdate){
+        modelMapper.map(createUserDto, userToUpdate);
     }
 
     private UserDto convertToDto(User user) {

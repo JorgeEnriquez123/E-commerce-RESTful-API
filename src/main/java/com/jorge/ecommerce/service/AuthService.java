@@ -2,7 +2,6 @@ package com.jorge.ecommerce.service;
 
 import com.jorge.ecommerce.dto.LoginRequestDto;
 import com.jorge.ecommerce.dto.LoginResponseDto;
-import com.jorge.ecommerce.dto.UserDto;
 import com.jorge.ecommerce.dto.create.CreateUserDto;
 import com.jorge.ecommerce.handler.exception.FailedLoginException;
 import com.jorge.ecommerce.jwt.JwtUtil;
