@@ -23,7 +23,7 @@ public class Cart {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "cart")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "cart")
     @JsonManagedReference
     private Set<CartItem> cartItems = new HashSet<>();
 }
