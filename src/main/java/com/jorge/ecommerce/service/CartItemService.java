@@ -57,14 +57,34 @@ public class CartItemService {
     }
 
     @Transactional(rollbackFor = Exception.class)
-    protected CartItem createCartItem(Long cartId, CreateCartItemDto createCartItemDto) {
+    public List<CartItemDto> getCartItemsByCartId(Long cartId){
+        List<CartItem> cartItems = findByCartId(cartId);
+        return cartItems.stream()
+                .map(this::convertToDto)
+                .toList();
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    public CartItemDto saveCartItem(Long cartId, CreateCartItemDto createCartItemDto) {
         Cart cart = cartService.findById(cartId);
         Product product = productService.findById(createCartItemDto.getProductId());
 
         CartItem newCartItem = modelMapper.map(createCartItemDto, CartItem.class);
         newCartItem.setCart(cart);
         newCartItem.setProduct(product);
-        return newCartItem;
+
+        CartItem savedCartItem = save(newCartItem);
+
+        return convertToDto(savedCartItem);
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    public CartItemDto updateCartItemQuantity(Long cartItemId, Integer quantity) {
+        CartItem cartItem = findById(cartItemId);
+        cartItem.setQuantity(quantity);
+
+        CartItem updatedCartItem = save(cartItem);
+        return convertToDto(updatedCartItem);
     }
 
     protected CartItemDto convertToDto(CartItem cartItem) {

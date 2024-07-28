@@ -3,11 +3,9 @@ package com.jorge.ecommerce.service;
 import com.jorge.ecommerce.dto.CartDto;
 import com.jorge.ecommerce.dto.CartItemDto;
 import com.jorge.ecommerce.dto.create.CreateCartItemDto;
-import com.jorge.ecommerce.dto.create.CreateCartDto;
 import com.jorge.ecommerce.handler.exception.EntityNotFoundException;
 import com.jorge.ecommerce.model.Cart;
 import com.jorge.ecommerce.model.CartItem;
-import com.jorge.ecommerce.model.User;
 import com.jorge.ecommerce.repository.CartRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Lazy;
@@ -48,26 +46,17 @@ public class CartService {
 
     @Transactional(readOnly = true)
     public List<CartItemDto> getItems(Long cartId) {
-        List<CartItem> cartItems = cartItemService.findByCartId(cartId);
-        return cartItems.stream()
-                .map(cartItemService::convertToDto)
-                .toList();
+        return cartItemService.getCartItemsByCartId(cartId);
     }
 
     @Transactional(rollbackFor = Exception.class)
     public CartItemDto addItem(Long cartId, CreateCartItemDto createCartItemDto) {
-        CartItem newCartItem = cartItemService.createCartItem(cartId, createCartItemDto);
-        CartItem savedCartItem = cartItemService.save(newCartItem);
-        return cartItemService.convertToDto(savedCartItem);
+        return cartItemService.saveCartItem(cartId, createCartItemDto);
     }
 
     @Transactional(rollbackFor = Exception.class)
     public CartItemDto updateItemQuantity(Long cartItemId, Integer quantity) {
-        CartItem cartItem = cartItemService.findById(cartItemId);
-        cartItem.setQuantity(quantity);
-
-        CartItem updatedCartItem = cartItemService.save(cartItem);
-        return cartItemService.convertToDto(updatedCartItem);
+        return cartItemService.updateCartItemQuantity(cartItemId, quantity);
     }
 
     @Transactional(rollbackFor = Exception.class)
