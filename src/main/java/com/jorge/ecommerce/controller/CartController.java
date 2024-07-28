@@ -14,27 +14,27 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/cart")
+@RequestMapping("/carts")
 public class CartController {
     private final CartService cartService;
 
-    @GetMapping("/{cartId}")
+    @GetMapping("/{cartId}/items")
     public ResponseEntity<List<CartItemDto>> getCartItems(@PathVariable Long cartId) {
         return ResponseEntity.ok(cartService.getItems(cartId));
     }
 
-    @PostMapping("/{cartId}/item")
+    @PostMapping("/{cartId}/items")
     public ResponseEntity<CartItemDto> addItemToCart(@PathVariable Long cartId, @RequestBody CreateCartItemDto request) {
         return ResponseEntity.status(HttpStatus.CREATED).body(cartService.addItem(cartId, request));
     }
 
-    @DeleteMapping("/{itemId}")
+    @DeleteMapping("/items/{itemId}")
     public ResponseEntity<Void> removeItemFromCart(@PathVariable Long itemId) {
         cartService.removeItem(itemId);
         return ResponseEntity.noContent().build();
     }
 
-    @PutMapping("/{itemId}")
+    @PutMapping("/items/{itemId}")
     public ResponseEntity<CartItemDto> updateItemQuantityFromCart(@PathVariable Long itemId, @RequestParam Integer quantity) {
         return ResponseEntity.ok(cartService.updateItemQuantity(itemId, quantity));
     }
