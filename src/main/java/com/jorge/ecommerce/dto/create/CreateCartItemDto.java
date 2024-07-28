@@ -17,6 +17,4 @@ public class CreateCartItemDto {
     @NotNull
     @Positive
     private Integer quantity;
-    @NotNull
-    private Long cartId;
 }

@@ -7,8 +7,8 @@ import com.jorge.ecommerce.model.Cart;
 import com.jorge.ecommerce.model.CartItem;
 import com.jorge.ecommerce.model.Product;
 import com.jorge.ecommerce.repository.CartItemRepository;
-import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,12 +16,19 @@ import java.util.Collections;
 import java.util.List;
 
 @Service
-@RequiredArgsConstructor
 public class CartItemService {
     private final CartItemRepository cartItemRepository;
     private final CartService cartService;
     private final ProductService productService;
     private final ModelMapper modelMapper;
+
+    public CartItemService(CartItemRepository cartItemRepository, @Lazy CartService cartService,
+                           ProductService productService, ModelMapper modelMapper) {
+        this.cartItemRepository = cartItemRepository;
+        this.cartService = cartService;
+        this.productService = productService;
+        this.modelMapper = modelMapper;
+    }
 
     @Transactional(readOnly = true)
     protected CartItem findById(Long id) {
@@ -39,6 +46,16 @@ public class CartItemService {
         return cartItems;
     }
 
+    @Transactional(rollbackFor = Exception.class)
+    protected CartItem save(CartItem cartItem){
+        return cartItemRepository.save(cartItem);
+    }
+
+    @Transactional
+    protected void deleteById(Long cartItemId){
+        cartItemRepository.deleteById(cartItemId);
+    }
+
     @Transactional(readOnly = true)
     public List<CartItemDto> getByCartId(Long cartId) {
         List<CartItem> cartItems = findByCartId(cartId);
@@ -47,34 +64,8 @@ public class CartItemService {
                 .toList();
     }
 
-    @Transactional(rollbackFor = Exception.class)
-    public CartItemDto saveNewItemToCart(CreateCartItemDto createDto) {
-        CartItem newCartItem = createCartItemFromDto(createDto);
-        CartItem savedCartItem = cartItemRepository.save(newCartItem);
-        return convertToDto(savedCartItem);
-    }
-
-    @Transactional(rollbackFor = Exception.class)
-    public CartItemDto updateItemQuantityByCartItemId(Long cartItemId, Integer quantity) {
-        CartItem toUpdateCartItem = findById(cartItemId);
-        toUpdateCartItem.setQuantity(quantity);
-        CartItem savedUpdatedCartItem = cartItemRepository.save(toUpdateCartItem);
-        return convertToDto(savedUpdatedCartItem);
-    }
-
-    @Transactional
-    public void removeItemFromCartByCartItemId(Long cartItemId) {
-        CartItem cartItem = findById(cartItemId);
-        cartItemRepository.delete(cartItem);
-    }
-
-    @Transactional
-    public void deleteById(Long cartItemId){
-        cartItemRepository.deleteById(cartItemId);
-    }
-
-    private CartItem createCartItemFromDto(CreateCartItemDto createCartItemDto) {
-        Cart cart = cartService.findById(createCartItemDto.getCartId());
+    protected CartItem createCartItem(Long cartId, CreateCartItemDto createCartItemDto) {
+        Cart cart = cartService.findById(cartId);
         Product product = productService.findById(createCartItemDto.getProductId());
 
         CartItem newCartItem = modelMapper.map(createCartItemDto, CartItem.class);
@@ -83,7 +74,7 @@ public class CartItemService {
         return newCartItem;
     }
 
-    private CartItemDto convertToDto(CartItem cartItem) {
+    protected CartItemDto convertToDto(CartItem cartItem) {
         return modelMapper.map(cartItem, CartItemDto.class);
     }
 }
