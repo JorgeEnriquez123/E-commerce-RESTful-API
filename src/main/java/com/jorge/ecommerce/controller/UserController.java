@@ -15,8 +15,8 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping
-    public ResponseEntity<Page<UserDto>> findAll(@RequestParam Integer pageNumber, @RequestParam Integer size){
-        return ResponseEntity.ok(userService.findAll(pageNumber, size));
+    public ResponseEntity<Page<UserDto>> findAll(@RequestParam Integer page, @RequestParam Integer size){
+        return ResponseEntity.ok(userService.findAll(page, size));
     }
 
     @GetMapping("/{userId}")
