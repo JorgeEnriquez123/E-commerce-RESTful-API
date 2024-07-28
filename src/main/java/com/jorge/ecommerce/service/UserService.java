@@ -1,5 +1,6 @@
 package com.jorge.ecommerce.service;
 
+import com.jorge.ecommerce.dto.AddressLineDto;
 import com.jorge.ecommerce.dto.UserDto;
 import com.jorge.ecommerce.dto.create.CreateUserDto;
 import com.jorge.ecommerce.handler.exception.EntityNotFoundException;
@@ -16,19 +17,23 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 public class UserService {
     private final UserRepository userRepository;
     private final ModelMapper modelMapper;
     private final CartService cartService;
     private final AuthService authService;
+    private final AddressLineService addressLineService;
 
     public UserService(UserRepository userRepository, ModelMapper modelMapper,
-                       @Lazy CartService cartService, @Lazy AuthService authService) {
+                       @Lazy CartService cartService, @Lazy AuthService authService, @Lazy AddressLineService addressLineService) {
         this.userRepository = userRepository;
         this.modelMapper = modelMapper;
         this.cartService = cartService;
         this.authService = authService;
+        this.addressLineService = addressLineService;
     }
 
     @Transactional(readOnly = true)
@@ -79,6 +84,16 @@ public class UserService {
 
         User savedUpdatedUser = userRepository.save(userToUpdate);
         return convertToDto(savedUpdatedUser);
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    public List<AddressLineDto> getAddressLines(Long userId) {
+        return addressLineService.getByUserId(userId);
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    public void setDefaultAddressLine(Long userId, Long addressLineId) {
+        addressLineService.setDefaultAddressLineOfUser(userId, addressLineId);
     }
 
     @Transactional(readOnly = true)

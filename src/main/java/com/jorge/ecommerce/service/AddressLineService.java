@@ -8,6 +8,7 @@ import com.jorge.ecommerce.model.User;
 import com.jorge.ecommerce.repository.AddressLineRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,11 +16,17 @@ import java.util.Collections;
 import java.util.List;
 
 @Service
-@RequiredArgsConstructor
 public class AddressLineService {
     private final AddressLineRepository addressLineRepository;
     private final UserService userService;
     private final ModelMapper modelMapper;
+
+    public AddressLineService(AddressLineRepository addressLineRepository,
+                              @Lazy UserService userService, ModelMapper modelMapper) {
+        this.addressLineRepository = addressLineRepository;
+        this.userService = userService;
+        this.modelMapper = modelMapper;
+    }
 
     @Transactional(readOnly = true)
     protected AddressLine findById(Long id){

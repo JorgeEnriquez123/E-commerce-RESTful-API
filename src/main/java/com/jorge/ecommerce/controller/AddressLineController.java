@@ -12,14 +12,14 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/addressLine")
+@RequestMapping("/addressLines")
 public class AddressLineController {
     private final AddressLineService addressLineService;
 
-    @GetMapping("/user/{userId}")
+    /*@GetMapping("/users/{userId}")
     public ResponseEntity<List<AddressLineDto>> getAddressLineByUserId(@PathVariable Long userId) {
         return ResponseEntity.ok(addressLineService.getByUserId(userId));
-    }
+    }*/
 
     @PostMapping
     public ResponseEntity<AddressLineDto> saveAddressLine(@Valid @RequestBody CreateAddressLineDto createAddressLineDto) {
@@ -31,9 +31,9 @@ public class AddressLineController {
         return ResponseEntity.ok(addressLineService.updateAddressLine(id, createAddressLineDto));
     }
 
-    @PutMapping("/setDefaultAddressLine/user/{userId}/addressline/{addressLineId}")
+    /*@PutMapping("/setDefaultAddressLine/user/{userId}/addressline/{addressLineId}")
     public ResponseEntity<Void> setDefaultAddressLineOfUser(@PathVariable Long userId, @PathVariable Long addressLineId) {
         addressLineService.setDefaultAddressLineOfUser(userId, addressLineId);
         return ResponseEntity.noContent().build();
-    }
+    }*/
 }
