@@ -10,15 +10,17 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/cart")
 public class CartController {
     private final CartService cartService;
 
-    @GetMapping("/{id}")
-    public ResponseEntity<CartDto> findById(@PathVariable Long id){
-        return ResponseEntity.ok(cartService.getCartById(id));
+    @GetMapping("/{cartId}")
+    public ResponseEntity<List<CartItemDto>> getCartItems(@PathVariable Long cartId) {
+        return ResponseEntity.ok(cartService.getItems(cartId));
     }
 
     @PostMapping("/{cartId}/item")

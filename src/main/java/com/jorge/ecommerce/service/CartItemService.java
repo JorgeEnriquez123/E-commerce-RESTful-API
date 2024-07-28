@@ -51,19 +51,12 @@ public class CartItemService {
         return cartItemRepository.save(cartItem);
     }
 
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     protected void deleteById(Long cartItemId){
         cartItemRepository.deleteById(cartItemId);
     }
 
-    @Transactional(readOnly = true)
-    public List<CartItemDto> getByCartId(Long cartId) {
-        List<CartItem> cartItems = findByCartId(cartId);
-        return cartItems.stream()
-                .map(this::convertToDto)
-                .toList();
-    }
-
+    @Transactional(rollbackFor = Exception.class)
     protected CartItem createCartItem(Long cartId, CreateCartItemDto createCartItemDto) {
         Cart cart = cartService.findById(cartId);
         Product product = productService.findById(createCartItemDto.getProductId());

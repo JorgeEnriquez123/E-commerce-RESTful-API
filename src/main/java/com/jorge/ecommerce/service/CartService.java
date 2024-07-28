@@ -14,17 +14,17 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 public class CartService {
     private final CartRepository cartRepository;
-    private final UserService userService;
     private final CartItemService cartItemService;
     private final ModelMapper modelMapper;
 
-    public CartService(CartRepository cartRepository, @Lazy UserService userService,
-                       @Lazy CartItemService cartItemService, ModelMapper modelMapper) {
+    public CartService(CartRepository cartRepository, @Lazy CartItemService cartItemService,
+                       ModelMapper modelMapper) {
         this.cartRepository = cartRepository;
-        this.userService = userService;
         this.cartItemService = cartItemService;
         this.modelMapper = modelMapper;
     }
@@ -47,16 +47,11 @@ public class CartService {
     }
 
     @Transactional(readOnly = true)
-    public CartDto getCartById(Long id) {
-        Cart cart = findById(id);
-        return convertToDto(cart);
-    }
-
-    @Transactional(rollbackFor = Exception.class)
-    public CartDto createCart(CreateCartDto createCartDto) {
-        Cart newCart = createCartFromDto(createCartDto);
-        Cart savedCart = save(newCart);
-        return convertToDto(savedCart);
+    public List<CartItemDto> getItems(Long cartId) {
+        List<CartItem> cartItems = cartItemService.findByCartId(cartId);
+        return cartItems.stream()
+                .map(cartItemService::convertToDto)
+                .toList();
     }
 
     @Transactional(rollbackFor = Exception.class)
@@ -78,14 +73,6 @@ public class CartService {
     @Transactional(rollbackFor = Exception.class)
     public void removeItem(Long cartItemId){
         cartItemService.deleteById(cartItemId);
-    }
-
-
-    private Cart createCartFromDto(CreateCartDto createCartDto) {
-        User user = userService.findById(createCartDto.getUserId());
-        return Cart.builder()
-                .user(user)
-                .build();
     }
 
     private CartDto convertToDto(Cart cart) {
