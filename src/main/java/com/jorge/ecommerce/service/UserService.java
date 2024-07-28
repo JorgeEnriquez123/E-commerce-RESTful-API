@@ -2,6 +2,7 @@ package com.jorge.ecommerce.service;
 
 import com.jorge.ecommerce.dto.AddressLineDto;
 import com.jorge.ecommerce.dto.UserDto;
+import com.jorge.ecommerce.dto.create.CreateAddressLineDto;
 import com.jorge.ecommerce.dto.create.CreateUserDto;
 import com.jorge.ecommerce.handler.exception.EntityNotFoundException;
 import com.jorge.ecommerce.handler.exception.ValueAlreadyExistsException;
@@ -13,7 +14,6 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -86,14 +86,23 @@ public class UserService {
         return convertToDto(savedUpdatedUser);
     }
 
+    public AddressLineDto addAddressLine(Long userId, CreateAddressLineDto createAddressLineDto){
+        return addressLineService.saveAddressLine(userId, createAddressLineDto);
+    }
+
     @Transactional(rollbackFor = Exception.class)
     public List<AddressLineDto> getAddressLines(Long userId) {
         return addressLineService.getByUserId(userId);
     }
 
     @Transactional(rollbackFor = Exception.class)
+    public AddressLineDto updateAddressLine(Long addressLineId, CreateAddressLineDto createAddressLineDto) {
+        return addressLineService.updateAddressLineById(addressLineId, createAddressLineDto);
+    }
+
+    @Transactional(rollbackFor = Exception.class)
     public void setDefaultAddressLine(Long userId, Long addressLineId) {
-        addressLineService.setDefaultAddressLineOfUser(userId, addressLineId);
+        addressLineService.setDefaultAddressLine(userId, addressLineId);
     }
 
     @Transactional(readOnly = true)

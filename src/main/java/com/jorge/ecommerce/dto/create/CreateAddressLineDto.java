@@ -22,6 +22,4 @@ public class CreateAddressLineDto {
     @NotEmpty
     @Size(min = 2, max = 50)
     private String district;
-    @NotNull
-    private Long userId;
 }
