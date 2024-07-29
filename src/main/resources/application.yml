@@ -14,6 +14,15 @@ spring:
         format_sql: true
     database-platform: org.hibernate.dialect.MySQLDialect
 
+  data:
+    redis:
+      host: localhost
+      port: 6379
+  cache:
+    type: redis
+    redis:
+      cache-null-values: true
+
 application:
   jwt:
     key: brXzPetE8ivZhetRar0MW47UcUJg8GL5hdmnSvFk2nYQdxSWkLZHLWUftkzKaPyA
