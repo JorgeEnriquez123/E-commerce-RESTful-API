@@ -19,8 +19,8 @@ public class ProductController {
     @GetMapping
     public ResponseEntity<Page<ProductDto>> getAll(@RequestParam(defaultValue = "1") Integer page,
                                                    @RequestParam(defaultValue = "10") Integer size,
-                                                   @RequestParam(defaultValue = "id") String sortBy,
-                                                   @RequestParam(defaultValue = "asc") String sortOrder){
+                                                   @RequestParam(defaultValue = "asc") String sortOrder,
+                                                   @RequestParam(defaultValue = "id") String sortBy){
         return ResponseEntity.ok(productService.findAll(page, size, sortOrder, sortBy));
     }
 
