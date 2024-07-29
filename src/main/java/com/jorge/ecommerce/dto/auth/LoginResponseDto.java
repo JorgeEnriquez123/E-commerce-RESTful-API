@@ -1,4 +1,4 @@
-package com.jorge.ecommerce.dto;
+package com.jorge.ecommerce.dto.auth;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,4 +11,5 @@ import lombok.NoArgsConstructor;
 @Builder
 public class LoginResponseDto {
     private String token;
+    private String refreshToken;
 }

@@ -1,5 +1,6 @@
 package com.jorge.ecommerce.handler;
 
+import com.jorge.ecommerce.handler.exception.FailedRefreshTokenException;
 import com.jorge.ecommerce.handler.exception.ResourceNotFoundException;
 import com.jorge.ecommerce.handler.exception.FailedLoginException;
 import com.jorge.ecommerce.handler.exception.ValueAlreadyExistsException;
@@ -40,6 +41,16 @@ public class GlobalExceptionHandler {
                 .errors(Collections.singletonList(ex.getMessage()))
                 .build();
 
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(FailedRefreshTokenException.class)
+    public ErrorResponse failedRefreshTokenExceptionHandler(FailedRefreshTokenException ex) {
+        return ErrorResponse.builder()
+                .httpStatus(HttpStatus.BAD_REQUEST)
+                .message("Failed Refresh Token")
+                .errors(Collections.singletonList(ex.getMessage()))
+                .build();
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)

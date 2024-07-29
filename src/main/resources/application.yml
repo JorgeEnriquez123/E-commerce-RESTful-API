@@ -17,3 +17,6 @@ spring:
 application:
   jwt:
     key: brXzPetE8ivZhetRar0MW47UcUJg8GL5hdmnSvFk2nYQdxSWkLZHLWUftkzKaPyA
+    expiration: 60000 # 1 minute (TESTING)
+    refresh-token:
+      expiration: 604800000 # 7 days

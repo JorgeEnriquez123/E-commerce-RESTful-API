@@ -20,16 +20,29 @@ public class JwtUtil {
     @Value("${application.jwt.key}")
     private String SECRET_KEY;
 
+    @Value("${application.jwt.expiration}")
+    private long jwtExpiration;
+    @Value("${application.jwt.refresh-token.expiration}")
+    private long refreshJwtExpiration;
+
     public String generateToken(UserDetails user) {
         return generateToken(new HashMap<>(), user);
     }
 
-    private String generateToken(Map<String, Object> extraClaims, UserDetails user) {
+    public String generateToken(Map<String, Object> extraClaims, UserDetails user) {
+        return buildToken(extraClaims, user, jwtExpiration);
+    }
+
+    public String generateRefreshToken(UserDetails user) {
+        return buildToken(new HashMap<>(), user, refreshJwtExpiration);
+    }
+
+    private String buildToken(Map<String, Object> claims, UserDetails user, long expiration) {
         return Jwts.builder()
-                .setClaims(extraClaims)
+                .setClaims(claims)
                 .setSubject(user.getUsername())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60)) // 60 Minute
+                .setExpiration(new Date(System.currentTimeMillis() + expiration))
                 .signWith(getKey(), SignatureAlgorithm.HS256)
                 .compact();
     }

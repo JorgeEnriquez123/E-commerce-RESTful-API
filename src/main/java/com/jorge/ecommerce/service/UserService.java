@@ -60,6 +60,12 @@ public class UserService {
     @Transactional(readOnly = true)
     public Page<UserDto> findAll(Integer pageNumber, Integer pageSize, String sortOrder, String sortBy) {
         Sort sort = Sort.by(sortOrder.equalsIgnoreCase("DESC") ? Sort.Direction.DESC : Sort.Direction.ASC, sortBy);
+        if(pageNumber <= 1) {
+            pageNumber = 1;
+        }
+        if(pageSize <= 1) {
+            pageSize = 1;
+        }
         Pageable pageable = PageRequest.of(pageNumber - 1, pageSize, sort);
 
         Page<User> users = userRepository.findAll(pageable);
