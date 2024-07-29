@@ -20,6 +20,17 @@ import java.util.stream.Collectors;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    @ExceptionHandler(Exception.class)
+    public ErrorResponse internalServerErrorHandler(Exception ex) {
+        return ErrorResponse.builder()
+                .httpStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+                .message("Internal Error")
+                .errors(Collections.singletonList(ex.getMessage()))
+                .build();
+    }
+
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     @ExceptionHandler(FailedLoginException.class)
     public ErrorResponse failedLoginExceptionHandler(FailedLoginException ex) {
@@ -28,6 +39,7 @@ public class GlobalExceptionHandler {
                 .message("Unsuccessful Login")
                 .errors(Collections.singletonList(ex.getMessage()))
                 .build();
+
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
