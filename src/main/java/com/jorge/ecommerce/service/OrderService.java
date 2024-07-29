@@ -32,15 +32,15 @@ public class OrderService {
                 .orElseThrow(() -> new EntityNotFoundException("Order with id: " + id + " not found"));
     }
 
+    @Transactional(rollbackFor = Exception.class)
+    protected Order save(Order order){
+        return orderRepository.save(order);
+    }
+
     @Transactional(readOnly = true)
     public OrderDto getOrderById(Long id){
         Order order = findById(id);
         return convertToDto(order);
-    }
-
-    @Transactional(rollbackFor = Exception.class)
-    protected Order save(Order order){
-        return orderRepository.save(order);
     }
 
     @Transactional(rollbackFor = Exception.class)
