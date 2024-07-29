@@ -1,10 +1,8 @@
 package com.jorge.ecommerce.service;
 
-import com.jorge.ecommerce.handler.exception.EntityNotFoundException;
 import com.jorge.ecommerce.model.OrderDetail;
 import com.jorge.ecommerce.repository.OrderDetailRepository;
 import lombok.RequiredArgsConstructor;
-import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 @Service

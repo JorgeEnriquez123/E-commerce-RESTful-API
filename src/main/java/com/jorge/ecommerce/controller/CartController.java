@@ -1,9 +1,7 @@
 package com.jorge.ecommerce.controller;
 
-import com.jorge.ecommerce.dto.CartDto;
 import com.jorge.ecommerce.dto.CartItemDto;
 import com.jorge.ecommerce.dto.create.CreateCartItemDto;
-import com.jorge.ecommerce.dto.create.CreateCartDto;
 import com.jorge.ecommerce.service.CartService;
 import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
