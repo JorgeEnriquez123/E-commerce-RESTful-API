@@ -10,8 +10,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
 @RequestMapping("/products")
 @RequiredArgsConstructor
@@ -19,15 +17,15 @@ public class ProductController {
     private final ProductService productService;
 
     @GetMapping
-    public ResponseEntity<Page<ProductDto>> findAll(@RequestParam(defaultValue = "1") Integer page,
-                                                    @RequestParam(defaultValue = "10") Integer size,
-                                                    @RequestParam(defaultValue = "id") String sortBy,
-                                                    @RequestParam(defaultValue = "asc") String sortOrder){
+    public ResponseEntity<Page<ProductDto>> getAll(@RequestParam(defaultValue = "1") Integer page,
+                                                   @RequestParam(defaultValue = "10") Integer size,
+                                                   @RequestParam(defaultValue = "id") String sortBy,
+                                                   @RequestParam(defaultValue = "asc") String sortOrder){
         return ResponseEntity.ok(productService.findAll(page, size, sortOrder, sortBy));
     }
 
     @GetMapping("/{productId}")
-    public ResponseEntity<ProductDto> findById(@PathVariable Long productId){
+    public ResponseEntity<ProductDto> getProductById(@PathVariable Long productId){
         return ResponseEntity.ok(productService.getProductById(productId));
     }
 
