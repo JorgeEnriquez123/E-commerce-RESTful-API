@@ -3,7 +3,7 @@ package com.jorge.ecommerce.service;
 import com.jorge.ecommerce.dto.CartDto;
 import com.jorge.ecommerce.dto.CartItemDto;
 import com.jorge.ecommerce.dto.create.CreateCartItemDto;
-import com.jorge.ecommerce.handler.exception.EntityNotFoundException;
+import com.jorge.ecommerce.handler.exception.ResourceNotFoundException;
 import com.jorge.ecommerce.model.Cart;
 import com.jorge.ecommerce.repository.CartRepository;
 import org.modelmapper.ModelMapper;
@@ -29,13 +29,13 @@ public class CartService {
     @Transactional(readOnly = true)
     protected Cart findById(Long id) {
         return cartRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Cart with id: " + id + " not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Cart with id: " + id + " not found"));
     }
 
     @Transactional(readOnly = true)
     protected Cart findByUserId(Long userId) {
         return cartRepository.findByUserId(userId)
-                .orElseThrow(() -> new EntityNotFoundException("Cart of User with id: " + userId + " not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Cart of User with id: " + userId + " not found"));
     }
 
     @Transactional

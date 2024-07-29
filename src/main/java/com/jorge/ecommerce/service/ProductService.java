@@ -2,7 +2,7 @@ package com.jorge.ecommerce.service;
 
 import com.jorge.ecommerce.dto.ProductDto;
 import com.jorge.ecommerce.dto.create.CreateProductDto;
-import com.jorge.ecommerce.handler.exception.EntityNotFoundException;
+import com.jorge.ecommerce.handler.exception.ResourceNotFoundException;
 import com.jorge.ecommerce.handler.exception.InsufficientProductStock;
 import com.jorge.ecommerce.model.Category;
 import com.jorge.ecommerce.model.Product;
@@ -26,7 +26,7 @@ public class ProductService {
     @Transactional(readOnly = true)
     protected Product findById(Long id) {
         return productRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Product with id: " + id + " not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Product with id: " + id + " not found"));
     }
 
     @Transactional(readOnly = true)

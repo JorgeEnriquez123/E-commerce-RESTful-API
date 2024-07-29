@@ -2,7 +2,7 @@ package com.jorge.ecommerce.service;
 
 import com.jorge.ecommerce.dto.OrderDto;
 import com.jorge.ecommerce.dto.create.CreateOrderDto;
-import com.jorge.ecommerce.handler.exception.EntityNotFoundException;
+import com.jorge.ecommerce.handler.exception.ResourceNotFoundException;
 import com.jorge.ecommerce.model.*;
 import com.jorge.ecommerce.repository.OrderRepository;
 import lombok.RequiredArgsConstructor;
@@ -29,7 +29,7 @@ public class OrderService {
     @Transactional(readOnly = true)
     protected Order findById(Long id){
         return orderRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Order with id: " + id + " not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Order with id: " + id + " not found"));
     }
 
     @Transactional(rollbackFor = Exception.class)

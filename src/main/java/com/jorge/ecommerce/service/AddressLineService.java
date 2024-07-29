@@ -2,7 +2,7 @@ package com.jorge.ecommerce.service;
 
 import com.jorge.ecommerce.dto.AddressLineDto;
 import com.jorge.ecommerce.dto.create.CreateAddressLineDto;
-import com.jorge.ecommerce.handler.exception.EntityNotFoundException;
+import com.jorge.ecommerce.handler.exception.ResourceNotFoundException;
 import com.jorge.ecommerce.model.AddressLine;
 import com.jorge.ecommerce.model.User;
 import com.jorge.ecommerce.repository.AddressLineRepository;
@@ -30,7 +30,7 @@ public class AddressLineService {
     @Transactional(readOnly = true)
     protected AddressLine findById(Long id){
         return addressLineRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("AddressLine with id: " + id + " not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("AddressLine with id: " + id + " not found"));
     }
 
     @Transactional(readOnly = true)
@@ -38,7 +38,7 @@ public class AddressLineService {
         List<AddressLine> addressLines = addressLineRepository.findByUserId(userId)
                 .orElse(Collections.emptyList());
         if(addressLines.isEmpty()){
-            throw new EntityNotFoundException("AddressLines not found from User with id: " + userId);
+            throw new ResourceNotFoundException("AddressLines not found from User with id: " + userId);
         }
         return addressLines;
     }
@@ -83,7 +83,7 @@ public class AddressLineService {
         AddressLine newDefaultAddress = addressLines.stream()
                 .filter(addressLine -> addressLine.getId().equals(addressLineId))
                 .findFirst()
-                .orElseThrow(() -> new EntityNotFoundException("AddressLine with Id: " + addressLineId + " not found from User with id: " + userId));
+                .orElseThrow(() -> new ResourceNotFoundException("AddressLine with Id: " + addressLineId + " not found from User with id: " + userId));
 
         if(!newDefaultAddress.getIsDefault()) {
             addressLines.stream()

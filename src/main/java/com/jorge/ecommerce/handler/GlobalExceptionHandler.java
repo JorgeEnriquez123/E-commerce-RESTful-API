@@ -1,6 +1,6 @@
 package com.jorge.ecommerce.handler;
 
-import com.jorge.ecommerce.handler.exception.EntityNotFoundException;
+import com.jorge.ecommerce.handler.exception.ResourceNotFoundException;
 import com.jorge.ecommerce.handler.exception.FailedLoginException;
 import com.jorge.ecommerce.handler.exception.ValueAlreadyExistsException;
 import com.jorge.ecommerce.handler.response.ErrorResponse;
@@ -90,8 +90,8 @@ public class GlobalExceptionHandler {
     }
 
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    @ExceptionHandler(EntityNotFoundException.class)
-    public ErrorResponse EntityNotFoundExceptionHandler(EntityNotFoundException ex){
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ErrorResponse EntityNotFoundExceptionHandler(ResourceNotFoundException ex){
         return ErrorResponse.builder()
                 .httpStatus(HttpStatus.NOT_FOUND)
                 .message("Entity not found")

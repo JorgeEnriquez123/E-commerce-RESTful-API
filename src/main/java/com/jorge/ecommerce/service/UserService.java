@@ -4,7 +4,7 @@ import com.jorge.ecommerce.dto.AddressLineDto;
 import com.jorge.ecommerce.dto.UserDto;
 import com.jorge.ecommerce.dto.create.CreateAddressLineDto;
 import com.jorge.ecommerce.dto.create.CreateUserDto;
-import com.jorge.ecommerce.handler.exception.EntityNotFoundException;
+import com.jorge.ecommerce.handler.exception.ResourceNotFoundException;
 import com.jorge.ecommerce.handler.exception.ValueAlreadyExistsException;
 import com.jorge.ecommerce.model.Cart;
 import com.jorge.ecommerce.model.User;
@@ -40,7 +40,7 @@ public class UserService {
     @Transactional(readOnly = true)
     protected User findById(Long id) {
         return userRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("User with id: " + id + " not found."));
+                .orElseThrow(() -> new ResourceNotFoundException("User with id: " + id + " not found."));
     }
 
     @Transactional(rollbackFor = Exception.class)
