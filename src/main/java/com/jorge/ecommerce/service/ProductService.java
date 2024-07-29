@@ -3,7 +3,7 @@ package com.jorge.ecommerce.service;
 import com.jorge.ecommerce.dto.ProductDto;
 import com.jorge.ecommerce.dto.create.CreateProductDto;
 import com.jorge.ecommerce.handler.exception.ResourceNotFoundException;
-import com.jorge.ecommerce.handler.exception.InsufficientProductStock;
+import com.jorge.ecommerce.handler.exception.InsufficientProductStockException;
 import com.jorge.ecommerce.model.Category;
 import com.jorge.ecommerce.model.Product;
 import com.jorge.ecommerce.repository.ProductRepository;
@@ -71,7 +71,7 @@ public class ProductService {
         Product product = findById(productId);
         product.setStockQuantity(product.getStockQuantity() - quantity);
         if(product.getStockQuantity() < 0) {
-            throw new InsufficientProductStock("Product with Id: " + productId + " has insufficient stock");
+            throw new InsufficientProductStockException("Product with Id: " + productId + " has insufficient stock");
         }
         save(product);
     }
