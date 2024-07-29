@@ -29,6 +29,11 @@ public class ProductService {
                 .orElseThrow(() -> new ResourceNotFoundException("Product with id: " + id + " not found"));
     }
 
+    @Transactional
+    protected Product save(Product product){
+        return productRepository.save(product);
+    }
+
     @Transactional(readOnly = true)
     public Page<ProductDto> findAll(Integer page, Integer pageSize, String sortOrder, String sortBy) {
         Sort sort = Sort.by(sortOrder.equalsIgnoreCase("desc") ? Sort.Direction.DESC : Sort.Direction.ASC, sortBy);
@@ -42,11 +47,6 @@ public class ProductService {
     public ProductDto getProductById(Long id) {
         Product product = findById(id);
         return convertToDto(product);
-    }
-
-    @Transactional
-    public Product save(Product product){
-        return productRepository.save(product);
     }
 
     @Transactional(rollbackFor = Exception.class)
