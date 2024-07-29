@@ -11,14 +11,8 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class OrderDetailService {
     private final OrderDetailRepository orderDetailRepository;
-    private final ModelMapper modelMapper;
 
-    public OrderDetail findById(Long id) {
-        return orderDetailRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("OrderDetail with id: " + id + " not found"));
-    }
-
-    public OrderDetail save(OrderDetail orderDetail) {
+    protected OrderDetail save(OrderDetail orderDetail) {
         return orderDetailRepository.save(orderDetail);
     }
 }
