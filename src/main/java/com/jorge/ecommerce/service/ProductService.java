@@ -9,6 +9,10 @@ import com.jorge.ecommerce.model.Product;
 import com.jorge.ecommerce.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,17 +26,18 @@ public class ProductService {
     private final ModelMapper modelMapper;
 
     @Transactional(readOnly = true)
-    public List<ProductDto> findAll() {
-        return productRepository.findAll()
-                .stream()
-                .map(this::convertToDto)
-                .toList();
-    }
-
-    @Transactional(readOnly = true)
     protected Product findById(Long id) {
         return productRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Product with id: " + id + " not found"));
+    }
+
+    @Transactional(readOnly = true)
+    public Page<ProductDto> findAll(Integer page, Integer pageSize, String sortOrder, String sortBy) {
+        Sort sort = Sort.by(sortOrder.equalsIgnoreCase("desc") ? Sort.Direction.DESC : Sort.Direction.ASC, sortBy);
+        Pageable pageable = PageRequest.of(page - 1, pageSize, sort);
+
+        Page<Product> products = productRepository.findAll(pageable);
+        return products.map(this::convertToDto);
     }
 
     @Transactional(readOnly = true)
@@ -46,11 +51,10 @@ public class ProductService {
         return productRepository.save(product);
     }
 
-
     @Transactional(rollbackFor = Exception.class)
     public ProductDto createProduct(CreateProductDto createProductDto) {
         Product newProduct = createProductFromDto(createProductDto);
-        Product savedProduct = productRepository.save(newProduct);
+        Product savedProduct = save(newProduct);
         return convertToDto(savedProduct);
     }
 
@@ -59,12 +63,12 @@ public class ProductService {
         Product toUpdateProduct = findById(productId);
         updateProductFromDto(toUpdateProduct, createProductDto);
 
-        Product savedUpdatedProduct = productRepository.save(toUpdateProduct);
+        Product savedUpdatedProduct = save(toUpdateProduct);
         return convertToDto(savedUpdatedProduct);
     }
 
     @Transactional(rollbackFor = Exception.class)
-    public void reduceStock(Long productId, Integer quantity) {
+    protected void reduceStock(Long productId, Integer quantity) {
         // Check latest stock availability
         Product product = findById(productId);
         product.setStockQuantity(product.getStockQuantity() - quantity);

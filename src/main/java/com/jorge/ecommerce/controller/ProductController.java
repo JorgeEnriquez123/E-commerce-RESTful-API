@@ -5,6 +5,7 @@ import com.jorge.ecommerce.dto.create.CreateProductDto;
 import com.jorge.ecommerce.service.ProductService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,28 +13,31 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/product")
+@RequestMapping("/products")
 @RequiredArgsConstructor
 public class ProductController {
     private final ProductService productService;
 
     @GetMapping
-    public ResponseEntity<List<ProductDto>> findAll(){
-        return ResponseEntity.ok(productService.findAll());
+    public ResponseEntity<Page<ProductDto>> findAll(@RequestParam(defaultValue = "1") Integer page,
+                                                    @RequestParam(defaultValue = "10") Integer size,
+                                                    @RequestParam(defaultValue = "id") String sortBy,
+                                                    @RequestParam(defaultValue = "asc") String sortOrder){
+        return ResponseEntity.ok(productService.findAll(page, size, sortOrder, sortBy));
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<ProductDto> findById(@PathVariable Long id){
-        return ResponseEntity.ok(productService.getProductById(id));
+    @GetMapping("/{productId}")
+    public ResponseEntity<ProductDto> findById(@PathVariable Long productId){
+        return ResponseEntity.ok(productService.getProductById(productId));
     }
 
     @PostMapping
-    public ResponseEntity<ProductDto> save(@Valid @RequestBody CreateProductDto dto){
-        return ResponseEntity.status(HttpStatus.CREATED).body(productService.createProduct(dto));
+    public ResponseEntity<ProductDto> save(@Valid @RequestBody CreateProductDto createProductDto){
+        return ResponseEntity.status(HttpStatus.CREATED).body(productService.createProduct(createProductDto));
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<ProductDto> update(@PathVariable Long id, @Valid @RequestBody CreateProductDto dto){
-        return ResponseEntity.ok(productService.update(id, dto));
+    @PutMapping("/{productId}")
+    public ResponseEntity<ProductDto> update(@PathVariable Long productId, @Valid @RequestBody CreateProductDto createProductDto){
+        return ResponseEntity.ok(productService.update(productId, createProductDto));
     }
 }
