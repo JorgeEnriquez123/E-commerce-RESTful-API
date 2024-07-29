@@ -21,8 +21,11 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping
-    public ResponseEntity<Page<UserDto>> getAll(@RequestParam Integer page, @RequestParam Integer size){
-        return ResponseEntity.ok(userService.findAll(page, size));
+    public ResponseEntity<Page<UserDto>> getAll(@RequestParam(defaultValue = "1") Integer page,
+                                                @RequestParam(defaultValue = "10") Integer size,
+                                                @RequestParam(defaultValue = "id") String sortBy,
+                                                @RequestParam(defaultValue = "asc") String sortOrder){
+        return ResponseEntity.ok(userService.findAll(page, size, sortOrder, sortBy));
     }
 
     @GetMapping("/{userId}")

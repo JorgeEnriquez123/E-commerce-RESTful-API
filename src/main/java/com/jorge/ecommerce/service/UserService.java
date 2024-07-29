@@ -14,6 +14,7 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -57,8 +58,10 @@ public class UserService {
     }
 
     @Transactional(readOnly = true)
-    public Page<UserDto> findAll(Integer pageNumber, Integer pageSize) {
-        Pageable pageable = PageRequest.of(pageNumber - 1, pageSize);
+    public Page<UserDto> findAll(Integer pageNumber, Integer pageSize, String sortOrder, String sortBy) {
+        Sort sort = Sort.by(sortOrder.equalsIgnoreCase("DESC") ? Sort.Direction.DESC : Sort.Direction.ASC, sortBy);
+        Pageable pageable = PageRequest.of(pageNumber - 1, pageSize, sort);
+
         Page<User> users = userRepository.findAll(pageable);
         return users.map(user -> modelMapper.map(user, UserDto.class));
     }
