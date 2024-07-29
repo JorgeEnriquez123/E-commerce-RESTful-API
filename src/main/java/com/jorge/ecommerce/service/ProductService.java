@@ -16,8 +16,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-
 @Service
 @RequiredArgsConstructor
 public class ProductService {
@@ -59,7 +57,7 @@ public class ProductService {
     }
 
     @Transactional(rollbackFor = Exception.class)
-    public ProductDto update(Long productId, CreateProductDto createProductDto) {
+    public ProductDto updateProduct(Long productId, CreateProductDto createProductDto) {
         Product toUpdateProduct = findById(productId);
         updateProductFromDto(toUpdateProduct, createProductDto);
 
