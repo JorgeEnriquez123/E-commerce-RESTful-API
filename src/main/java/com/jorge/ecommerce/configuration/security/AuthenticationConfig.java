@@ -1,9 +1,11 @@
 package com.jorge.ecommerce.configuration.security;
 
 import com.jorge.ecommerce.repository.UserRepository;
+import com.jorge.ecommerce.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -13,9 +15,12 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Configuration
-@RequiredArgsConstructor
 public class AuthenticationConfig {
-    private final UserRepository userRepository;
+    private final UserService userService;
+
+    public AuthenticationConfig(@Lazy UserService userService) {
+        this.userService = userService;
+    }
 
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception{
@@ -37,6 +42,6 @@ public class AuthenticationConfig {
 
     @Bean
     public UserDetailsService userDetailsService() {
-        return username -> userRepository.findByUsername(username).orElseThrow();
+        return userService::findByUsername;
     }
 }

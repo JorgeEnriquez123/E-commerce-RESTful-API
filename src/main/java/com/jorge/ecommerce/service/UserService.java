@@ -43,6 +43,12 @@ public class UserService {
                 .orElseThrow(() -> new ResourceNotFoundException("User with id: " + id + " not found."));
     }
 
+    @Transactional(readOnly = true)
+    public User findByUsername(String username) {
+        return userRepository.findByUsername(username)
+                .orElseThrow(() -> new ResourceNotFoundException("User with username: " + username + " not found."));
+    }
+
     @Transactional(rollbackFor = Exception.class)
     protected User save(User user) {
         checkIfUsernameAlreadyExists(user.getUsername());
