@@ -10,12 +10,15 @@ import com.jorge.ecommerce.model.Cart;
 import com.jorge.ecommerce.model.User;
 import com.jorge.ecommerce.repository.UserRepository;
 import org.modelmapper.ModelMapper;
+import org.springframework.cache.CacheManager;
+import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,14 +31,16 @@ public class UserService {
     private final CartService cartService;
     private final AuthService authService;
     private final AddressLineService addressLineService;
+    private final CacheManager cacheManager;
 
     public UserService(UserRepository userRepository, ModelMapper modelMapper,
-                       @Lazy CartService cartService, @Lazy AuthService authService, @Lazy AddressLineService addressLineService) {
+                       @Lazy CartService cartService, @Lazy AuthService authService, @Lazy AddressLineService addressLineService, RedisCacheManager cacheManager) {
         this.userRepository = userRepository;
         this.modelMapper = modelMapper;
         this.cartService = cartService;
         this.authService = authService;
         this.addressLineService = addressLineService;
+        this.cacheManager = cacheManager;
     }
 
     @Transactional(readOnly = true)
@@ -44,6 +49,7 @@ public class UserService {
                 .orElseThrow(() -> new ResourceNotFoundException("User with id: " + id + " not found."));
     }
 
+    @Cacheable(value = "users", key = "#username")
     @Transactional(readOnly = true)
     public User findByUsername(String username) {
         return userRepository.findByUsername(username)
@@ -94,10 +100,14 @@ public class UserService {
     @Transactional(rollbackFor = Exception.class)
     public UserDto updateUser(Long userId, CreateUserDto createUserDto) {
         User userToUpdate = findById(userId);
+        String oldUsername = userToUpdate.getUsername();
+
         updateUserFromDto(createUserDto, userToUpdate);
         encryptUserPassword(userToUpdate);
 
-        User savedUpdatedUser = userRepository.save(userToUpdate);
+        User savedUpdatedUser = save(userToUpdate);
+        cacheManager.getCache("users").evict(oldUsername);
+
         return convertToDto(savedUpdatedUser);
     }
 
