@@ -10,6 +10,7 @@ import com.jorge.ecommerce.model.Cart;
 import com.jorge.ecommerce.model.User;
 import com.jorge.ecommerce.repository.UserRepository;
 import org.modelmapper.ModelMapper;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -51,16 +52,7 @@ public class UserService {
 
     @Transactional(rollbackFor = Exception.class)
     protected User save(User user) {
-        checkIfUsernameAlreadyExists(user.getUsername());
-        encryptUserPassword(user);
-
-        User savedUser = userRepository.save(user);
-
-        // Creating a Cart for the User
-        Cart cart = Cart.builder().user(savedUser).build();
-        cartService.save(cart);
-
-        return user;
+        return userRepository.save(user);
     }
 
     @Transactional(readOnly = true)
@@ -87,7 +79,15 @@ public class UserService {
     @Transactional(rollbackFor = Exception.class)
     public UserDto registerUser(CreateUserDto createUserDto) {
         User newUser = createUserFromDto(createUserDto);
+        checkIfUsernameAlreadyExists(newUser.getUsername());
+        encryptUserPassword(newUser);
+
         User savedUser = save(newUser);
+
+        // Creating a Cart for the User
+        Cart cart = Cart.builder().user(savedUser).build();
+        cartService.save(cart);
+
         return convertToDto(savedUser);
     }
 
