@@ -36,8 +36,13 @@ public class ProductService {
 
     @Transactional(readOnly = true)
     public Page<ProductDto> findAll(Integer page, Integer pageSize, String sortOrder, String sortBy) {
-        Sort sort = Sort.by(sortOrder.equalsIgnoreCase("desc") ? Sort.Direction.DESC : Sort.Direction.ASC, sortBy);
-        Pageable pageable = PageRequest.of(page - 1, pageSize, sort);
+        Sort sort = Sort.by(sortOrder.equalsIgnoreCase("DESC") ? Sort.Direction.DESC : Sort.Direction.ASC, sortBy);
+        if(page <= 1) {
+            pageSize = 1;
+        }
+        if(pageSize <= 1) {
+            pageSize = 1;
+        }Pageable pageable = PageRequest.of(page - 1, pageSize, sort);
 
         Page<Product> products = productRepository.findAll(pageable);
         return products.map(this::convertToDto);
