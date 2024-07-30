@@ -29,3 +29,8 @@ application:
     expiration: 900000 # 15 minutes
     refresh-token:
       expiration: 604800000 # 7 days
+
+springdoc:
+  swagger-ui:
+    operations-sorter: method
+    tags-sorter: alpha
