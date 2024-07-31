@@ -3,6 +3,7 @@ package com.jorge.ecommerce.controller;
 import com.jorge.ecommerce.dto.CartItemDto;
 import com.jorge.ecommerce.dto.create.CreateCartItemDto;
 import com.jorge.ecommerce.service.CartService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -11,6 +12,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@SecurityRequirement(
+        name = "bearerAuth"
+)
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/carts")

@@ -3,6 +3,7 @@ package com.jorge.ecommerce.controller;
 import com.jorge.ecommerce.dto.CategoryDto;
 import com.jorge.ecommerce.dto.create.CreateCategoryDto;
 import com.jorge.ecommerce.service.CategoryService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -10,6 +11,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+@SecurityRequirement(
+        name = "bearerAuth"
+)
 @RestController
 @RequestMapping("/categories")
 @RequiredArgsConstructor
