@@ -56,7 +56,7 @@ public class CartItemService {
         cartItemRepository.deleteById(cartItemId);
     }
 
-    @Transactional(rollbackFor = Exception.class)
+    @Transactional(readOnly = true)
     public List<CartItemDto> getCartItemsByCartId(Long cartId){
         List<CartItem> cartItems = findByCartId(cartId);
         return cartItems.stream()

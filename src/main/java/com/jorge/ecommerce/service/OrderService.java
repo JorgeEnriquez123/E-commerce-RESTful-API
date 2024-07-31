@@ -43,42 +43,6 @@ public class OrderService {
         return convertToDto(order);
     }
 
-    /*@Transactional(rollbackFor = Exception.class)
-    public OrderDto createOrder(CreateOrderDto createOrderDto){
-        Long userId = createOrderDto.getUserId();
-        Long shippingAddressId = createOrderDto.getShippingAddressId();
-
-        User user = userService.findById(userId);
-        AddressLine addressLine = addressLineService.findById(shippingAddressId);
-
-        Cart cartFromUser = cartService.findByUserId(userId);
-        BigDecimal total = calculateTotal(cartFromUser);
-
-        Order order = new Order();
-        order.setUser(user);
-        order.setShippingAddress(addressLine);
-        order.setTotal(total);
-        Order savedOrder = save(order);
-
-        Set<CartItem> cartItems = cartFromUser.getCartItems();
-        cartItems.forEach(
-                cartItem -> {
-                    OrderDetail orderDetail = OrderDetail.builder()
-                            .order(savedOrder)
-                            .product(cartItem.getProduct())
-                            .quantity(cartItem.getQuantity())
-                            .price(cartItem.getProduct().getPrice())
-                            .build();
-                    orderDetailService.save(orderDetail);
-                    cartItemService.deleteById(cartItem.getId());
-
-                    productService.reduceStock(cartItem.getProduct().getId(), cartItem.getQuantity());
-                }
-        );
-
-        return convertToDto(savedOrder);
-    }*/
-
     @Transactional(rollbackFor = Exception.class)
     public OrderDto createOrder(CreateOrderDto createOrderDto){
         Long userId = createOrderDto.getUserId();

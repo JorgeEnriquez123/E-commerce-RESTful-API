@@ -35,7 +35,6 @@ public class AuthService {
         return passwordEncoder.encode(password);
     }
 
-    @Transactional(rollbackFor = Exception.class)
     public LoginResponseDto login(LoginRequestDto loginRequestDto) {
         UsernamePasswordAuthenticationToken authenticationToken =
                 new UsernamePasswordAuthenticationToken(loginRequestDto.getUsername(), loginRequestDto.getPassword());
@@ -52,7 +51,6 @@ public class AuthService {
         }
     }
 
-    @Transactional(rollbackFor = Exception.class)
     public LoginResponseDto register(CreateUserDto createUserDto){
         userService.registerUser(createUserDto);
         LoginRequestDto loginRequestDto = LoginRequestDto.builder()

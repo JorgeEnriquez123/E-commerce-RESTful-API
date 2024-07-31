@@ -121,17 +121,14 @@ public class UserService {
         return addressLineService.saveAddressLine(userId, createAddressLineDto);
     }
 
-    @Transactional(rollbackFor = Exception.class)
     public List<AddressLineDto> getAddressLines(Long userId) {
         return addressLineService.getByUserId(userId);
     }
 
-    @Transactional(rollbackFor = Exception.class)
     public AddressLineDto updateAddressLine(Long addressLineId, CreateAddressLineDto createAddressLineDto) {
         return addressLineService.updateAddressLineById(addressLineId, createAddressLineDto);
     }
 
-    @Transactional(rollbackFor = Exception.class)
     public void setDefaultAddressLine(Long userId, Long addressLineId) {
         addressLineService.setDefaultAddressLine(userId, addressLineId);
     }

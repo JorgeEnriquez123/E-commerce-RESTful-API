@@ -43,22 +43,18 @@ public class CartService {
         return cartRepository.save(cart);
     }
 
-    @Transactional(readOnly = true)
     public List<CartItemDto> getItems(Long cartId) {
         return cartItemService.getCartItemsByCartId(cartId);
     }
 
-    @Transactional(rollbackFor = Exception.class)
     public CartItemDto addItem(Long cartId, CreateCartItemDto createCartItemDto) {
         return cartItemService.saveCartItem(cartId, createCartItemDto);
     }
 
-    @Transactional(rollbackFor = Exception.class)
     public CartItemDto updateItemQuantity(Long cartItemId, Integer quantity) {
         return cartItemService.updateCartItemQuantity(cartItemId, quantity);
     }
 
-    @Transactional(rollbackFor = Exception.class)
     public void removeItem(Long cartItemId){
         cartItemService.deleteById(cartItemId);
     }
