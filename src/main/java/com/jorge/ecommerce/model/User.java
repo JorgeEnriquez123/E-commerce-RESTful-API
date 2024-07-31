@@ -1,6 +1,7 @@
 package com.jorge.ecommerce.model;
 
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -33,6 +34,10 @@ public class User implements UserDetails {
     private String lastName;
     @Column(nullable = false)
     private LocalDateTime createdAt;
+
+    @OneToOne(fetch = FetchType.LAZY, mappedBy = "user")
+    @JsonBackReference
+    private Cart cart;
 
     @PrePersist
     protected void onCreate() {

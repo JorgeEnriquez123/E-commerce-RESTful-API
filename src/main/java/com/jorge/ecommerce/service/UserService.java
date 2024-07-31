@@ -61,6 +61,12 @@ public class UserService {
         return userRepository.save(user);
     }
 
+    @Transactional(rollbackFor = Exception.class)
+    protected User findUserWithCartAndCartItems(Long userId){
+        return userRepository.findUserWithCartAndItems(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User with id: " + userId + " not found."));
+    }
+
     @Transactional(readOnly = true)
     public Page<UserDto> findAll(Integer pageNumber, Integer pageSize, String sortOrder, String sortBy) {
         Sort sort = Sort.by(sortOrder.equalsIgnoreCase("DESC") ? Sort.Direction.DESC : Sort.Direction.ASC, sortBy);
