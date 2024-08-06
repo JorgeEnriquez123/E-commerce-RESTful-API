@@ -29,16 +29,6 @@ public class GlobalExceptionHandler {
                 .build();
     }
 
-    @ResponseStatus(HttpStatus.FORBIDDEN)
-    @ExceptionHandler(InsufficientPermissionException.class)
-    public ErrorResponse insufficientPermissionExceptionHandler(InsufficientPermissionException ex) {
-        return ErrorResponse.builder()
-                .httpStatus(HttpStatus.FORBIDDEN)
-                .message("Insufficient Permission")
-                .errors(Collections.singletonList(ex.getMessage()))
-                .build();
-    }
-
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     @ExceptionHandler(FailedLoginException.class)
     public ErrorResponse failedLoginExceptionHandler(FailedLoginException ex) {
