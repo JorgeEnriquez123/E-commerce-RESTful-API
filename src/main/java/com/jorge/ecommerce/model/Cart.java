@@ -1,5 +1,7 @@
 package com.jorge.ecommerce.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
@@ -19,11 +21,12 @@ public class Cart {
     @EqualsAndHashCode.Include
     private Long id;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
+    @JsonBackReference
     private User user;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "cart")
-    @JsonManagedReference
+    @JsonBackReference
     private Set<CartItem> cartItems = new HashSet<>();
 }

@@ -5,6 +5,7 @@ import com.jorge.ecommerce.dto.CartItemDto;
 import com.jorge.ecommerce.dto.create.CreateCartItemDto;
 import com.jorge.ecommerce.handler.exception.ResourceNotFoundException;
 import com.jorge.ecommerce.model.Cart;
+import com.jorge.ecommerce.model.User;
 import com.jorge.ecommerce.repository.CartRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Lazy;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class CartService {
@@ -35,6 +37,12 @@ public class CartService {
     @Transactional(readOnly = true)
     protected Cart findByUserId(Long userId) {
         return cartRepository.findByUserId(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("Cart from User with id: " + userId + " not found"));
+    }
+
+    @Transactional(readOnly = true)
+    protected Cart findCartWithItemsByUserId(Long userId) {
+        return cartRepository.findCartWithItemsByUserId(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("Cart of User with id: " + userId + " not found"));
     }
 
@@ -43,20 +51,30 @@ public class CartService {
         return cartRepository.save(cart);
     }
 
-    public List<CartItemDto> getItems(Long cartId) {
-        return cartItemService.getCartItemsByCartId(cartId);
+    @Transactional(readOnly = true)
+    public List<CartItemDto> getItemsFromUser(User user) {
+        Cart cart = findCartWithItemsByUserId(user.getId());
+        return cart.getCartItems().stream()
+                .map(cartItemService::convertToDto)
+                .collect(Collectors.toList());
     }
 
-    public CartItemDto addItem(Long cartId, CreateCartItemDto createCartItemDto) {
-        return cartItemService.saveCartItem(cartId, createCartItemDto);
+    @Transactional
+    public CartItemDto addItemToUserCart(User user, CreateCartItemDto createCartItemDto) {
+        Cart cart = findByUserId(user.getId());
+        return cartItemService.saveCartItem(cart, createCartItemDto);
     }
 
-    public CartItemDto updateItemQuantity(Long cartItemId, Integer quantity) {
-        return cartItemService.updateCartItemQuantity(cartItemId, quantity);
+    @Transactional
+    public void updateItemQuantityFromUserCart(User user, Long cartItemId, Integer quantity) {
+        Cart cart = findByUserId(user.getId());
+        cartItemService.updateCartItemQuantity(cart, cartItemId, quantity);
     }
 
-    public void removeItem(Long cartItemId){
-        cartItemService.deleteById(cartItemId);
+    @Transactional
+    public void removeItem(User user, Long cartItemId){
+        Cart cart = findByUserId(user.getId());
+        cartItemService.deleteCartItem(cart, cartItemId);
     }
 
     private CartDto convertToDto(Cart cart) {

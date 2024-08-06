@@ -16,8 +16,9 @@ public class CartItem {
     @Column(nullable = false)
     private Integer quantity;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(nullable = false, name = "product_id")
+    @JsonBackReference
     private Product product;
 
     @ManyToOne(fetch = FetchType.LAZY)

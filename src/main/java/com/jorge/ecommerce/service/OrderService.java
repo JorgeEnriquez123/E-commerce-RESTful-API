@@ -3,7 +3,9 @@ package com.jorge.ecommerce.service;
 import com.jorge.ecommerce.dto.OrderDto;
 import com.jorge.ecommerce.dto.create.CreateOrderDto;
 import com.jorge.ecommerce.handler.exception.ResourceNotFoundException;
-import com.jorge.ecommerce.model.*;
+import com.jorge.ecommerce.model.Cart;
+import com.jorge.ecommerce.model.CartItem;
+import com.jorge.ecommerce.model.Order;
 import com.jorge.ecommerce.repository.OrderRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -11,7 +13,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -45,7 +46,7 @@ public class OrderService {
 
     @Transactional(rollbackFor = Exception.class)
     public OrderDto createOrder(CreateOrderDto createOrderDto){
-        Long userId = createOrderDto.getUserId();
+        /*Long userId = createOrderDto.getUserId();
         Long shippingAddressId = createOrderDto.getShippingAddressId();
 
         User user = userService.findUserWithCartAndCartItems(userId);
@@ -76,7 +77,8 @@ public class OrderService {
                 }
         );
 
-        return convertToDto(savedOrder);
+        return convertToDto(savedOrder);*/
+        return null;
     }
 
     private BigDecimal calculateItemTotal(CartItem cartItem) {

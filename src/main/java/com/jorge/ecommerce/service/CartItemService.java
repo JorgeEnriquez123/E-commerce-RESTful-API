@@ -8,42 +8,30 @@ import com.jorge.ecommerce.model.CartItem;
 import com.jorge.ecommerce.model.Product;
 import com.jorge.ecommerce.repository.CartItemRepository;
 import org.modelmapper.ModelMapper;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Collections;
-import java.util.List;
 
 @Service
 public class CartItemService {
     private final CartItemRepository cartItemRepository;
-    private final CartService cartService;
     private final ProductService productService;
     private final ModelMapper modelMapper;
 
-    public CartItemService(CartItemRepository cartItemRepository, @Lazy CartService cartService,
+    public CartItemService(CartItemRepository cartItemRepository,
                            ProductService productService, ModelMapper modelMapper) {
         this.cartItemRepository = cartItemRepository;
-        this.cartService = cartService;
         this.productService = productService;
         this.modelMapper = modelMapper;
     }
 
     @Transactional(readOnly = true)
-    protected CartItem findById(Long id) {
-        return cartItemRepository.findById(id)
+    protected CartItem findByIdAndCartId(Long id, Long cartId) {
+        return cartItemRepository.findByIdAndCartId(id, cartId)
                 .orElseThrow(() -> new ResourceNotFoundException("CartItem with id: " + id + " not found."));
     }
 
-    @Transactional(readOnly = true)
-    protected List<CartItem> findByCartId(Long cartId) {
-        List<CartItem> cartItems = cartItemRepository.findByCartId(cartId)
-                .orElse(Collections.emptyList());
-        if(cartItems.isEmpty()) {
-            throw new ResourceNotFoundException("No items found from Cart with id: " + cartId);
-        }
-        return cartItems;
+    protected void deleteByIdAndCartId(Long id, Long cartId) {
+        cartItemRepository.deleteByIdAndCartId(id, cartId);
     }
 
     @Transactional(rollbackFor = Exception.class)
@@ -51,40 +39,37 @@ public class CartItemService {
         return cartItemRepository.save(cartItem);
     }
 
-    @Transactional(rollbackFor = Exception.class)
-    protected void deleteById(Long cartItemId){
-        cartItemRepository.deleteById(cartItemId);
-    }
-
-    @Transactional(readOnly = true)
-    public List<CartItemDto> getCartItemsByCartId(Long cartId){
-        List<CartItem> cartItems = findByCartId(cartId);
-        return cartItems.stream()
-                .map(this::convertToDto)
-                .toList();
-    }
 
     @Transactional(rollbackFor = Exception.class)
-    public CartItemDto saveCartItem(Long cartId, CreateCartItemDto createCartItemDto) {
-        Cart cart = cartService.findById(cartId);
+    public CartItemDto saveCartItem(Cart cart, CreateCartItemDto createCartItemDto) {
         Product product = productService.findById(createCartItemDto.getProductId());
 
-        CartItem newCartItem = modelMapper.map(createCartItemDto, CartItem.class);
-        newCartItem.setCart(cart);
-        newCartItem.setProduct(product);
+        CartItem newCartItem = CartItem.builder()
+                .cart(cart)
+                .product(product)
+                .quantity(createCartItemDto.getQuantity())
+                .build();
+
+        /*First Approach directly in CartService
+        cart.getCartItems().add(newCartItem);
+        cartRepository.save(cart);*/
 
         CartItem savedCartItem = save(newCartItem);
-
         return convertToDto(savedCartItem);
     }
 
     @Transactional(rollbackFor = Exception.class)
-    public CartItemDto updateCartItemQuantity(Long cartItemId, Integer quantity) {
-        CartItem cartItem = findById(cartItemId);
+    public void updateCartItemQuantity(Cart cart, Long cartItemId, Integer quantity) {
+        CartItem cartItem = findByIdAndCartId(cart.getId(), cartItemId);
+
         cartItem.setQuantity(quantity);
 
-        CartItem updatedCartItem = save(cartItem);
-        return convertToDto(updatedCartItem);
+        save(cartItem);
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    public void deleteCartItem(Cart cart, Long cartItemId) {
+        deleteByIdAndCartId(cartItemId, cart.getId());
     }
 
     protected CartItemDto convertToDto(CartItem cartItem) {

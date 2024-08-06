@@ -1,9 +1,6 @@
 package com.jorge.ecommerce.handler;
 
-import com.jorge.ecommerce.handler.exception.FailedRefreshTokenException;
-import com.jorge.ecommerce.handler.exception.ResourceNotFoundException;
-import com.jorge.ecommerce.handler.exception.FailedLoginException;
-import com.jorge.ecommerce.handler.exception.ValueAlreadyExistsException;
+import com.jorge.ecommerce.handler.exception.*;
 import com.jorge.ecommerce.handler.response.ErrorResponse;
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
@@ -28,6 +25,16 @@ public class GlobalExceptionHandler {
         return ErrorResponse.builder()
                 .httpStatus(HttpStatus.INTERNAL_SERVER_ERROR)
                 .message("Internal Error")
+                .errors(Collections.singletonList(ex.getMessage()))
+                .build();
+    }
+
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    @ExceptionHandler(InsufficientPermissionException.class)
+    public ErrorResponse insufficientPermissionExceptionHandler(InsufficientPermissionException ex) {
+        return ErrorResponse.builder()
+                .httpStatus(HttpStatus.FORBIDDEN)
+                .message("Insufficient Permission")
                 .errors(Collections.singletonList(ex.getMessage()))
                 .build();
     }
