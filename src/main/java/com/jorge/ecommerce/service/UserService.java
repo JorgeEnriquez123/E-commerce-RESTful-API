@@ -34,7 +34,8 @@ public class UserService {
     private final CacheManager cacheManager;
 
     public UserService(UserRepository userRepository, ModelMapper modelMapper,
-                       @Lazy CartService cartService, @Lazy AuthService authService, @Lazy AddressLineService addressLineService, RedisCacheManager cacheManager) {
+                       @Lazy CartService cartService, @Lazy AuthService authService,
+                       @Lazy AddressLineService addressLineService, RedisCacheManager cacheManager) {
         this.userRepository = userRepository;
         this.modelMapper = modelMapper;
         this.cartService = cartService;
@@ -59,12 +60,6 @@ public class UserService {
     @Transactional(rollbackFor = Exception.class)
     protected User save(User user) {
         return userRepository.save(user);
-    }
-
-    @Transactional(rollbackFor = Exception.class)
-    protected User findUserWithCartAndCartItems(Long userId){
-        return userRepository.findUserWithCartAndItems(userId)
-                .orElseThrow(() -> new ResourceNotFoundException("User with id: " + userId + " not found."));
     }
 
     @Transactional(readOnly = true)

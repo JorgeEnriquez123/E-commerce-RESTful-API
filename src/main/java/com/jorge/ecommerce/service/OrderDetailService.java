@@ -19,7 +19,4 @@ public class OrderDetailService {
         return orderDetailRepository.save(orderDetail);
     }
 
-    protected List<OrderDetail> saveAll(Set<OrderDetail> orderDetails){
-        return orderDetailRepository.saveAll(orderDetails);
-    }
 }

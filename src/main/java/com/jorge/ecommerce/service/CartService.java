@@ -29,12 +29,6 @@ public class CartService {
     }
 
     @Transactional(readOnly = true)
-    protected Cart findById(Long id) {
-        return cartRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Cart with id: " + id + " not found"));
-    }
-
-    @Transactional(readOnly = true)
     protected Cart findByUserId(Long userId) {
         return cartRepository.findByUserId(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("Cart from User with id: " + userId + " not found"));

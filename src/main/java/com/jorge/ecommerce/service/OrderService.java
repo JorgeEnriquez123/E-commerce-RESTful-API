@@ -36,6 +36,11 @@ public class OrderService {
                 .orElse(Collections.emptyList());
     }
 
+    @Transactional(rollbackFor = Exception.class)
+    protected Order save(Order order){
+        return orderRepository.save(order);
+    }
+
     @Transactional(readOnly = true)
     public List<OrderDto> getOrdersWithDetailsFromUser(User user) {
         final List<Order> orders = findOrdersWithDetailsById(user.getId());
@@ -43,11 +48,6 @@ public class OrderService {
                 .stream()
                 .map(this::convertToDto)
                 .collect(Collectors.toList());
-    }
-
-    @Transactional(rollbackFor = Exception.class)
-    protected Order save(Order order){
-        return orderRepository.save(order);
     }
 
     @Transactional(rollbackFor = Exception.class)
