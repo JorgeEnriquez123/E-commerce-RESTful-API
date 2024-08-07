@@ -35,10 +35,6 @@ public class User implements UserDetails {
     @Column(nullable = false)
     private LocalDateTime createdAt;
 
-    @OneToOne(fetch = FetchType.LAZY, mappedBy = "user")
-    @JsonBackReference
-    private Cart cart;
-
     @PrePersist
     protected void onCreate() {
         createdAt = LocalDateTime.now();

@@ -3,6 +3,7 @@ package com.jorge.ecommerce.handler;
 import com.jorge.ecommerce.handler.exception.*;
 import com.jorge.ecommerce.handler.response.ErrorResponse;
 import jakarta.validation.ConstraintViolationException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -22,6 +24,9 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(Exception.class)
     public ErrorResponse internalServerErrorHandler(Exception ex) {
+        System.out.println(Arrays.toString(ex.getStackTrace()));
+        System.out.println(ex.getLocalizedMessage());
+        System.out.println(ex.getClass().getName());
         return ErrorResponse.builder()
                 .httpStatus(HttpStatus.INTERNAL_SERVER_ERROR)
                 .message("Internal Error")
@@ -46,6 +51,16 @@ public class GlobalExceptionHandler {
         return ErrorResponse.builder()
                 .httpStatus(HttpStatus.BAD_REQUEST)
                 .message("Failed Refresh Token")
+                .errors(Collections.singletonList(ex.getMessage()))
+                .build();
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ErrorResponse dataIntegrityViolationExceptionHandler(DataIntegrityViolationException ex) {
+        return ErrorResponse.builder()
+                .httpStatus(HttpStatus.BAD_REQUEST)
+                .message("Data Integrity Violation")
                 .errors(Collections.singletonList(ex.getMessage()))
                 .build();
     }
