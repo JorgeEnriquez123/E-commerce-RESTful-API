@@ -10,4 +10,6 @@ import java.util.Optional;
 @Repository
 public interface AddressLineRepository extends JpaRepository<AddressLine, Long> {
     Optional<List<AddressLine>> findByUserId(Long userId);
+
+    Optional<AddressLine> findByIdAndUserId(Long id, Long userId);
 }

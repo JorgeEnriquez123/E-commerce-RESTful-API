@@ -4,12 +4,14 @@ import com.jorge.ecommerce.dto.AddressLineDto;
 import com.jorge.ecommerce.dto.UserDto;
 import com.jorge.ecommerce.dto.create.CreateAddressLineDto;
 import com.jorge.ecommerce.dto.create.CreateUserDto;
+import com.jorge.ecommerce.model.User;
 import com.jorge.ecommerce.service.UserService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -37,28 +39,28 @@ public class UserController {
     }
 
     @PutMapping("/{userId}")
-    public ResponseEntity<UserDto> updateUserPersonalInfo(@PathVariable Long userId, @RequestBody CreateUserDto createUserDto){
-        return ResponseEntity.ok().body(userService.updateUser(userId, createUserDto));
+    public ResponseEntity<UserDto> updateUserPersonalInfo(@AuthenticationPrincipal User user, @RequestBody CreateUserDto createUserDto){
+        return ResponseEntity.ok().body(userService.updateUserPersonalInfo(user, createUserDto));
     }
 
     @GetMapping("/{userId}/addressLines")
-    public ResponseEntity<List<AddressLineDto>> getAllAddressLines(@PathVariable Long userId) {
-        return ResponseEntity.ok(userService.getAddressLines(userId));
+    public ResponseEntity<List<AddressLineDto>> getAllAddressLines(@AuthenticationPrincipal User user) {
+        return ResponseEntity.ok(userService.getAddressLines(user));
     }
 
     @PostMapping("/{userId}/addressLines")
-    public ResponseEntity<AddressLineDto> addAddressLine(@PathVariable Long userId, @RequestBody CreateAddressLineDto createAddressLineDto){
-        return ResponseEntity.status(HttpStatus.CREATED).body(userService.addAddressLine(userId, createAddressLineDto));
+    public ResponseEntity<AddressLineDto> addAddressLine(@AuthenticationPrincipal User user, @RequestBody CreateAddressLineDto createAddressLineDto){
+        return ResponseEntity.status(HttpStatus.CREATED).body(userService.addAddressLine(user, createAddressLineDto));
     }
 
     @PutMapping("/addressLines/{addressLineId}")
-    public ResponseEntity<AddressLineDto> updateAddressLine(@PathVariable Long addressLineId, @RequestBody CreateAddressLineDto createAddressLineDto){
-        return ResponseEntity.ok(userService.updateAddressLine(addressLineId, createAddressLineDto));
+    public ResponseEntity<AddressLineDto> updateAddressLine(@AuthenticationPrincipal User user, @PathVariable Long addressLineId, @RequestBody CreateAddressLineDto createAddressLineDto){
+        return ResponseEntity.ok(userService.updateAddressLine(user, addressLineId, createAddressLineDto));
     }
 
     @PutMapping("/{userId}/addressLines/{addressLineId}/set-default")
-    public ResponseEntity<Void> setDefaultAddressLine(@PathVariable Long userId, @PathVariable Long addressLineId){
-        userService.setDefaultAddressLine(userId, addressLineId);
+    public ResponseEntity<Void> setDefaultAddressLine(@AuthenticationPrincipal User user, @PathVariable Long addressLineId){
+        userService.setDefaultAddressLine(user, addressLineId);
         return ResponseEntity.noContent().build();
     }
 }

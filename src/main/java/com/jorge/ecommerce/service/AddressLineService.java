@@ -43,6 +43,11 @@ public class AddressLineService {
         return addressLines;
     }
 
+    protected AddressLine findByIdAndUserId(Long id, Long userId){
+        return addressLineRepository.findByIdAndUserId(id, userId)
+                .orElseThrow(() -> new ResourceNotFoundException("AddressLine with id: " + id + " not found"));
+    }
+
     @Transactional(rollbackFor = Exception.class)
     protected AddressLine save(AddressLine addressLine){
         return addressLineRepository.save(addressLine);
@@ -68,8 +73,9 @@ public class AddressLineService {
     }
 
     @Transactional(rollbackFor = Exception.class)
-    public AddressLineDto updateAddressLineById(Long addressLineId, CreateAddressLineDto createAddressLineDto) {
-        AddressLine toUpdateAddressLine = findById(addressLineId);
+    public AddressLineDto updateAddressLineById(Long userId, Long addressLineId, CreateAddressLineDto createAddressLineDto) {
+        AddressLine toUpdateAddressLine = findByIdAndUserId(addressLineId, userId);
+
         updateAddressLineFromDto(toUpdateAddressLine, createAddressLineDto);
 
         AddressLine savedUpdatedAddressLine = save(toUpdateAddressLine);

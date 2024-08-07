@@ -11,7 +11,6 @@ import com.jorge.ecommerce.model.User;
 import com.jorge.ecommerce.repository.UserRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.cache.CacheManager;
-import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
@@ -74,7 +73,7 @@ public class UserService {
         Pageable pageable = PageRequest.of(pageNumber - 1, pageSize, sort);
 
         Page<User> users = userRepository.findAll(pageable);
-        return users.map(user -> modelMapper.map(user, UserDto.class));
+        return users.map(this::convertToDto);
     }
 
     @Transactional(readOnly = true)
@@ -99,8 +98,8 @@ public class UserService {
     }
 
     @Transactional(rollbackFor = Exception.class)
-    public UserDto updateUser(Long userId, CreateUserDto createUserDto) {
-        User userToUpdate = findById(userId);
+    public UserDto updateUserPersonalInfo(User user, CreateUserDto createUserDto) {
+        User userToUpdate = findById(user.getId());
         String oldUsername = userToUpdate.getUsername();
 
         updateUserFromDto(createUserDto, userToUpdate);
@@ -112,20 +111,20 @@ public class UserService {
         return convertToDto(savedUpdatedUser);
     }
 
-    public AddressLineDto addAddressLine(Long userId, CreateAddressLineDto createAddressLineDto){
-        return addressLineService.saveAddressLine(userId, createAddressLineDto);
+    public AddressLineDto addAddressLine(User user, CreateAddressLineDto createAddressLineDto){
+        return addressLineService.saveAddressLine(user.getId(), createAddressLineDto);
     }
 
-    public List<AddressLineDto> getAddressLines(Long userId) {
-        return addressLineService.getByUserId(userId);
+    public List<AddressLineDto> getAddressLines(User user) {
+        return addressLineService.getByUserId(user.getId());
     }
 
-    public AddressLineDto updateAddressLine(Long addressLineId, CreateAddressLineDto createAddressLineDto) {
-        return addressLineService.updateAddressLineById(addressLineId, createAddressLineDto);
+    public AddressLineDto updateAddressLine(User user, Long addressLineId, CreateAddressLineDto createAddressLineDto) {
+        return addressLineService.updateAddressLineById(user.getId(), addressLineId, createAddressLineDto);
     }
 
-    public void setDefaultAddressLine(Long userId, Long addressLineId) {
-        addressLineService.setDefaultAddressLine(userId, addressLineId);
+    public void setDefaultAddressLine(User user, Long addressLineId) {
+        addressLineService.setDefaultAddressLine(user.getId(), addressLineId);
     }
 
     @Transactional(readOnly = true)
