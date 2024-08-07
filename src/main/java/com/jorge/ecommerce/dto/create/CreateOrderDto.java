@@ -14,8 +14,5 @@ import lombok.NoArgsConstructor;
 public class CreateOrderDto {
     @NotNull
     @Positive
-    private Long userId;
-    @NotNull
-    @Positive
     private Long shippingAddressId;
 }

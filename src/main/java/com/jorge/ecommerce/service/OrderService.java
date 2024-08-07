@@ -3,16 +3,20 @@ package com.jorge.ecommerce.service;
 import com.jorge.ecommerce.dto.OrderDto;
 import com.jorge.ecommerce.dto.create.CreateOrderDto;
 import com.jorge.ecommerce.handler.exception.ResourceNotFoundException;
-import com.jorge.ecommerce.model.Cart;
-import com.jorge.ecommerce.model.CartItem;
-import com.jorge.ecommerce.model.Order;
+import com.jorge.ecommerce.model.*;
 import com.jorge.ecommerce.repository.OrderRepository;
+import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -20,7 +24,6 @@ public class OrderService {
     private final OrderRepository orderRepository;
     private final ModelMapper modelMapper;
 
-    private final UserService userService;
     private final AddressLineService addressLineService;
     private final CartService cartService;
     private final OrderDetailService orderDetailService;
@@ -28,9 +31,18 @@ public class OrderService {
     private final ProductService productService;
 
     @Transactional(readOnly = true)
-    protected Order findById(Long id){
-        return orderRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Order with id: " + id + " not found"));
+    protected List<Order> findOrdersWithDetailsById(Long userId){
+        return orderRepository.findOrdersWithDetailsByUserId(userId)
+                .orElse(Collections.emptyList());
+    }
+
+    @Transactional(readOnly = true)
+    public List<OrderDto> getOrdersWithDetailsFromUser(User user) {
+        final List<Order> orders = findOrdersWithDetailsById(user.getId());
+        return orders
+                .stream()
+                .map(this::convertToDto)
+                .collect(Collectors.toList());
     }
 
     @Transactional(rollbackFor = Exception.class)
@@ -38,27 +50,21 @@ public class OrderService {
         return orderRepository.save(order);
     }
 
-    @Transactional(readOnly = true)
-    public OrderDto getOrderById(Long id){
-        Order order = findById(id);
-        return convertToDto(order);
-    }
-
     @Transactional(rollbackFor = Exception.class)
-    public OrderDto createOrder(CreateOrderDto createOrderDto){
-        /*Long userId = createOrderDto.getUserId();
+    public void createOrder(User user, CreateOrderDto createOrderDto){
         Long shippingAddressId = createOrderDto.getShippingAddressId();
 
-        User user = userService.findUserWithCartAndCartItems(userId);
         AddressLine addressLine = addressLineService.findById(shippingAddressId);
 
-        Cart cartFromUser = user.getCart();
+        Cart cartFromUser = cartService.findCartWithItemsByUserId(user.getId());
+
         BigDecimal total = calculateTotal(cartFromUser);
 
         Order order = new Order();
         order.setUser(user);
         order.setShippingAddress(addressLine);
         order.setTotal(total);
+
         Order savedOrder = save(order);
 
         Set<CartItem> cartItems = cartFromUser.getCartItems();
@@ -70,15 +76,14 @@ public class OrderService {
                             .quantity(cartItem.getQuantity())
                             .price(cartItem.getProduct().getPrice())
                             .build();
+
                     orderDetailService.save(orderDetail);
+
                     cartItemService.deleteById(cartItem.getId());
 
                     productService.reduceStock(cartItem.getProduct().getId(), cartItem.getQuantity());
                 }
         );
-
-        return convertToDto(savedOrder);*/
-        return null;
     }
 
     private BigDecimal calculateItemTotal(CartItem cartItem) {

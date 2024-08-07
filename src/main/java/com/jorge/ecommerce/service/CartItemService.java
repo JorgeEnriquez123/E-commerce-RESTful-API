@@ -11,6 +11,9 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+import java.util.Set;
+
 @Service
 public class CartItemService {
     private final CartItemRepository cartItemRepository;
@@ -30,6 +33,11 @@ public class CartItemService {
                 .orElseThrow(() -> new ResourceNotFoundException("CartItem with id: " + id + " not found."));
     }
 
+    @Transactional(rollbackFor = Exception.class)
+    protected void deleteById(Long id) {
+        cartItemRepository.deleteById(id);
+    }
+    @Transactional(rollbackFor = Exception.class)
     protected void deleteByIdAndCartId(Long id, Long cartId) {
         cartItemRepository.deleteByIdAndCartId(id, cartId);
     }
@@ -38,7 +46,6 @@ public class CartItemService {
     protected CartItem save(CartItem cartItem){
         return cartItemRepository.save(cartItem);
     }
-
 
     @Transactional(rollbackFor = Exception.class)
     public CartItemDto saveCartItem(Cart cart, CreateCartItemDto createCartItemDto) {

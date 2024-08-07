@@ -14,7 +14,5 @@ public class OrderDetailMappingConfig {
 
     @PostConstruct
     public void setupOrderDetailMappings(){
-        modelMapper.createTypeMap(OrderDetail.class, OrderDetailDto.class)
-                .addMapping(orderDetail -> orderDetail.getOrder().getId(), OrderDetailDto::setOrderId);
-    }
+       }
 }
