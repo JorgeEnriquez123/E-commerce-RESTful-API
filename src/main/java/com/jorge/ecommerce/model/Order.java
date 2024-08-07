@@ -48,8 +48,4 @@ public class Order {
         dateTime = LocalDateTime.now();
         status = "PENDING";
     }
-
-    public void addOrderDetail(OrderDetail orderDetail) {
-        orderDetails.add(orderDetail);
-    }
 }
