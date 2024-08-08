@@ -36,6 +36,7 @@ public class AuthService {
     }
 
     public LoginResponseDto login(LoginRequestDto loginRequestDto) {
+        log.info("Logging request: {}", loginRequestDto);
         UsernamePasswordAuthenticationToken authenticationToken =
                 new UsernamePasswordAuthenticationToken(loginRequestDto.getUsername(), loginRequestDto.getPassword());
         try {
@@ -52,6 +53,7 @@ public class AuthService {
     }
 
     public LoginResponseDto register(CreateUserDto createUserDto){
+        log.info("Registering user: {}", createUserDto);
         userService.registerUser(createUserDto);
         LoginRequestDto loginRequestDto = LoginRequestDto.builder()
                 .username(createUserDto.getUsername())
@@ -62,6 +64,7 @@ public class AuthService {
     }
 
     public LoginResponseDto refreshToken(RefreshTokenRequestDto requestDto) {
+        log.info("Refreshing token: {}", requestDto);
         try{
             var refreshToken = requestDto.getRefreshToken();
             var username = jwtUtil.extractUsername(refreshToken);

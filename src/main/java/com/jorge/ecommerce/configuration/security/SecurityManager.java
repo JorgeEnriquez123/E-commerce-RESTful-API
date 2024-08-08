@@ -24,6 +24,7 @@ public class SecurityManager {
     private final UserDetailsService userDetailsService;
 
     public Optional<Authentication> authenticate(String jwt){
+        log.debug("Authenticating jwt: {}", jwt);
         try {
             var username = jwtUtil.extractUsername(jwt);
             if(username != null && SecurityContextHolder.getContext().getAuthentication() == null){

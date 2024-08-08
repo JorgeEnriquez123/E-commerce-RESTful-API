@@ -24,9 +24,11 @@ public class Cart {
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     @JsonBackReference
+    @ToString.Exclude
     private User user;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "cart")
     @JsonBackReference
+    @ToString.Exclude
     private Set<CartItem> cartItems = new HashSet<>();
 }

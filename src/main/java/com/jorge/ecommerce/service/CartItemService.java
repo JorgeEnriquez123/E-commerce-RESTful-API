@@ -7,13 +7,12 @@ import com.jorge.ecommerce.model.Cart;
 import com.jorge.ecommerce.model.CartItem;
 import com.jorge.ecommerce.model.Product;
 import com.jorge.ecommerce.repository.CartItemRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.Set;
-
+@Slf4j
 @Service
 public class CartItemService {
     private final CartItemRepository cartItemRepository;
@@ -29,21 +28,25 @@ public class CartItemService {
 
     @Transactional(readOnly = true)
     protected CartItem findByIdAndCartId(Long id, Long cartId) {
+        log.debug("Finding cart item by id: {} and cart id: {} using repository", id, cartId);
         return cartItemRepository.findByIdAndCartId(id, cartId)
                 .orElseThrow(() -> new ResourceNotFoundException("CartItem with id: " + id + " not found."));
     }
 
     @Transactional(rollbackFor = Exception.class)
     protected void deleteById(Long id) {
+        log.debug("Deleting cart item by id: {} using repository", id);
         cartItemRepository.deleteById(id);
     }
     @Transactional(rollbackFor = Exception.class)
     protected void deleteByIdAndCartId(Long id, Long cartId) {
+        log.debug("Deleting cart item by id: {} and cart id: {} using repository", id, cartId);
         cartItemRepository.deleteByIdAndCartId(id, cartId);
     }
 
     @Transactional(rollbackFor = Exception.class)
     protected CartItem save(CartItem cartItem){
+        log.debug("Saving cart item: {} using repository", cartItem);
         return cartItemRepository.save(cartItem);
     }
 
@@ -80,6 +83,7 @@ public class CartItemService {
     }
 
     protected CartItemDto convertToDto(CartItem cartItem) {
+        log.debug("Mapping cart item: {}, to Dto", cartItem);
         return modelMapper.map(cartItem, CartItemDto.class);
     }
 }

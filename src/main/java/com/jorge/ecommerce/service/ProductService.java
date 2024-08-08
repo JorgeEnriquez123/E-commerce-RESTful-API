@@ -8,6 +8,7 @@ import com.jorge.ecommerce.model.Category;
 import com.jorge.ecommerce.model.Product;
 import com.jorge.ecommerce.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -16,6 +17,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class ProductService {
@@ -25,20 +27,24 @@ public class ProductService {
 
     @Transactional(readOnly = true)
     protected Product findById(Long id) {
+        log.debug("Finding product by id: {} using repository", id);
         return productRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Product with id: " + id + " not found"));
     }
 
     @Transactional
     protected Product save(Product product){
+        log.debug("Saving product: {} using repository", product);
         return productRepository.save(product);
     }
 
     @Transactional(readOnly = true)
     public Page<ProductDto> findAll(Integer page, Integer pageSize, String sortOrder, String sortBy) {
+        log.debug("Finding all products");
+
         Sort sort = Sort.by(sortOrder.equalsIgnoreCase("DESC") ? Sort.Direction.DESC : Sort.Direction.ASC, sortBy);
         if(page <= 1) {
-            pageSize = 1;
+            page = 1;
         }
         if(pageSize <= 1) {
             pageSize = 1;
@@ -50,12 +56,14 @@ public class ProductService {
 
     @Transactional(readOnly = true)
     public ProductDto getProductById(Long id) {
+        log.debug("Getting product by id: {}", id);
         Product product = findById(id);
         return convertToDto(product);
     }
 
     @Transactional(rollbackFor = Exception.class)
     public ProductDto createProduct(CreateProductDto createProductDto) {
+        log.debug("Creating product: {}", createProductDto);
         Product newProduct = createProductFromDto(createProductDto);
         Product savedProduct = save(newProduct);
         return convertToDto(savedProduct);
@@ -63,6 +71,7 @@ public class ProductService {
 
     @Transactional(rollbackFor = Exception.class)
     public ProductDto updateProduct(Long productId, CreateProductDto createProductDto) {
+        log.debug("Updating product by id: {}, new info: {}", productId, createProductDto);
         Product toUpdateProduct = findById(productId);
         updateProductFromDto(toUpdateProduct, createProductDto);
 
@@ -72,6 +81,7 @@ public class ProductService {
 
     @Transactional(rollbackFor = Exception.class)
     protected void reduceStock(Long productId, Integer quantity) {
+        log.debug("Reduce stock of product by id: {}, quantity: {}", productId, quantity);
         // Check latest stock availability
         Product product = findById(productId);
         product.setStockQuantity(product.getStockQuantity() - quantity);
@@ -82,6 +92,7 @@ public class ProductService {
     }
 
     private Product createProductFromDto(CreateProductDto createProductDto) {
+        log.debug("Creating Product from Dto: {}", createProductDto);
         Category category = categoryService.findById(createProductDto.getCategoryId());
         Product newProduct = modelMapper.map(createProductDto, Product.class);
         newProduct.setCategory(category);
@@ -89,6 +100,7 @@ public class ProductService {
     }
 
     private void updateProductFromDto(Product product, CreateProductDto createProductDto) {
+        log.debug("Updating Product from Dto: {}", createProductDto);
         modelMapper.map(createProductDto, product);
         Category category = categoryService.findById(createProductDto.getCategoryId());
         product.setCategory(category);

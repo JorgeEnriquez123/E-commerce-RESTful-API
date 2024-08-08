@@ -3,6 +3,7 @@ package com.jorge.ecommerce.model;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
+import org.apache.commons.lang3.builder.ToStringExclude;
 
 @Data
 @Entity
@@ -19,6 +20,7 @@ public class CartItem {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(nullable = false, name = "product_id")
     @JsonBackReference
+    @ToStringExclude
     private Product product;
 
     @ManyToOne(fetch = FetchType.LAZY)

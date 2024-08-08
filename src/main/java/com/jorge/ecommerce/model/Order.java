@@ -33,14 +33,17 @@ public class Order {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     @JsonBackReference
+    @ToString.Exclude
     private User user;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "shipping_address_id", nullable = false)
+    @ToString.Exclude
     private AddressLine shippingAddress;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "order")
     @JsonManagedReference
+    @ToString.Exclude
     private Set<OrderDetail> orderDetails = new HashSet<>();
 
     @PrePersist

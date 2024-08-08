@@ -6,6 +6,7 @@ import com.jorge.ecommerce.handler.exception.ResourceNotFoundException;
 import com.jorge.ecommerce.model.AddressLine;
 import com.jorge.ecommerce.model.User;
 import com.jorge.ecommerce.repository.AddressLineRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
@@ -14,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Collections;
 import java.util.List;
 
+@Slf4j
 @Service
 public class AddressLineService {
     private final AddressLineRepository addressLineRepository;
@@ -29,12 +31,14 @@ public class AddressLineService {
 
     @Transactional(readOnly = true)
     protected AddressLine findById(Long id){
+        log.debug("Finding address line by id: {} using repository", id);
         return addressLineRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("AddressLine with id: " + id + " not found"));
     }
 
     @Transactional(readOnly = true)
     protected List<AddressLine> findByUserId(Long userId){
+        log.debug("Finding address lines by user id: {} using repository", userId);
         List<AddressLine> addressLines = addressLineRepository.findByUserId(userId)
                 .orElse(Collections.emptyList());
         if(addressLines.isEmpty()){
@@ -44,12 +48,14 @@ public class AddressLineService {
     }
 
     protected AddressLine findByIdAndUserId(Long id, Long userId){
+        log.debug("Finding address line by id: {} and user id: {} using repository", id, userId);
         return addressLineRepository.findByIdAndUserId(id, userId)
                 .orElseThrow(() -> new ResourceNotFoundException("AddressLine with id: " + id + " not found"));
     }
 
     @Transactional(rollbackFor = Exception.class)
     protected AddressLine save(AddressLine addressLine){
+        log.debug("Saving address line: {} using repository", addressLine);
         return addressLineRepository.save(addressLine);
     }
 
@@ -105,15 +111,18 @@ public class AddressLineService {
     }
 
     private AddressLine createAddressLineFromDto(CreateAddressLineDto createAddressLineDto) {
+        log.debug("Creating Address line from Dto: {}", createAddressLineDto);
         return modelMapper.map(createAddressLineDto, AddressLine.class);
     }
 
     private void updateAddressLineFromDto(AddressLine addressLine, CreateAddressLineDto createAddressLineDto) {
+        log.debug("Updating Address Line from Dto: {}", createAddressLineDto);
         modelMapper.map(createAddressLineDto, addressLine);
         // Only Update Basic Info
     }
 
     private AddressLineDto convertToDto(AddressLine addressLine) {
+        log.debug("Mapping address line: {} to Dto", addressLine);
         return modelMapper.map(addressLine, AddressLineDto.class);
     }
 }
