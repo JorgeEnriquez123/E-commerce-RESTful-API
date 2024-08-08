@@ -1,8 +1,6 @@
 package com.jorge.ecommerce.configuration.security;
 
-import com.jorge.ecommerce.repository.UserRepository;
 import com.jorge.ecommerce.service.UserService;
-import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;

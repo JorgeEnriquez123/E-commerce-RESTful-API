@@ -1,13 +1,8 @@
 package com.jorge.ecommerce.controller;
 
-import com.jorge.ecommerce.dto.CartDto;
 import com.jorge.ecommerce.dto.CartItemDto;
 import com.jorge.ecommerce.dto.create.CreateCartItemDto;
-import com.jorge.ecommerce.model.Cart;
-import com.jorge.ecommerce.model.CartItem;
 import com.jorge.ecommerce.model.User;
-import com.jorge.ecommerce.repository.CartItemRepository;
-import com.jorge.ecommerce.repository.CartRepository;
 import com.jorge.ecommerce.service.CartService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.constraints.Min;

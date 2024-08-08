@@ -1,6 +1,9 @@
 package com.jorge.ecommerce.handler;
 
-import com.jorge.ecommerce.handler.exception.*;
+import com.jorge.ecommerce.handler.exception.FailedLoginException;
+import com.jorge.ecommerce.handler.exception.FailedRefreshTokenException;
+import com.jorge.ecommerce.handler.exception.ResourceNotFoundException;
+import com.jorge.ecommerce.handler.exception.ValueAlreadyExistsException;
 import com.jorge.ecommerce.handler.response.ErrorResponse;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
@@ -14,7 +17,6 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;

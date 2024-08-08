@@ -5,7 +5,6 @@ import com.jorge.ecommerce.dto.auth.LoginResponseDto;
 import com.jorge.ecommerce.dto.auth.RefreshTokenRequestDto;
 import com.jorge.ecommerce.dto.create.CreateUserDto;
 import com.jorge.ecommerce.service.AuthService;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

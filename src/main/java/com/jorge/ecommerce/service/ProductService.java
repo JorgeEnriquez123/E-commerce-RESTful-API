@@ -2,8 +2,8 @@ package com.jorge.ecommerce.service;
 
 import com.jorge.ecommerce.dto.ProductDto;
 import com.jorge.ecommerce.dto.create.CreateProductDto;
-import com.jorge.ecommerce.handler.exception.ResourceNotFoundException;
 import com.jorge.ecommerce.handler.exception.InsufficientProductStockException;
+import com.jorge.ecommerce.handler.exception.ResourceNotFoundException;
 import com.jorge.ecommerce.model.Category;
 import com.jorge.ecommerce.model.Product;
 import com.jorge.ecommerce.repository.ProductRepository;
