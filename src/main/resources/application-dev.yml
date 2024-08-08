@@ -30,5 +30,4 @@ springdoc:
 
 logging:
   level:
-    com.jorge.ecommerce.handler.GlobalExceptionHandler: debug
-    com.jorge.ecommerce.service: debug
+    com.jorge.ecommerce: debug

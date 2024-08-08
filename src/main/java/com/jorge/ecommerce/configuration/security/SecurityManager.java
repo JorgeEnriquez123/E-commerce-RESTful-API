@@ -29,6 +29,7 @@ public class SecurityManager {
             var username = jwtUtil.extractUsername(jwt);
             if(username != null && SecurityContextHolder.getContext().getAuthentication() == null){
                 var userAuthenticated = userDetailsService.loadUserByUsername(username);
+                log.debug("User authenticated: {}", userAuthenticated);
                 if(jwtUtil.isTokenValid(jwt, userAuthenticated)){
                     return of(new UsernamePasswordAuthenticationToken(
                             userAuthenticated,

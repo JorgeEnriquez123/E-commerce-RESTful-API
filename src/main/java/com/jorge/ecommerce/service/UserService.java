@@ -23,6 +23,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Objects;
 
 @Slf4j
 @Service
@@ -119,7 +120,19 @@ public class UserService {
         encryptUserPassword(userToUpdate);
 
         User savedUpdatedUser = save(userToUpdate);
-        cacheManager.getCache("users").evict(oldUsername);
+
+        log.debug("Updating Chaching");
+
+        if(!oldUsername.equals(savedUpdatedUser.getUsername())) {
+            log.debug("Deleting old cached user");
+            Objects.requireNonNull(cacheManager.getCache("users")).evict(oldUsername);
+            //User will have to log in again to get a new JWT with the updated username
+        }
+        else {
+            log.debug("Updating cached user");
+            Objects.requireNonNull(cacheManager.getCache("users")).put(oldUsername, savedUpdatedUser);
+            //Current JWT will still work
+        }
 
         return convertToDto(savedUpdatedUser);
     }
