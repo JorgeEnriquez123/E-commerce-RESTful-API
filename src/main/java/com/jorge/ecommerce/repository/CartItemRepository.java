@@ -7,8 +7,5 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public interface CartItemRepository extends JpaRepository<CartItem, Long> {
-    Optional<CartItem> findByIdAndCartId(Long cartItemId, Long cartId);
-
-    void deleteByIdAndCartId(Long cartItemId, Long cartId);
+public interface CartItemRepository extends JpaRepository<CartItem, CartItem.CartItemPk> {
 }

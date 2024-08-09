@@ -27,21 +27,16 @@ public class CartItemService {
     }
 
     @Transactional(readOnly = true)
-    protected CartItem findByIdAndCartId(Long id, Long cartId) {
-        log.debug("Finding cart item by id: {} and cart id: {} using repository", id, cartId);
-        return cartItemRepository.findByIdAndCartId(id, cartId)
+    protected CartItem findById(CartItem.CartItemPk id) {
+        log.debug("Finding cart item by id: {} using repository", id);
+        return cartItemRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("CartItem with id: " + id + " not found."));
     }
 
     @Transactional(rollbackFor = Exception.class)
-    protected void deleteById(Long id) {
+    protected void deleteById(CartItem.CartItemPk id) {
         log.debug("Deleting cart item by id: {} using repository", id);
         cartItemRepository.deleteById(id);
-    }
-    @Transactional(rollbackFor = Exception.class)
-    protected void deleteByIdAndCartId(Long id, Long cartId) {
-        log.debug("Deleting cart item by id: {} and cart id: {} using repository", id, cartId);
-        cartItemRepository.deleteByIdAndCartId(id, cartId);
     }
 
     @Transactional(rollbackFor = Exception.class)
@@ -52,25 +47,35 @@ public class CartItemService {
 
     @Transactional(rollbackFor = Exception.class)
     public CartItemDto saveCartItem(Cart cart, CreateCartItemDto createCartItemDto) {
-        Product product = productService.findById(createCartItemDto.getProductId());
+        Long productId = createCartItemDto.getProductId();
+        Long cartId = cart.getId();
+
+        Product product = productService.findById(productId);
+
+        CartItem.CartItemPk cartItemPk = CartItem.CartItemPk.builder()
+                .productId(productId)
+                .cartId(cartId)
+                .build();
 
         CartItem newCartItem = CartItem.builder()
+                .id(cartItemPk)
                 .cart(cart)
                 .product(product)
                 .quantity(createCartItemDto.getQuantity())
                 .build();
-
-        /*First Approach directly in CartService
-        cart.getCartItems().add(newCartItem);
-        cartRepository.save(cart);*/
 
         CartItem savedCartItem = save(newCartItem);
         return convertToDto(savedCartItem);
     }
 
     @Transactional(rollbackFor = Exception.class)
-    public void updateCartItemQuantity(Cart cart, Long cartItemId, Integer quantity) {
-        CartItem cartItem = findByIdAndCartId(cart.getId(), cartItemId);
+    public void updateCartItemQuantity(Cart cart, Long productId, Integer quantity) {
+        CartItem.CartItemPk cartItemPk = CartItem.CartItemPk.builder()
+                .productId(productId)
+                .cartId(cart.getId())
+                .build();
+
+        CartItem cartItem = findById(cartItemPk);
 
         cartItem.setQuantity(quantity);
 
@@ -79,7 +84,12 @@ public class CartItemService {
 
     @Transactional(rollbackFor = Exception.class)
     public void deleteCartItem(Cart cart, Long cartItemId) {
-        deleteByIdAndCartId(cartItemId, cart.getId());
+        CartItem.CartItemPk cartItemPk = CartItem.CartItemPk.builder()
+                .productId(cartItemId)
+                .cartId(cart.getId())
+                .build();
+
+        deleteById(cartItemPk);
     }
 
     protected CartItemDto convertToDto(CartItem cartItem) {
