@@ -27,7 +27,7 @@ public class CartItemService {
     }
 
     @Transactional(readOnly = true)
-    protected CartItem findById(CartItem.CartItemPk id) {
+    public CartItem findById(CartItem.CartItemPk id) {
         log.debug("Finding cart item by id: {} using repository", id);
         return cartItemRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("CartItem with id: " + id + " not found."));
@@ -46,33 +46,31 @@ public class CartItemService {
     }
 
     @Transactional(rollbackFor = Exception.class)
-    public CartItemDto saveCartItem(Cart cart, CreateCartItemDto createCartItemDto) {
-        Long productId = createCartItemDto.getProductId();
-        Long cartId = cart.getId();
-
-        Product product = productService.findById(productId);
-
+    public CartItemDto saveCartItem(Cart cart, Long productId, Integer quantity) {
         CartItem.CartItemPk cartItemPk = CartItem.CartItemPk.builder()
                 .productId(productId)
-                .cartId(cartId)
+                .cartId(cart.getId())
                 .build();
+
+        Product product = productService.findById(productId);
 
         CartItem newCartItem = CartItem.builder()
                 .id(cartItemPk)
                 .cart(cart)
                 .product(product)
-                .quantity(createCartItemDto.getQuantity())
+                .quantity(quantity)
                 .build();
 
         CartItem savedCartItem = save(newCartItem);
+
         return convertToDto(savedCartItem);
     }
 
     @Transactional(rollbackFor = Exception.class)
-    public void updateCartItemQuantity(Cart cart, Long productId, Integer quantity) {
+    public void updateCartItemQuantity(Long cartId, Long productId, Integer quantity) {
         CartItem.CartItemPk cartItemPk = CartItem.CartItemPk.builder()
                 .productId(productId)
-                .cartId(cart.getId())
+                .cartId(cartId)
                 .build();
 
         CartItem cartItem = findById(cartItemPk);
@@ -83,10 +81,10 @@ public class CartItemService {
     }
 
     @Transactional(rollbackFor = Exception.class)
-    public void deleteCartItem(Cart cart, Long cartItemId) {
+    public void deleteCartItem(Long cartId, Long productId) {
         CartItem.CartItemPk cartItemPk = CartItem.CartItemPk.builder()
-                .productId(cartItemId)
-                .cartId(cart.getId())
+                .productId(productId)
+                .cartId(cartId)
                 .build();
 
         deleteById(cartItemPk);

@@ -2,7 +2,10 @@ package com.jorge.ecommerce.controller;
 
 import com.jorge.ecommerce.dto.CartItemDto;
 import com.jorge.ecommerce.dto.create.CreateCartItemDto;
+import com.jorge.ecommerce.dto.update.UpdateCartItemDto;
+import com.jorge.ecommerce.model.CartItem;
 import com.jorge.ecommerce.model.User;
+import com.jorge.ecommerce.service.CartItemService;
 import com.jorge.ecommerce.service.CartService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.constraints.Min;
@@ -22,6 +25,7 @@ import java.util.List;
 @RequestMapping("/carts")
 public class CartController {
     private final CartService cartService;
+    private final CartItemService cartItemService;
 
     @GetMapping("/items")
     public ResponseEntity<List<CartItemDto>> getCartItems(@AuthenticationPrincipal User user) {
@@ -29,22 +33,20 @@ public class CartController {
     }
 
     @PostMapping("/items")
-    public ResponseEntity<CartItemDto> addItemToCart(@AuthenticationPrincipal User user, @RequestBody CreateCartItemDto request) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(cartService.addItemToUserCart(user, request));
+    public ResponseEntity<CartItemDto> addItemToCart(@AuthenticationPrincipal User user, @RequestBody CreateCartItemDto createCartItemDto) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(cartService.addItemToUserCart(user, createCartItemDto));
     }
 
-    @PutMapping("/items/{itemId}")
-    public ResponseEntity<Void> updateItemQuantityFromCart(@AuthenticationPrincipal User user,
-                                                                  @PathVariable Long itemId,
-                                                                  @Min(value = 1, message = "quantity must be greater then or equal to 1")
-                                                                  @RequestParam Integer quantity) {
-        cartService.updateItemQuantityFromUserCart(user, itemId, quantity);
+    @PutMapping("/items/{productId}")
+    public ResponseEntity<Void> updateCartItemFromUserCart(@AuthenticationPrincipal User user, @PathVariable Long productId,
+                                                           @RequestBody UpdateCartItemDto updateCartItemDto) {
+        cartService.updateItemQuantityFromUserCart(user, productId, updateCartItemDto);
         return ResponseEntity.noContent().build();
     }
 
-    @DeleteMapping("/items/{itemId}")
-    public ResponseEntity<Void> removeItemFromCart(@AuthenticationPrincipal User user, @PathVariable Long itemId) {
-        cartService.removeItem(user, itemId);
+    @DeleteMapping("/items/{productId}")
+    public ResponseEntity<Void> removeItemFromCart(@AuthenticationPrincipal User user, @PathVariable Long productId) {
+        cartService.removeItem(user, productId);
         return ResponseEntity.noContent().build();
     }
 }

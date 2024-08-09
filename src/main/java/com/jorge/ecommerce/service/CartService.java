@@ -3,6 +3,7 @@ package com.jorge.ecommerce.service;
 import com.jorge.ecommerce.dto.CartDto;
 import com.jorge.ecommerce.dto.CartItemDto;
 import com.jorge.ecommerce.dto.create.CreateCartItemDto;
+import com.jorge.ecommerce.dto.update.UpdateCartItemDto;
 import com.jorge.ecommerce.handler.exception.ResourceNotFoundException;
 import com.jorge.ecommerce.model.Cart;
 import com.jorge.ecommerce.model.User;
@@ -61,23 +62,30 @@ public class CartService {
 
     @Transactional
     public CartItemDto addItemToUserCart(User user, CreateCartItemDto createCartItemDto) {
-        log.debug("Adding Item to Cart from user: {}, item: {}", user, createCartItemDto);
+        log.debug("Adding Item to Cart from user: {}, createCartItemDto: {}", user, createCartItemDto);
         Cart cart = findByUserId(user.getId());
-        return cartItemService.saveCartItem(cart, createCartItemDto);
+
+        Long productId = createCartItemDto.getProductId();
+        Integer quantity = createCartItemDto.getQuantity();
+
+        return cartItemService.saveCartItem(cart, productId, quantity);
     }
 
     @Transactional
-    public void updateItemQuantityFromUserCart(User user, Long cartItemId, Integer quantity) {
-        log.debug("Updating Item Quantity from User: {}, itemId: {}, quantity: {}", user, cartItemId, quantity);
+    public void updateItemQuantityFromUserCart(User user, Long productId, UpdateCartItemDto updateCartItemDto) {
+        log.debug("Updating Item Quantity from User: {}, updateCartItemDto: {}", user, updateCartItemDto);
         Cart cart = findByUserId(user.getId());
-        cartItemService.updateCartItemQuantity(cart, cartItemId, quantity);
+
+        Integer quantity = updateCartItemDto.getQuantity();
+
+        cartItemService.updateCartItemQuantity(cart.getId(), productId, quantity);
     }
 
     @Transactional
-    public void removeItem(User user, Long cartItemId){
-        log.debug("Removing Item from Cart from user: {}, cartItemId: {}", user, cartItemId);
+    public void removeItem(User user, Long productId){
+        log.debug("Removing Item from Cart from user: {}, productId: {}", user, productId);
         Cart cart = findByUserId(user.getId());
-        cartItemService.deleteCartItem(cart, cartItemId);
+        cartItemService.deleteCartItem(cart.getId(), productId);
     }
 
     private CartDto convertToDto(Cart cart) {

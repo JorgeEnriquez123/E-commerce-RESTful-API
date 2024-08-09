@@ -29,7 +29,7 @@ public class CartItem implements Serializable {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(nullable = false, name = "product_id")
     @JsonIgnore
-    @ToStringExclude
+    @ToString.Exclude
     private Product product;
 
     @Column(nullable = false)
