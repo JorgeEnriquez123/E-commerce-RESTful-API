@@ -2,6 +2,7 @@ package com.jorge.ecommerce.service;
 
 import com.jorge.ecommerce.dto.CategoryDto;
 import com.jorge.ecommerce.dto.create.CreateCategoryDto;
+import com.jorge.ecommerce.dto.update.UpdateCategoryDto;
 import com.jorge.ecommerce.handler.exception.ResourceNotFoundException;
 import com.jorge.ecommerce.model.Category;
 import com.jorge.ecommerce.repository.CategoryRepository;
@@ -61,10 +62,10 @@ public class CategoryService {
     }
 
     @Transactional(rollbackFor = Exception.class)
-    public CategoryDto updateCategory(Long categoryId, CreateCategoryDto createCategoryDto) {
-        log.debug("Update category by id: {}, dto: {}", categoryId, createCategoryDto);
+    public CategoryDto updateCategory(Long categoryId, UpdateCategoryDto updateCategoryDto) {
+        log.debug("Update category by id: {}, dto: {}", categoryId, updateCategoryDto);
         Category toUpdateCategory = findById(categoryId);
-        updateCategoryFromDto(toUpdateCategory, createCategoryDto);
+        updateCategoryFromDto(toUpdateCategory, updateCategoryDto);
 
         Category savedUpdatedCategory = save(toUpdateCategory);
         return convertToDto(savedUpdatedCategory);
@@ -75,9 +76,9 @@ public class CategoryService {
         return modelMapper.map(createCategoryDto, Category.class);
     }
 
-    private void updateCategoryFromDto(Category category, CreateCategoryDto createCategoryDto) {
-        log.debug("Update category from Dto: {}", createCategoryDto);
-        modelMapper.map(createCategoryDto, category);
+    private void updateCategoryFromDto(Category category, UpdateCategoryDto updateCategoryDto) {
+        log.debug("Update category from Dto: {}", updateCategoryDto);
+        modelMapper.map(updateCategoryDto, category);
     }
 
     private CategoryDto convertToDto(Category category) {

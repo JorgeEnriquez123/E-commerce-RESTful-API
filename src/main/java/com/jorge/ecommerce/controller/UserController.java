@@ -4,6 +4,8 @@ import com.jorge.ecommerce.dto.AddressLineDto;
 import com.jorge.ecommerce.dto.UserDto;
 import com.jorge.ecommerce.dto.create.CreateAddressLineDto;
 import com.jorge.ecommerce.dto.create.CreateUserDto;
+import com.jorge.ecommerce.dto.update.UpdateAddressLineDto;
+import com.jorge.ecommerce.dto.update.UpdateUserDto;
 import com.jorge.ecommerce.model.User;
 import com.jorge.ecommerce.service.UserService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -39,8 +41,8 @@ public class UserController {
     }
 
     @PutMapping("/{userId}")
-    public ResponseEntity<UserDto> updateUserPersonalInfo(@AuthenticationPrincipal User user, @RequestBody CreateUserDto createUserDto){
-        return ResponseEntity.ok().body(userService.updateUserPersonalInfo(user, createUserDto));
+    public ResponseEntity<UserDto> updateUserPersonalInfo(@AuthenticationPrincipal User user, @RequestBody UpdateUserDto updateUserDto){
+        return ResponseEntity.ok().body(userService.updateUserPersonalInfo(user, updateUserDto));
     }
 
     @GetMapping("/{userId}/addressLines")
@@ -54,8 +56,9 @@ public class UserController {
     }
 
     @PutMapping("/addressLines/{addressLineId}")
-    public ResponseEntity<AddressLineDto> updateAddressLine(@AuthenticationPrincipal User user, @PathVariable Long addressLineId, @RequestBody CreateAddressLineDto createAddressLineDto){
-        return ResponseEntity.ok(userService.updateAddressLine(user, addressLineId, createAddressLineDto));
+    public ResponseEntity<AddressLineDto> updateAddressLine(@AuthenticationPrincipal User user, @PathVariable Long addressLineId,
+                                                            @RequestBody UpdateAddressLineDto updateAddressLineDto){
+        return ResponseEntity.ok(userService.updateAddressLine(user, addressLineId, updateAddressLineDto));
     }
 
     @PutMapping("/{userId}/addressLines/{addressLineId}/set-default")

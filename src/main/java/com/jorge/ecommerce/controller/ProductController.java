@@ -2,6 +2,7 @@ package com.jorge.ecommerce.controller;
 
 import com.jorge.ecommerce.dto.ProductDto;
 import com.jorge.ecommerce.dto.create.CreateProductDto;
+import com.jorge.ecommerce.dto.update.UpdateProductDto;
 import com.jorge.ecommerce.service.ProductService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
@@ -39,7 +40,7 @@ public class ProductController {
     }
 
     @PutMapping("/{productId}")
-    public ResponseEntity<ProductDto> update(@PathVariable Long productId, @Valid @RequestBody CreateProductDto createProductDto){
-        return ResponseEntity.ok(productService.updateProduct(productId, createProductDto));
+    public ResponseEntity<ProductDto> update(@PathVariable Long productId, @Valid @RequestBody UpdateProductDto updateProductDto){
+        return ResponseEntity.ok(productService.updateProduct(productId, updateProductDto));
     }
 }

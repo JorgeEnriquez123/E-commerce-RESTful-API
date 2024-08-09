@@ -2,6 +2,7 @@ package com.jorge.ecommerce.controller;
 
 import com.jorge.ecommerce.dto.CategoryDto;
 import com.jorge.ecommerce.dto.create.CreateCategoryDto;
+import com.jorge.ecommerce.dto.update.UpdateCategoryDto;
 import com.jorge.ecommerce.service.CategoryService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
@@ -39,7 +40,7 @@ public class CategoryController {
     }
 
     @PutMapping("/{categoryId}")
-    public ResponseEntity<CategoryDto> updateCategory(@PathVariable Long categoryId, @Valid @RequestBody CreateCategoryDto createCategoryDto) {
-        return ResponseEntity.ok(categoryService.updateCategory(categoryId, createCategoryDto));
+    public ResponseEntity<CategoryDto> updateCategory(@PathVariable Long categoryId, @Valid @RequestBody UpdateCategoryDto updateCategoryDto) {
+        return ResponseEntity.ok(categoryService.updateCategory(categoryId, updateCategoryDto));
     }
 }

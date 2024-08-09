@@ -2,6 +2,7 @@ package com.jorge.ecommerce.service;
 
 import com.jorge.ecommerce.dto.ProductDto;
 import com.jorge.ecommerce.dto.create.CreateProductDto;
+import com.jorge.ecommerce.dto.update.UpdateProductDto;
 import com.jorge.ecommerce.handler.exception.InsufficientProductStockException;
 import com.jorge.ecommerce.handler.exception.ResourceNotFoundException;
 import com.jorge.ecommerce.model.Category;
@@ -70,10 +71,10 @@ public class ProductService {
     }
 
     @Transactional(rollbackFor = Exception.class)
-    public ProductDto updateProduct(Long productId, CreateProductDto createProductDto) {
-        log.debug("Updating product by id: {}, new info: {}", productId, createProductDto);
+    public ProductDto updateProduct(Long productId, UpdateProductDto updateProductDto) {
+        log.debug("Updating product by id: {}, new info: {}", productId, updateProductDto);
         Product toUpdateProduct = findById(productId);
-        updateProductFromDto(toUpdateProduct, createProductDto);
+        updateProductFromDto(toUpdateProduct, updateProductDto);
 
         Product savedUpdatedProduct = save(toUpdateProduct);
         return convertToDto(savedUpdatedProduct);
@@ -99,10 +100,10 @@ public class ProductService {
         return newProduct;
     }
 
-    private void updateProductFromDto(Product product, CreateProductDto createProductDto) {
-        log.debug("Updating Product from Dto: {}", createProductDto);
-        modelMapper.map(createProductDto, product);
-        Category category = categoryService.findById(createProductDto.getCategoryId());
+    private void updateProductFromDto(Product product, UpdateProductDto updateProductDto) {
+        log.debug("Updating Product from Dto: {}", updateProductDto);
+        modelMapper.map(updateProductDto, product);
+        Category category = categoryService.findById(updateProductDto.getCategoryId());
         product.setCategory(category);
     }
 

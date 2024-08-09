@@ -2,6 +2,7 @@ package com.jorge.ecommerce.service;
 
 import com.jorge.ecommerce.dto.AddressLineDto;
 import com.jorge.ecommerce.dto.create.CreateAddressLineDto;
+import com.jorge.ecommerce.dto.update.UpdateAddressLineDto;
 import com.jorge.ecommerce.handler.exception.ResourceNotFoundException;
 import com.jorge.ecommerce.model.AddressLine;
 import com.jorge.ecommerce.model.User;
@@ -79,10 +80,10 @@ public class AddressLineService {
     }
 
     @Transactional(rollbackFor = Exception.class)
-    public AddressLineDto updateAddressLineById(Long userId, Long addressLineId, CreateAddressLineDto createAddressLineDto) {
+    public AddressLineDto updateAddressLineById(Long userId, Long addressLineId, UpdateAddressLineDto updateAddressLineDto) {
         AddressLine toUpdateAddressLine = findByIdAndUserId(addressLineId, userId);
 
-        updateAddressLineFromDto(toUpdateAddressLine, createAddressLineDto);
+        updateAddressLineFromDto(toUpdateAddressLine, updateAddressLineDto);
 
         AddressLine savedUpdatedAddressLine = save(toUpdateAddressLine);
         return convertToDto(savedUpdatedAddressLine);
@@ -115,9 +116,9 @@ public class AddressLineService {
         return modelMapper.map(createAddressLineDto, AddressLine.class);
     }
 
-    private void updateAddressLineFromDto(AddressLine addressLine, CreateAddressLineDto createAddressLineDto) {
-        log.debug("Updating Address Line from Dto: {}", createAddressLineDto);
-        modelMapper.map(createAddressLineDto, addressLine);
+    private void updateAddressLineFromDto(AddressLine addressLine, UpdateAddressLineDto updateAddressLineDto) {
+        log.debug("Updating Address Line from Dto: {}", updateAddressLineDto);
+        modelMapper.map(updateAddressLineDto, addressLine);
         // Only Update Basic Info
     }
 

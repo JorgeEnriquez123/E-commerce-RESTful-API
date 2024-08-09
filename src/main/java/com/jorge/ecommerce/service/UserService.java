@@ -4,6 +4,8 @@ import com.jorge.ecommerce.dto.AddressLineDto;
 import com.jorge.ecommerce.dto.UserDto;
 import com.jorge.ecommerce.dto.create.CreateAddressLineDto;
 import com.jorge.ecommerce.dto.create.CreateUserDto;
+import com.jorge.ecommerce.dto.update.UpdateAddressLineDto;
+import com.jorge.ecommerce.dto.update.UpdateUserDto;
 import com.jorge.ecommerce.handler.exception.ResourceNotFoundException;
 import com.jorge.ecommerce.handler.exception.ValueAlreadyExistsException;
 import com.jorge.ecommerce.model.Cart;
@@ -110,13 +112,13 @@ public class UserService {
     }
 
     @Transactional(rollbackFor = Exception.class)
-    public UserDto updateUserPersonalInfo(User user, CreateUserDto createUserDto) {
-        log.debug("Updating user personal info: {}, new info: {}", user, createUserDto);
+    public UserDto updateUserPersonalInfo(User user, UpdateUserDto updateUserDto) {
+        log.debug("Updating user personal info: {}, new info: {}", user, updateUserDto);
 
         User userToUpdate = findById(user.getId());
         String oldUsername = userToUpdate.getUsername();
 
-        updateUserFromDto(userToUpdate, createUserDto);
+        updateUserFromDto(userToUpdate, updateUserDto);
         encryptUserPassword(userToUpdate);
 
         User savedUpdatedUser = save(userToUpdate);
@@ -147,9 +149,9 @@ public class UserService {
         return addressLineService.getByUserId(user.getId());
     }
 
-    public AddressLineDto updateAddressLine(User user, Long addressLineId, CreateAddressLineDto createAddressLineDto) {
-        log.debug("Updating address line: {}, for user: {}", createAddressLineDto, user);
-        return addressLineService.updateAddressLineById(user.getId(), addressLineId, createAddressLineDto);
+    public AddressLineDto updateAddressLine(User user, Long addressLineId, UpdateAddressLineDto updateAddressLineDto) {
+        log.debug("Updating address line: {}, for user: {}", updateAddressLineDto, user);
+        return addressLineService.updateAddressLineById(user.getId(), addressLineId, updateAddressLineDto);
     }
 
     public void setDefaultAddressLine(User user, Long addressLineId) {
@@ -175,9 +177,9 @@ public class UserService {
         return modelMapper.map(createUserDto, User.class);
     }
 
-    private void updateUserFromDto(User user, CreateUserDto createUserDto){
-        log.debug("Updating User from Dto: {}", createUserDto);
-        modelMapper.map(createUserDto, user);
+    private void updateUserFromDto(User user, UpdateUserDto updateUserDto){
+        log.debug("Updating User from Dto: {}", updateUserDto);
+        modelMapper.map(updateUserDto, user);
     }
 
     private UserDto convertToDto(User user) {
