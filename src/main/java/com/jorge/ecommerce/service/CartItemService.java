@@ -27,7 +27,7 @@ public class CartItemService {
     }
 
     @Transactional(readOnly = true)
-    public CartItem findById(CartItem.CartItemPk id) {
+    protected CartItem findById(CartItem.CartItemPk id) {
         log.debug("Finding cart item by id: {} using repository", id);
         return cartItemRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("CartItem with id: " + id + " not found."));

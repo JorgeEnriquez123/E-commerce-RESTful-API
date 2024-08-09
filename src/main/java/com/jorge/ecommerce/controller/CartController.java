@@ -25,7 +25,6 @@ import java.util.List;
 @RequestMapping("/carts")
 public class CartController {
     private final CartService cartService;
-    private final CartItemService cartItemService;
 
     @GetMapping("/items")
     public ResponseEntity<List<CartItemDto>> getCartItems(@AuthenticationPrincipal User user) {
