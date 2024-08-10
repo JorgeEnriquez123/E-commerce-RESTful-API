@@ -13,5 +13,6 @@ import lombok.NoArgsConstructor;
 @Builder
 public class UpdateCartItemDto {
     @Positive
+    @NotNull
     private Integer quantity;
 }
