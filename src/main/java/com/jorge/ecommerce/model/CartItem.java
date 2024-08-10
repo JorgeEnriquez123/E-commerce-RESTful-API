@@ -26,7 +26,7 @@ public class CartItem implements Serializable {
     private Cart cart;
 
     @MapsId("productId")
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(nullable = false, name = "product_id")
     @JsonIgnore
     @ToString.Exclude

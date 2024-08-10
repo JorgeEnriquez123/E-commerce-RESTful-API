@@ -1,7 +1,6 @@
 package com.jorge.ecommerce.service;
 
 import com.jorge.ecommerce.dto.CartItemDto;
-import com.jorge.ecommerce.dto.create.CreateCartItemDto;
 import com.jorge.ecommerce.handler.exception.ResourceNotFoundException;
 import com.jorge.ecommerce.model.Cart;
 import com.jorge.ecommerce.model.CartItem;
@@ -24,6 +23,13 @@ public class CartItemService {
         this.cartItemRepository = cartItemRepository;
         this.productService = productService;
         this.modelMapper = modelMapper;
+    }
+
+    @Transactional(readOnly = true)
+    protected CartItem findByIdOrElseNull(CartItem.CartItemPk id) {
+        log.debug("Finding cart item by id: {} or return Null using repository", id);
+        return cartItemRepository.findById(id)
+                .orElse(null);
     }
 
     @Transactional(readOnly = true)
@@ -51,6 +57,19 @@ public class CartItemService {
                 .productId(productId)
                 .cartId(cart.getId())
                 .build();
+
+        log.debug("Checking if CartItem is already in Cart");
+        CartItem cartItem = findByIdOrElseNull(cartItemPk);
+
+        if(cartItem != null) {
+            log.debug("CartItem is already in Cart. Updating cart item quantity");
+            Integer currentQuantity = cartItem.getQuantity();
+
+            cartItem.setQuantity(currentQuantity + quantity);
+            save(cartItem);
+
+            return convertToDto(cartItem);
+        }
 
         Product product = productService.findById(productId);
 
