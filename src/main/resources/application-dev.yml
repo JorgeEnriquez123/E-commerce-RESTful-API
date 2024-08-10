@@ -18,10 +18,13 @@ spring:
     redis:
       host: localhost
       port: 6379
+      connect-timeout: 2000
+
   cache:
     type: redis
     redis:
       cache-null-values: true
+      time-to-live: 900s  # Same time as JWT's lifespan
 
 springdoc:
   swagger-ui:
