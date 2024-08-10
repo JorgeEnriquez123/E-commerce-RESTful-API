@@ -53,9 +53,11 @@ public class CartItemService {
 
     @Transactional(rollbackFor = Exception.class)
     public CartItemDto saveCartItem(Cart cart, Long productId, Integer quantity) {
+        Long cartId = cart.getId();
+
         CartItem.CartItemPk cartItemPk = CartItem.CartItemPk.builder()
                 .productId(productId)
-                .cartId(cart.getId())
+                .cartId(cartId)
                 .build();
 
         log.debug("Checking if CartItem is already in Cart");

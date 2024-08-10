@@ -63,7 +63,7 @@ public class CartService {
     @Transactional(rollbackFor = Exception.class)
     public CartItemDto addItemToUserCart(User user, CreateCartItemDto createCartItemDto) {
         log.debug("Adding Item to Cart from user: {}, createCartItemDto: {}", user, createCartItemDto);
-        Cart cart = findByUserId(user.getId());
+        Cart cart = user.getCart();
 
         Long productId = createCartItemDto.getProductId();
         Integer quantity = createCartItemDto.getQuantity();
@@ -74,18 +74,18 @@ public class CartService {
     @Transactional(rollbackFor = Exception.class)
     public void updateItemQuantityFromUserCart(User user, Long productId, UpdateCartItemDto updateCartItemDto) {
         log.debug("Updating Item Quantity from User: {}, updateCartItemDto: {}", user, updateCartItemDto);
-        Cart cart = findByUserId(user.getId());
+        Long cartId = user.getCart().getId();
 
         Integer quantity = updateCartItemDto.getQuantity();
 
-        cartItemService.updateCartItemQuantity(cart.getId(), productId, quantity);
+        cartItemService.updateCartItemQuantity(cartId, productId, quantity);
     }
 
     @Transactional(rollbackFor = Exception.class)
     public void removeItem(User user, Long productId){
         log.debug("Removing Item from Cart from user: {}, productId: {}", user, productId);
-        Cart cart = findByUserId(user.getId());
-        cartItemService.deleteCartItem(cart.getId(), productId);
+        Long cartId = user.getCart().getId();
+        cartItemService.deleteCartItem(cartId, productId);
     }
 
     private CartDto convertToDto(Cart cart) {
