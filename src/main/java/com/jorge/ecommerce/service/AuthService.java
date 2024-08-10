@@ -37,6 +37,7 @@ public class AuthService {
         UsernamePasswordAuthenticationToken authenticationToken =
                 new UsernamePasswordAuthenticationToken(loginRequestDto.getUsername(), loginRequestDto.getPassword());
         try {
+            log.info("Attempting to Log in");
             Authentication authResult = auth.authenticate(authenticationToken);
             var authenticatedUser = (User)authResult.getPrincipal();
             return LoginResponseDto.builder()
@@ -44,7 +45,8 @@ public class AuthService {
                     .refreshToken(jwtUtil.generateRefreshToken(authenticatedUser))
                     .build();
         }
-        catch (AuthenticationException e) {
+        catch (AuthenticationException ex) {
+            log.debug("Exception Details: ", ex);
             throw new FailedLoginException("Login failed, check credentials");
         }
     }
@@ -75,6 +77,7 @@ public class AuthService {
             }
         }
         catch (Exception ex) {
+            log.debug("Exception Details: ", ex);
             log.error("Refresh token could not be validated. {}", ex.getMessage());
             throw new FailedRefreshTokenException("Refresh token could not be validated");
         }

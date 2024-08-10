@@ -1,11 +1,14 @@
 package com.jorge.ecommerce.model;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -37,6 +40,9 @@ public class User implements UserDetails, Serializable {
     private String lastName;
     @Column(nullable = false)
     private LocalDateTime createdAt;
+
+    @OneToOne(fetch = FetchType.EAGER, mappedBy = "user")
+    private Cart cart;
 
     @PrePersist
     protected void onCreate() {
