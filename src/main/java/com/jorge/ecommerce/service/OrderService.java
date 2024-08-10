@@ -70,13 +70,24 @@ public class OrderService {
         Order savedOrder = save(order);
 
         Set<CartItem> cartItems = cartFromUser.getCartItems();
+
+        log.debug("Creating order details based on each product");
         cartItems.forEach(
                 cartItem -> {
+                    Product cartItemProduct = cartItem.getProduct();
+                    Integer cartItemQuantity = cartItem.getQuantity();
+
+                    OrderDetail.OrderDetailPk orderDetailPk = OrderDetail.OrderDetailPk.builder()
+                            .productId(cartItemProduct.getId())
+                            .orderId(savedOrder.getId())
+                            .build();
+
                     OrderDetail orderDetail = OrderDetail.builder()
+                            .id(orderDetailPk)
                             .order(savedOrder)
-                            .product(cartItem.getProduct())
-                            .quantity(cartItem.getQuantity())
-                            .price(cartItem.getProduct().getPrice())
+                            .product(cartItemProduct)
+                            .quantity(cartItemQuantity)
+                            .price(cartItemProduct.getPrice())
                             .build();
 
                     orderDetailService.save(orderDetail);

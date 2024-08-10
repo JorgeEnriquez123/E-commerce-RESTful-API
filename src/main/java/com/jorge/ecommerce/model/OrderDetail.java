@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 
 @Data
@@ -12,21 +13,33 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 @Builder
 public class OrderDetail {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @EmbeddedId
+    private OrderDetailPk id;
 
+    @MapsId("orderId")
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "order_id")
+    @JoinColumn(nullable = false, name = "order_id")
     @JsonBackReference
     @ToString.Exclude
     private Order order;
 
+    @MapsId("productId")
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "product_id")
+    @JoinColumn(nullable = false, name = "product_id")
     @ToString.Exclude
     private Product product;
 
     private Integer quantity;
     private BigDecimal price;
+
+
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Builder
+    @Embeddable
+    public static class OrderDetailPk implements Serializable {
+        Long orderId;
+        Long productId;
+    }
 }

@@ -14,7 +14,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class CartItem implements Serializable {
+public class CartItem {
     @EmbeddedId
     private CartItemPk id;
 
@@ -42,7 +42,7 @@ public class CartItem implements Serializable {
     @Builder
     @Embeddable
     public static class CartItemPk implements Serializable {
-        private Long cartId;
-        private Long productId;
+        Long cartId;
+        Long productId;
     }
 }

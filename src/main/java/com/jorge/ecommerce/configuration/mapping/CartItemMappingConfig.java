@@ -15,8 +15,8 @@ public class CartItemMappingConfig {
     @PostConstruct
     public void setupCartItemMappings(){
         modelMapper.createTypeMap(CartItem.class, CartItemDto.class)
-                .addMapping(cartitem -> cartitem.getProduct().getId(), CartItemDto::setProductId)
-                .addMapping(cartItem -> cartItem.getCart().getId(), CartItemDto::setCartId)
+                .addMapping(cartitem -> cartitem.getId().getProductId(), CartItemDto::setProductId)
+                .addMapping(cartItem -> cartItem.getId().getCartId(), CartItemDto::setCartId)
                 //Product's Category Mapping Config seems not to be working, so I'm setting it up here manually
                 .<String>addMapping(cartItem -> cartItem.getProduct().getCategory().getName(),
                         (cartItemDto, value) -> cartItemDto.getProduct().setCategory(value));

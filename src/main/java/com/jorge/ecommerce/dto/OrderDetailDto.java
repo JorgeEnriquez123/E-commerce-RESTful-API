@@ -1,5 +1,6 @@
 package com.jorge.ecommerce.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -12,7 +13,10 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 @Builder
 public class OrderDetailDto {
-    private Long id;
+    @JsonIgnore
+    private Long orderId;
+    @JsonIgnore
+    private Long productId;
     private ProductDto product;
     private Integer quantity;
     private BigDecimal price;
