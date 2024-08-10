@@ -48,6 +48,7 @@ public class AddressLineService {
         return addressLines;
     }
 
+    @Transactional(readOnly = true)
     protected AddressLine findByIdAndUserId(Long id, Long userId){
         log.debug("Finding address line by id: {} and user id: {} using repository", id, userId);
         return addressLineRepository.findByIdAndUserId(id, userId)

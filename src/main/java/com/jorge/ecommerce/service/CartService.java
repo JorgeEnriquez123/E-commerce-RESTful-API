@@ -45,7 +45,7 @@ public class CartService {
                 .orElseThrow(() -> new ResourceNotFoundException("Cart of User with id: " + userId + " not found"));
     }
 
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     protected Cart save(Cart cart){
         log.debug("Saving cart: {} using repository", cart);
         return cartRepository.save(cart);
@@ -60,7 +60,7 @@ public class CartService {
                 .collect(Collectors.toList());
     }
 
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public CartItemDto addItemToUserCart(User user, CreateCartItemDto createCartItemDto) {
         log.debug("Adding Item to Cart from user: {}, createCartItemDto: {}", user, createCartItemDto);
         Cart cart = findByUserId(user.getId());
@@ -71,7 +71,7 @@ public class CartService {
         return cartItemService.saveCartItem(cart, productId, quantity);
     }
 
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void updateItemQuantityFromUserCart(User user, Long productId, UpdateCartItemDto updateCartItemDto) {
         log.debug("Updating Item Quantity from User: {}, updateCartItemDto: {}", user, updateCartItemDto);
         Cart cart = findByUserId(user.getId());
@@ -81,7 +81,7 @@ public class CartService {
         cartItemService.updateCartItemQuantity(cart.getId(), productId, quantity);
     }
 
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void removeItem(User user, Long productId){
         log.debug("Removing Item from Cart from user: {}, productId: {}", user, productId);
         Cart cart = findByUserId(user.getId());

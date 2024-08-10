@@ -30,7 +30,7 @@ public class CategoryService {
                 .orElseThrow(() -> new ResourceNotFoundException("Category with id: " + id + " not found"));
     }
 
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     protected Category save(Category category){
         log.debug("Save category: {} using repository", category);
         return categoryRepository.save(category);

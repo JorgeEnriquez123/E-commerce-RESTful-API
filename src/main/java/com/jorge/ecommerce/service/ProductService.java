@@ -33,7 +33,7 @@ public class ProductService {
                 .orElseThrow(() -> new ResourceNotFoundException("Product with id: " + id + " not found"));
     }
 
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     protected Product save(Product product){
         log.debug("Saving product: {} using repository", product);
         return productRepository.save(product);
