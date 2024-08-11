@@ -2,6 +2,7 @@ package com.jorge.ecommerce.controller;
 
 import com.jorge.ecommerce.dto.AddressLineDto;
 import com.jorge.ecommerce.dto.UserDto;
+import com.jorge.ecommerce.dto.auth.AddRoleToUserDto;
 import com.jorge.ecommerce.dto.create.CreateAddressLineDto;
 import com.jorge.ecommerce.dto.create.CreateUserDto;
 import com.jorge.ecommerce.dto.update.UpdateAddressLineDto;
@@ -64,6 +65,20 @@ public class UserController {
     @PutMapping("/{userId}/addressLines/{addressLineId}/set-default")
     public ResponseEntity<Void> setDefaultAddressLine(@AuthenticationPrincipal User user, @PathVariable Long addressLineId){
         userService.setDefaultAddressLine(user, addressLineId);
+        return ResponseEntity.noContent().build();
+    }
+
+    // -----------
+
+    @PutMapping("/{userId}/roles")
+    public ResponseEntity<Void> addRoleToUser(@PathVariable Long userId, @RequestBody AddRoleToUserDto addRoleToUserDto){
+        userService.addRoleToUser(userId, addRoleToUserDto);
+        return ResponseEntity.noContent().build();
+    }
+
+    @DeleteMapping("/{userId}/roles/{roleId}")
+    public ResponseEntity<UserDto> removeRoleFromUser(@PathVariable Long userId, @PathVariable Long roleId){
+        userService.deleteRoleFromUser(userId, roleId);
         return ResponseEntity.noContent().build();
     }
 }

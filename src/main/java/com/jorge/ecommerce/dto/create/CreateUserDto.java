@@ -1,12 +1,12 @@
 package com.jorge.ecommerce.dto.create;
 
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -24,4 +24,6 @@ public class CreateUserDto {
     @NotBlank
     @Size(min = 2, max = 50)
     private String lastName;
+    @Size(max = 30)
+    private String role;
 }

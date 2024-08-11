@@ -2,6 +2,7 @@ package com.jorge.ecommerce.service;
 
 import com.jorge.ecommerce.dto.AddressLineDto;
 import com.jorge.ecommerce.dto.UserDto;
+import com.jorge.ecommerce.dto.auth.AddRoleToUserDto;
 import com.jorge.ecommerce.dto.create.CreateAddressLineDto;
 import com.jorge.ecommerce.dto.create.CreateUserDto;
 import com.jorge.ecommerce.dto.update.UpdateAddressLineDto;
@@ -9,6 +10,7 @@ import com.jorge.ecommerce.dto.update.UpdateUserDto;
 import com.jorge.ecommerce.handler.exception.ResourceNotFoundException;
 import com.jorge.ecommerce.handler.exception.ValueAlreadyExistsException;
 import com.jorge.ecommerce.model.Cart;
+import com.jorge.ecommerce.model.Role;
 import com.jorge.ecommerce.model.User;
 import com.jorge.ecommerce.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -24,8 +26,7 @@ import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 @Slf4j
 @Service
@@ -36,16 +37,18 @@ public class UserService {
     private final AuthService authService;
     private final AddressLineService addressLineService;
     private final CacheManager cacheManager;
+    private final RoleService roleService;
 
     public UserService(UserRepository userRepository, ModelMapper modelMapper,
                        @Lazy CartService cartService, @Lazy AuthService authService,
-                       @Lazy AddressLineService addressLineService, RedisCacheManager cacheManager) {
+                       @Lazy AddressLineService addressLineService, RedisCacheManager cacheManager, RoleService roleService) {
         this.userRepository = userRepository;
         this.modelMapper = modelMapper;
         this.cartService = cartService;
         this.authService = authService;
         this.addressLineService = addressLineService;
         this.cacheManager = cacheManager;
+        this.roleService = roleService;
     }
 
     @Transactional(readOnly = true)
@@ -59,6 +62,7 @@ public class UserService {
     @Transactional(readOnly = true)
     public User findByUsername(String username) {
         log.debug("Finding user by username: {}", username);
+        System.out.println(userRepository.findByUsername(username));
         return userRepository.findByUsername(username)
                 .orElseThrow(() -> new ResourceNotFoundException("User with username: " + username + " not found."));
     }
@@ -98,9 +102,25 @@ public class UserService {
     public UserDto registerUser(CreateUserDto createUserDto) {
         log.debug("Registering user: {}", createUserDto);
 
+        Set<Role> roles = new HashSet<>();
+
+        if(createUserDto.getRole() != null){
+            String roleName = createUserDto.getRole();
+            Role role = roleService.findByName(roleName);
+            log.debug("Adding Role: {} to User", role);
+            roles.add(role);
+        }
+
+        else {
+            log.debug("Adding Default Role CUSTOMER to user");
+            roles.add(roleService.findByName("CUSTOMER"));
+        }
+
         User newUser = createUserFromDto(createUserDto);
         checkIfUsernameAlreadyExists(newUser.getUsername());
         encryptUserPassword(newUser);
+
+        newUser.setRoles(roles);
 
         User savedUser = save(newUser);
 
@@ -123,17 +143,12 @@ public class UserService {
 
         User savedUpdatedUser = save(userToUpdate);
 
-        log.debug("Updating Chaching");
-
-        if(!oldUsername.equals(savedUpdatedUser.getUsername())) {
-            log.debug("Deleting old cached user");
-            Objects.requireNonNull(cacheManager.getCache("users")).evict(oldUsername);
-            //User will have to log in again to get a new JWT with the updated username
+        log.debug("Making Caching Up-to-date");
+        if(oldUsername.equals(savedUpdatedUser.getUsername())) {
+            updatedCachedUser(oldUsername, savedUpdatedUser);
         }
         else {
-            log.debug("Updating cached user");
-            Objects.requireNonNull(cacheManager.getCache("users")).put(oldUsername, savedUpdatedUser);
-            //Current JWT will still work
+            evictCachedUser(oldUsername);
         }
 
         return convertToDto(savedUpdatedUser);
@@ -159,6 +174,35 @@ public class UserService {
         addressLineService.setDefaultAddressLine(user.getId(), addressLineId);
     }
 
+    // ------------
+
+    @Transactional(rollbackFor = Exception.class)
+    public void addRoleToUser(Long userId, AddRoleToUserDto addRoleToUserDto) {
+        log.debug("Adding Role: {} to User with id: {}", addRoleToUserDto.getRole(), userId);
+        String roleName = addRoleToUserDto.getRole();
+        Role role = roleService.findByName(roleName);
+
+        User user = findById(userId);
+        user.getRoles().add(role);
+
+        User updatedUser = userRepository.save(user);
+
+        updatedCachedUser(updatedUser.getUsername(), updatedUser);
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    public void deleteRoleFromUser(Long userId, Long roleId) {
+        log.debug("Deleting rol with id: {} from User with id: {}", roleId, userId);
+        Role role = roleService.findById(roleId);
+
+        User user = findById(userId);
+        user.getRoles().remove(role);
+
+        User updatedUser = userRepository.save(user);
+
+        updatedCachedUser(user.getUsername(), updatedUser);
+    }
+
     @Transactional(readOnly = true)
     protected void checkIfUsernameAlreadyExists(String username) {
         log.debug("Checking if username: {} already exists", username);
@@ -180,6 +224,18 @@ public class UserService {
     private void updateUserFromDto(User user, UpdateUserDto updateUserDto){
         log.debug("Updating User from Dto: {}", updateUserDto);
         modelMapper.map(updateUserDto, user);
+    }
+
+    private void evictCachedUser(String username){
+        log.debug("Deleting old cached user");
+        Objects.requireNonNull(cacheManager.getCache("users")).evict(username);
+        //User will have to log in again to get a new JWT with the updated username
+    }
+
+    private void updatedCachedUser(String username, User savedUpdatedUser){
+        log.debug("Updating cached user");
+        Objects.requireNonNull(cacheManager.getCache("users")).put(username, savedUpdatedUser);
+        //Current JWT will still work
     }
 
     private UserDto convertToDto(User user) {

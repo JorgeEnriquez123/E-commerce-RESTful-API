@@ -8,6 +8,7 @@ import com.jorge.ecommerce.handler.exception.FailedLoginException;
 import com.jorge.ecommerce.handler.exception.FailedRefreshTokenException;
 import com.jorge.ecommerce.jwt.JwtUtil;
 import com.jorge.ecommerce.model.User;
+import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -27,6 +28,7 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final UserService userService;
     private final UserDetailsService userDetailsService;
+    private final EntityManager entityManager;
 
     public String encryptPassword(String password) {
         return passwordEncoder.encode(password);
@@ -59,6 +61,7 @@ public class AuthService {
                 .password(createUserDto.getPassword())
                 .build();
 
+        entityManager.clear();
         return login(loginRequestDto);
     }
 

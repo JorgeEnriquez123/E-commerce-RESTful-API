@@ -34,7 +34,7 @@ public class SecurityManager {
                     return of(new UsernamePasswordAuthenticationToken(
                             userAuthenticated,
                             null,
-                            new ArrayList<>()));
+                            userAuthenticated.getAuthorities()));
                 }
             }
         }
