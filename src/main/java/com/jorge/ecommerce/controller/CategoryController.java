@@ -1,5 +1,6 @@
 package com.jorge.ecommerce.controller;
 
+import com.jorge.ecommerce.annotations.RoleAdmin;
 import com.jorge.ecommerce.dto.CategoryDto;
 import com.jorge.ecommerce.dto.create.CreateCategoryDto;
 import com.jorge.ecommerce.dto.update.UpdateCategoryDto;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/categories")
 @RequiredArgsConstructor
+@RoleAdmin
 public class CategoryController {
     private final CategoryService categoryService;
 

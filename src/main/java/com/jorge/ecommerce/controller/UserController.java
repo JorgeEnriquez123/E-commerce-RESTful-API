@@ -1,5 +1,7 @@
 package com.jorge.ecommerce.controller;
 
+import com.jorge.ecommerce.annotations.RoleAdmin;
+import com.jorge.ecommerce.annotations.RoleAdminOrCustomer;
 import com.jorge.ecommerce.dto.AddressLineDto;
 import com.jorge.ecommerce.dto.UserDto;
 import com.jorge.ecommerce.dto.auth.AddRoleToUserDto;
@@ -25,9 +27,11 @@ import java.util.List;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/users")
+@RoleAdminOrCustomer
 public class UserController {
     private final UserService userService;
 
+    @RoleAdmin
     @GetMapping
     public ResponseEntity<Page<UserDto>> getAll(@RequestParam(defaultValue = "1") Integer page,
                                                 @RequestParam(defaultValue = "10") Integer size,
@@ -36,6 +40,7 @@ public class UserController {
         return ResponseEntity.ok(userService.findAll(page, size, sortOrder, sortBy));
     }
 
+    @RoleAdmin
     @GetMapping("/{userId}")
     public ResponseEntity<UserDto> getUserById(@PathVariable Long userId){
         return ResponseEntity.ok(userService.getUserById(userId));
@@ -70,12 +75,14 @@ public class UserController {
 
     // -----------
 
+    @RoleAdmin
     @PutMapping("/{userId}/roles")
     public ResponseEntity<Void> addRoleToUser(@PathVariable Long userId, @RequestBody AddRoleToUserDto addRoleToUserDto){
         userService.addRoleToUser(userId, addRoleToUserDto);
         return ResponseEntity.noContent().build();
     }
 
+    @RoleAdmin
     @DeleteMapping("/{userId}/roles/{roleId}")
     public ResponseEntity<UserDto> removeRoleFromUser(@PathVariable Long userId, @PathVariable Long roleId){
         userService.deleteRoleFromUser(userId, roleId);

@@ -1,5 +1,7 @@
 package com.jorge.ecommerce.controller;
 
+import com.jorge.ecommerce.annotations.RoleAdmin;
+import com.jorge.ecommerce.annotations.RoleAdminOrCustomer;
 import com.jorge.ecommerce.dto.ProductDto;
 import com.jorge.ecommerce.dto.create.CreateProductDto;
 import com.jorge.ecommerce.dto.update.UpdateProductDto;
@@ -19,9 +21,11 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/products")
 @RequiredArgsConstructor
+@RoleAdmin
 public class ProductController {
     private final ProductService productService;
 
+    @RoleAdminOrCustomer
     @GetMapping
     public ResponseEntity<Page<ProductDto>> getAll(@RequestParam(defaultValue = "1") Integer page,
                                                    @RequestParam(defaultValue = "10") Integer size,
@@ -30,6 +34,7 @@ public class ProductController {
         return ResponseEntity.ok(productService.findAll(page, size, sortOrder, sortBy));
     }
 
+    @RoleAdminOrCustomer
     @GetMapping("/{productId}")
     public ResponseEntity<ProductDto> getProductById(@PathVariable Long productId){
         return ResponseEntity.ok(productService.getProductById(productId));

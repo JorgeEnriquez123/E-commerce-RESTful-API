@@ -1,5 +1,6 @@
 package com.jorge.ecommerce.controller;
 
+import com.jorge.ecommerce.annotations.RoleAdminOrCustomer;
 import com.jorge.ecommerce.dto.CartItemDto;
 import com.jorge.ecommerce.dto.create.CreateCartItemDto;
 import com.jorge.ecommerce.dto.update.UpdateCartItemDto;
@@ -23,6 +24,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/carts")
+@RoleAdminOrCustomer
 public class CartController {
     private final CartService cartService;
 

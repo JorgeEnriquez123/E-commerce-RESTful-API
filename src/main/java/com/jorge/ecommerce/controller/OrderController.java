@@ -1,5 +1,6 @@
 package com.jorge.ecommerce.controller;
 
+import com.jorge.ecommerce.annotations.RoleAdminOrCustomer;
 import com.jorge.ecommerce.dto.OrderDto;
 import com.jorge.ecommerce.dto.create.CreateOrderDto;
 import com.jorge.ecommerce.model.User;
@@ -19,6 +20,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/orders")
 @RequiredArgsConstructor
+@RoleAdminOrCustomer
 public class OrderController {
     private final OrderService orderService;
 
