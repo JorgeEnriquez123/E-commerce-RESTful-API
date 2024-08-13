@@ -26,7 +26,10 @@ import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
 
 @Slf4j
 @Service
@@ -40,7 +43,7 @@ public class UserService {
     private final RoleService roleService;
 
     public UserService(UserRepository userRepository, ModelMapper modelMapper,
-                       @Lazy CartService cartService, @Lazy AuthService authService,
+                       CartService cartService, @Lazy AuthService authService,
                        @Lazy AddressLineService addressLineService, RedisCacheManager cacheManager, RoleService roleService) {
         this.userRepository = userRepository;
         this.modelMapper = modelMapper;
@@ -62,7 +65,6 @@ public class UserService {
     @Transactional(readOnly = true)
     public User findByUsername(String username) {
         log.debug("Finding user by username: {}", username);
-        System.out.println(userRepository.findByUsername(username));
         return userRepository.findByUsername(username)
                 .orElseThrow(() -> new ResourceNotFoundException("User with username: " + username + " not found."));
     }

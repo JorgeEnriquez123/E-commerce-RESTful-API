@@ -26,13 +26,6 @@ public class CartItemService {
     }
 
     @Transactional(readOnly = true)
-    protected CartItem findByIdOrElseNull(CartItem.CartItemPk id) {
-        log.debug("Finding cart item by id: {} or return Null using repository", id);
-        return cartItemRepository.findById(id)
-                .orElse(null);
-    }
-
-    @Transactional(readOnly = true)
     protected CartItem findById(CartItem.CartItemPk id) {
         log.debug("Finding cart item by id: {} using repository", id);
         return cartItemRepository.findById(id)
@@ -60,10 +53,10 @@ public class CartItemService {
                 .cartId(cartId)
                 .build();
 
-        log.debug("Checking if CartItem is already in Cart");
-        CartItem cartItem = findByIdOrElseNull(cartItemPk);
+        try {
+            log.debug("Checking if CartItem is already in Cart");
+            CartItem cartItem = findById(cartItemPk);
 
-        if(cartItem != null) {
             log.debug("CartItem is already in Cart. Updating cart item quantity");
             Integer currentQuantity = cartItem.getQuantity();
 
@@ -72,19 +65,20 @@ public class CartItemService {
 
             return convertToDto(cartItem);
         }
+        catch (ResourceNotFoundException e){
+            Product product = productService.findById(productId);
 
-        Product product = productService.findById(productId);
+            CartItem newCartItem = CartItem.builder()
+                    .id(cartItemPk)
+                    .cart(cart)
+                    .product(product)
+                    .quantity(quantity)
+                    .build();
 
-        CartItem newCartItem = CartItem.builder()
-                .id(cartItemPk)
-                .cart(cart)
-                .product(product)
-                .quantity(quantity)
-                .build();
+            CartItem savedCartItem = save(newCartItem);
 
-        CartItem savedCartItem = save(newCartItem);
-
-        return convertToDto(savedCartItem);
+            return convertToDto(savedCartItem);
+        }
     }
 
     @Transactional(rollbackFor = Exception.class)

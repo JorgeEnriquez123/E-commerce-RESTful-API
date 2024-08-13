@@ -1,7 +1,6 @@
 package com.jorge.ecommerce.configuration.mapping;
 
 import com.jorge.ecommerce.dto.OrderDetailDto;
-import com.jorge.ecommerce.model.Order;
 import com.jorge.ecommerce.model.OrderDetail;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;

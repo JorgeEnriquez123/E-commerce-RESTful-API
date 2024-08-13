@@ -6,7 +6,6 @@ import com.jorge.ecommerce.dto.AddressLineDto;
 import com.jorge.ecommerce.dto.UserDto;
 import com.jorge.ecommerce.dto.auth.AddRoleToUserDto;
 import com.jorge.ecommerce.dto.create.CreateAddressLineDto;
-import com.jorge.ecommerce.dto.create.CreateUserDto;
 import com.jorge.ecommerce.dto.update.UpdateAddressLineDto;
 import com.jorge.ecommerce.dto.update.UpdateUserDto;
 import com.jorge.ecommerce.model.User;
