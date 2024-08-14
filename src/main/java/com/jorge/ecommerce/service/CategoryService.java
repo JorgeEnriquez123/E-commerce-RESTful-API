@@ -20,8 +20,9 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 public class CategoryService {
-    private final CategoryRepository categoryRepository;
     private final ModelMapper modelMapper;
+
+    private final CategoryRepository categoryRepository;
 
     @Transactional(readOnly = true)
     protected Category findById(Long id) {

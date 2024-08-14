@@ -30,6 +30,13 @@ import java.util.List;
 public class UserController {
     private final UserService userService;
 
+    @PutMapping
+    public ResponseEntity<UserDto> updateUserPersonalInfo(@AuthenticationPrincipal User user, @RequestBody UpdateUserDto updateUserDto){
+        return ResponseEntity.ok().body(userService.updateUserPersonalInfo(user, updateUserDto));
+    }
+
+    // -----------
+
     @RoleAdmin
     @GetMapping
     public ResponseEntity<Page<UserDto>> getAll(@RequestParam(defaultValue = "1") Integer page,
@@ -44,35 +51,6 @@ public class UserController {
     public ResponseEntity<UserDto> getUserById(@PathVariable Long userId){
         return ResponseEntity.ok(userService.getUserById(userId));
     }
-
-    @PutMapping("/{userId}")
-    public ResponseEntity<UserDto> updateUserPersonalInfo(@AuthenticationPrincipal User user, @RequestBody UpdateUserDto updateUserDto){
-        return ResponseEntity.ok().body(userService.updateUserPersonalInfo(user, updateUserDto));
-    }
-
-    @GetMapping("/{userId}/addressLines")
-    public ResponseEntity<List<AddressLineDto>> getAllAddressLines(@AuthenticationPrincipal User user) {
-        return ResponseEntity.ok(userService.getAddressLines(user));
-    }
-
-    @PostMapping("/{userId}/addressLines")
-    public ResponseEntity<AddressLineDto> addAddressLine(@AuthenticationPrincipal User user, @RequestBody CreateAddressLineDto createAddressLineDto){
-        return ResponseEntity.status(HttpStatus.CREATED).body(userService.addAddressLine(user, createAddressLineDto));
-    }
-
-    @PutMapping("/addressLines/{addressLineId}")
-    public ResponseEntity<AddressLineDto> updateAddressLine(@AuthenticationPrincipal User user, @PathVariable Long addressLineId,
-                                                            @RequestBody UpdateAddressLineDto updateAddressLineDto){
-        return ResponseEntity.ok(userService.updateAddressLine(user, addressLineId, updateAddressLineDto));
-    }
-
-    @PutMapping("/{userId}/addressLines/{addressLineId}/set-default")
-    public ResponseEntity<Void> setDefaultAddressLine(@AuthenticationPrincipal User user, @PathVariable Long addressLineId){
-        userService.setDefaultAddressLine(user, addressLineId);
-        return ResponseEntity.noContent().build();
-    }
-
-    // -----------
 
     @RoleAdmin
     @PutMapping("/{userId}/roles")

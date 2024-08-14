@@ -13,6 +13,7 @@ import com.jorge.ecommerce.model.Cart;
 import com.jorge.ecommerce.model.Role;
 import com.jorge.ecommerce.model.User;
 import com.jorge.ecommerce.repository.UserRepository;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.cache.CacheManager;
@@ -23,6 +24,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.redis.cache.RedisCacheManager;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,26 +35,15 @@ import java.util.Set;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class UserService {
-    private final UserRepository userRepository;
     private final ModelMapper modelMapper;
-    private final CartService cartService;
-    private final AuthService authService;
-    private final AddressLineService addressLineService;
     private final CacheManager cacheManager;
-    private final RoleService roleService;
+    private final PasswordEncoder passwordEncoder;
 
-    public UserService(UserRepository userRepository, ModelMapper modelMapper,
-                       CartService cartService, @Lazy AuthService authService,
-                       @Lazy AddressLineService addressLineService, RedisCacheManager cacheManager, RoleService roleService) {
-        this.userRepository = userRepository;
-        this.modelMapper = modelMapper;
-        this.cartService = cartService;
-        this.authService = authService;
-        this.addressLineService = addressLineService;
-        this.cacheManager = cacheManager;
-        this.roleService = roleService;
-    }
+    private final UserRepository userRepository;
+    private final CartService cartService;
+    private final RoleService roleService;
 
     @Transactional(readOnly = true)
     protected User findById(Long id) {
@@ -155,26 +146,6 @@ public class UserService {
         return convertToDto(savedUpdatedUser);
     }
 
-    public List<AddressLineDto> getAddressLines(User user) {
-        log.debug("Getting address lines from user: {}", user);
-        return addressLineService.getByUserId(user.getId());
-    }
-
-    public AddressLineDto addAddressLine(User user, CreateAddressLineDto createAddressLineDto){
-        log.debug("Adding address line: {}, for user: {}", createAddressLineDto, user);
-        return addressLineService.saveAddressLine(user, createAddressLineDto);
-    }
-
-    public AddressLineDto updateAddressLine(User user, Long addressLineId, UpdateAddressLineDto updateAddressLineDto) {
-        log.debug("Updating address line: {}, for user: {}", updateAddressLineDto, user);
-        return addressLineService.updateAddressLineById(user.getId(), addressLineId, updateAddressLineDto);
-    }
-
-    public void setDefaultAddressLine(User user, Long addressLineId) {
-        log.debug("Setting default address line by id: {}, for user: {}", addressLineId, user);
-        addressLineService.setDefaultAddressLine(user.getId(), addressLineId);
-    }
-
     // ------------
 
     @Transactional(rollbackFor = Exception.class)
@@ -215,7 +186,7 @@ public class UserService {
 
     private void encryptUserPassword(User user){
         log.debug("Encrypting password for user: {}", user);
-        user.setPassword(authService.encryptPassword(user.getPassword()));
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
     }
 
     private User createUserFromDto(CreateUserDto createUserDto) {

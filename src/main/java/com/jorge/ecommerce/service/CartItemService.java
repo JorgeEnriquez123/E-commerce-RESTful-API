@@ -16,9 +16,10 @@ import java.util.List;
 @Slf4j
 @Service
 public class CartItemService {
+    private final ModelMapper modelMapper;
+
     private final CartItemRepository cartItemRepository;
     private final ProductService productService;
-    private final ModelMapper modelMapper;
 
     public CartItemService(CartItemRepository cartItemRepository,
                            ProductService productService, ModelMapper modelMapper) {

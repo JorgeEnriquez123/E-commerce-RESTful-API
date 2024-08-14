@@ -22,9 +22,10 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 public class ProductService {
+    private final ModelMapper modelMapper;
+
     private final ProductRepository productRepository;
     private final CategoryService categoryService;
-    private final ModelMapper modelMapper;
 
     @Transactional(readOnly = true)
     protected Product findById(Long id) {

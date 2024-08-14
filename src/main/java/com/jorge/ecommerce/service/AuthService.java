@@ -25,14 +25,10 @@ import org.springframework.stereotype.Service;
 public class AuthService {
     private final JwtUtil jwtUtil;
     private final AuthenticationManager auth;
-    private final PasswordEncoder passwordEncoder;
-    private final UserService userService;
-    private final UserDetailsService userDetailsService;
     private final EntityManager entityManager;
 
-    public String encryptPassword(String password) {
-        return passwordEncoder.encode(password);
-    }
+    private final UserService userService;
+    private final UserDetailsService userDetailsService;
 
     public LoginResponseDto login(LoginRequestDto loginRequestDto) {
         log.info("Logging request: {}", loginRequestDto);

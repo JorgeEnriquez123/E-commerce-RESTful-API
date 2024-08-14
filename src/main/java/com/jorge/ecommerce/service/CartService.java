@@ -21,9 +21,10 @@ import java.util.stream.Collectors;
 @Slf4j
 @Service
 public class CartService {
+    private final ModelMapper modelMapper;
+
     private final CartRepository cartRepository;
     private final CartItemService cartItemService;
-    private final ModelMapper modelMapper;
 
     public CartService(CartRepository cartRepository, @Lazy CartItemService cartItemService,
                        ModelMapper modelMapper) {

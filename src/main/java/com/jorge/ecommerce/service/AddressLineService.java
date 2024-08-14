@@ -7,6 +7,7 @@ import com.jorge.ecommerce.handler.exception.ResourceNotFoundException;
 import com.jorge.ecommerce.model.AddressLine;
 import com.jorge.ecommerce.model.User;
 import com.jorge.ecommerce.repository.AddressLineRepository;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Lazy;
@@ -18,17 +19,11 @@ import java.util.List;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class AddressLineService {
-    private final AddressLineRepository addressLineRepository;
-    private final UserService userService;
     private final ModelMapper modelMapper;
 
-    public AddressLineService(AddressLineRepository addressLineRepository,
-                              @Lazy UserService userService, ModelMapper modelMapper) {
-        this.addressLineRepository = addressLineRepository;
-        this.userService = userService;
-        this.modelMapper = modelMapper;
-    }
+    private final AddressLineRepository addressLineRepository;
 
     @Transactional(readOnly = true)
     protected AddressLine findById(Long id){
@@ -62,7 +57,9 @@ public class AddressLineService {
     }
 
     @Transactional(readOnly = true)
-    public List<AddressLineDto> getByUserId(Long userId) {
+    public List<AddressLineDto> getByUser(User user) {
+        log.debug("Getting address lines from user: {}", user);
+        Long userId = user.getId();
         List<AddressLine> addressLines = findByUserId(userId);
         return addressLines.stream()
                 .map(this::convertToDto)
@@ -71,6 +68,7 @@ public class AddressLineService {
 
     @Transactional(rollbackFor = Exception.class)
     public AddressLineDto saveAddressLine(User user, CreateAddressLineDto createAddressLineDto) {
+        log.debug("Adding address line: {}, for user: {}", createAddressLineDto, user);
         AddressLine newAddressLine = createAddressLineFromDto(createAddressLineDto);
         newAddressLine.setUser(user);
 
@@ -80,7 +78,9 @@ public class AddressLineService {
     }
 
     @Transactional(rollbackFor = Exception.class)
-    public AddressLineDto updateAddressLineById(Long userId, Long addressLineId, UpdateAddressLineDto updateAddressLineDto) {
+    public AddressLineDto updateAddressLine(User user, Long addressLineId, UpdateAddressLineDto updateAddressLineDto) {
+        log.debug("Updating address line: {}, for user: {}", updateAddressLineDto, user);
+        Long userId = user.getId();
         AddressLine toUpdateAddressLine = findByIdAndUserId(addressLineId, userId);
 
         updateAddressLineFromDto(toUpdateAddressLine, updateAddressLineDto);
@@ -90,7 +90,9 @@ public class AddressLineService {
     }
 
     @Transactional(rollbackFor = Exception.class)
-    public void setDefaultAddressLine(Long userId, Long addressLineId) {
+    public void setDefaultAddressLine(User user, Long addressLineId) {
+        log.debug("Setting default address line by id: {}, for user: {}", addressLineId, user);
+        Long userId = user.getId();
         List<AddressLine> addressLines = findByUserId(userId);
 
         AddressLine newDefaultAddress = addressLines.stream()
@@ -104,10 +106,10 @@ public class AddressLineService {
                     .findFirst()
                     .ifPresent(addressLine -> {
                         addressLine.setIsDefault(false);
-                        addressLineRepository.save(addressLine);
+                        save(addressLine);
                     });
             newDefaultAddress.setIsDefault(true);
-            addressLineRepository.save(newDefaultAddress);
+            save(newDefaultAddress);
         }
     }
 

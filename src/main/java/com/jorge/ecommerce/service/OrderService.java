@@ -13,18 +13,16 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class OrderService {
-    private final OrderRepository orderRepository;
     private final ModelMapper modelMapper;
 
+    private final OrderRepository orderRepository;
     private final AddressLineService addressLineService;
-    private final CartService cartService;
     private final OrderDetailService orderDetailService;
     private final CartItemService cartItemService;
     private final ProductService productService;
@@ -75,7 +73,7 @@ public class OrderService {
                 cartItem -> {
                     Product cartItemProduct = cartItem.getProduct();
                     Integer cartItemQuantity = cartItem.getQuantity();
-                    
+
                     OrderDetail.OrderDetailPk orderDetailPk = OrderDetail.OrderDetailPk.builder()
                             .productId(cartItemProduct.getId())
                             .orderId(savedOrder.getId())
