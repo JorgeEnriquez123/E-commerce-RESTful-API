@@ -6,6 +6,7 @@ import com.jorge.ecommerce.dto.create.CreateCartItemDto;
 import com.jorge.ecommerce.dto.update.UpdateCartItemDto;
 import com.jorge.ecommerce.handler.exception.ResourceNotFoundException;
 import com.jorge.ecommerce.model.Cart;
+import com.jorge.ecommerce.model.CartItem;
 import com.jorge.ecommerce.model.User;
 import com.jorge.ecommerce.repository.CartRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -31,13 +32,6 @@ public class CartService {
         this.modelMapper = modelMapper;
     }
 
-    @Transactional(readOnly = true)
-    protected Cart findCartWithItemsByUserId(Long userId) {
-        log.debug("Finding cart with items by user with ID: {} using repository", userId);
-        return cartRepository.findCartWithItemsByUserId(userId)
-                .orElseThrow(() -> new ResourceNotFoundException("Cart of User with id: " + userId + " not found"));
-    }
-
     @Transactional(rollbackFor = Exception.class)
     protected Cart save(Cart cart){
         log.debug("Saving cart: {} using repository", cart);
@@ -47,8 +41,9 @@ public class CartService {
     @Transactional(readOnly = true)
     public List<CartItemDto> getItemsFromUser(User user) {
         log.debug("Getting cart items from user: {}", user);
-        Cart cart = findCartWithItemsByUserId(user.getId());
-        return cart.getCartItems().stream()
+        Long cartId = user.getCart().getId();
+        List<CartItem> cartItems = cartItemService.findAllByCartId(cartId);
+        return cartItems.stream()
                 .map(cartItemService::convertToDto)
                 .collect(Collectors.toList());
     }

@@ -8,7 +8,7 @@ import com.jorge.ecommerce.dto.create.CreateUserDto;
 import com.jorge.ecommerce.dto.update.UpdateAddressLineDto;
 import com.jorge.ecommerce.dto.update.UpdateUserDto;
 import com.jorge.ecommerce.handler.exception.ResourceNotFoundException;
-import com.jorge.ecommerce.handler.exception.ValueAlreadyExistsException;
+import com.jorge.ecommerce.handler.exception.UsernameAlreadyInUseException;
 import com.jorge.ecommerce.model.Cart;
 import com.jorge.ecommerce.model.Role;
 import com.jorge.ecommerce.model.User;
@@ -104,6 +104,8 @@ public class UserService {
     public UserDto registerUser(CreateUserDto createUserDto) {
         log.debug("Registering user: {}", createUserDto);
 
+        checkIfUsernameAlreadyExists(createUserDto.getUsername());
+
         Set<Role> roles = new HashSet<>();
 
         if(createUserDto.getRole() != null){
@@ -119,7 +121,6 @@ public class UserService {
         }
 
         User newUser = createUserFromDto(createUserDto);
-        checkIfUsernameAlreadyExists(newUser.getUsername());
         encryptUserPassword(newUser);
 
         newUser.setRoles(roles);
@@ -136,14 +137,12 @@ public class UserService {
     @Transactional(rollbackFor = Exception.class)
     public UserDto updateUserPersonalInfo(User user, UpdateUserDto updateUserDto) {
         log.debug("Updating user personal info: {}, new info: {}", user, updateUserDto);
+        String oldUsername = user.getUsername();
 
-        User userToUpdate = findById(user.getId());
-        String oldUsername = userToUpdate.getUsername();
+        updateUserFromDto(user, updateUserDto);
+        encryptUserPassword(user);
 
-        updateUserFromDto(userToUpdate, updateUserDto);
-        encryptUserPassword(userToUpdate);
-
-        User savedUpdatedUser = save(userToUpdate);
+        User savedUpdatedUser = save(user);
 
         log.debug("Making Caching Up-to-date");
         if(oldUsername.equals(savedUpdatedUser.getUsername())) {
@@ -156,14 +155,14 @@ public class UserService {
         return convertToDto(savedUpdatedUser);
     }
 
-    public AddressLineDto addAddressLine(User user, CreateAddressLineDto createAddressLineDto){
-        log.debug("Adding address line: {}, for user: {}", createAddressLineDto, user);
-        return addressLineService.saveAddressLine(user.getId(), createAddressLineDto);
-    }
-
     public List<AddressLineDto> getAddressLines(User user) {
         log.debug("Getting address lines from user: {}", user);
         return addressLineService.getByUserId(user.getId());
+    }
+
+    public AddressLineDto addAddressLine(User user, CreateAddressLineDto createAddressLineDto){
+        log.debug("Adding address line: {}, for user: {}", createAddressLineDto, user);
+        return addressLineService.saveAddressLine(user, createAddressLineDto);
     }
 
     public AddressLineDto updateAddressLine(User user, Long addressLineId, UpdateAddressLineDto updateAddressLineDto) {
@@ -208,9 +207,10 @@ public class UserService {
     @Transactional(readOnly = true)
     protected void checkIfUsernameAlreadyExists(String username) {
         log.debug("Checking if username: {} already exists", username);
-        userRepository.findByUsername(username).ifPresent(user -> {
-            throw new ValueAlreadyExistsException("User with username: " + username + " already exists.");
-        });
+        long count = userRepository.countUsersByUsername(username);
+        if(count > 0){
+            throw new UsernameAlreadyInUseException("User with username: " + username + " already exists.");
+        }
     }
 
     private void encryptUserPassword(User user){

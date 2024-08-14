@@ -58,9 +58,10 @@ public class OrderService {
 
         AddressLine addressLine = addressLineService.findById(shippingAddressId);
 
-        Cart cartFromUser = cartService.findCartWithItemsByUserId(user.getId());
+        Long cartId = user.getCart().getId();
+        List<CartItem> cartItems = cartItemService.findAllByCartId(cartId);
 
-        BigDecimal total = calculateTotal(cartFromUser);
+        BigDecimal total = calculateTotal(cartItems);
 
         Order order = new Order();
         order.setUser(user);
@@ -69,14 +70,12 @@ public class OrderService {
 
         Order savedOrder = save(order);
 
-        Set<CartItem> cartItems = cartFromUser.getCartItems();
-
         log.debug("Creating order details based on each product");
         cartItems.forEach(
                 cartItem -> {
                     Product cartItemProduct = cartItem.getProduct();
                     Integer cartItemQuantity = cartItem.getQuantity();
-
+                    
                     OrderDetail.OrderDetailPk orderDetailPk = OrderDetail.OrderDetailPk.builder()
                             .productId(cartItemProduct.getId())
                             .orderId(savedOrder.getId())
@@ -105,9 +104,9 @@ public class OrderService {
                 .multiply(BigDecimal.valueOf(cartItem.getQuantity()));
     }
 
-    private BigDecimal calculateTotal(Cart cartFromUser) {
-        log.debug("Calculate total for cart: {}", cartFromUser);
-        return cartFromUser.getCartItems().stream()
+    private BigDecimal calculateTotal(List<CartItem> cartItems) {
+        log.debug("Calculate total of cartItems");
+        return cartItems.stream()
                 .map(this::calculateItemTotal)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
     }

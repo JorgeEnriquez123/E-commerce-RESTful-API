@@ -3,7 +3,7 @@ package com.jorge.ecommerce.handler;
 import com.jorge.ecommerce.handler.exception.FailedLoginException;
 import com.jorge.ecommerce.handler.exception.FailedRefreshTokenException;
 import com.jorge.ecommerce.handler.exception.ResourceNotFoundException;
-import com.jorge.ecommerce.handler.exception.ValueAlreadyExistsException;
+import com.jorge.ecommerce.handler.exception.UsernameAlreadyInUseException;
 import com.jorge.ecommerce.handler.response.ErrorResponse;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
@@ -140,7 +140,7 @@ public class GlobalExceptionHandler {
 
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(ResourceNotFoundException.class)
-    public ErrorResponse ResourceNotFoundExceptionHandler(ResourceNotFoundException ex){
+    public ErrorResponse resourceNotFoundExceptionHandler(ResourceNotFoundException ex){
         log.error("Resource not found");
         log.debug("Exception Details: ", ex);
 
@@ -152,9 +152,9 @@ public class GlobalExceptionHandler {
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler(ValueAlreadyExistsException.class)
-    public ErrorResponse ValueAlreadyExistsExceptionHandler(ValueAlreadyExistsException ex){
-        log.error("Value Already exists");
+    @ExceptionHandler(UsernameAlreadyInUseException.class)
+    public ErrorResponse usernameAlreadyInUseExceptionHandler(UsernameAlreadyInUseException ex){
+        log.error("Username already in use");
         log.debug("Exception Details: ", ex);
 
         return ErrorResponse.builder()

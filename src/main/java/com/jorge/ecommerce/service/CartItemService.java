@@ -11,6 +11,8 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Slf4j
 @Service
 public class CartItemService {
@@ -23,6 +25,11 @@ public class CartItemService {
         this.cartItemRepository = cartItemRepository;
         this.productService = productService;
         this.modelMapper = modelMapper;
+    }
+
+    @Transactional(readOnly = true)
+    protected List<CartItem> findAllByCartId(Long cartId) {
+        return cartItemRepository.findByCartId(cartId);
     }
 
     @Transactional(readOnly = true)
@@ -44,6 +51,13 @@ public class CartItemService {
         return cartItemRepository.save(cartItem);
     }
 
+    // This avoids an extra SELECT query when saving an entity with a set ID, which is the case for a Composite Entity
+    @Transactional(rollbackFor = Exception.class)
+    protected void insertCartItem(CartItem cartItem){
+        log.debug("Inserting cart item: {} using repository with custom query", cartItem);
+        cartItemRepository.insertCartItem(cartItem);
+    }
+
     @Transactional(rollbackFor = Exception.class)
     public CartItemDto saveCartItem(Cart cart, Long productId, Integer quantity) {
         Long cartId = cart.getId();
@@ -54,10 +68,10 @@ public class CartItemService {
                 .build();
 
         try {
-            log.debug("Checking if CartItem is already in Cart");
+            log.info("Checking if Cart Item is already in Cart");
             CartItem cartItem = findById(cartItemPk);
 
-            log.debug("CartItem is already in Cart. Updating cart item quantity");
+            log.info("Cart Item is already in Cart. Updating cart item quantity");
             Integer currentQuantity = cartItem.getQuantity();
 
             cartItem.setQuantity(currentQuantity + quantity);
@@ -66,6 +80,7 @@ public class CartItemService {
             return convertToDto(cartItem);
         }
         catch (ResourceNotFoundException e){
+            log.info("Cart Item is not in Cart");
             Product product = productService.findById(productId);
 
             CartItem newCartItem = CartItem.builder()
@@ -75,9 +90,9 @@ public class CartItemService {
                     .quantity(quantity)
                     .build();
 
-            CartItem savedCartItem = save(newCartItem);
+            insertCartItem(newCartItem);
 
-            return convertToDto(savedCartItem);
+            return convertToDto(newCartItem);
         }
     }
 

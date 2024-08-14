@@ -70,11 +70,10 @@ public class AddressLineService {
     }
 
     @Transactional(rollbackFor = Exception.class)
-    public AddressLineDto saveAddressLine(Long userId, CreateAddressLineDto createAddressLineDto) {
-        User user = userService.findById(userId);
-
+    public AddressLineDto saveAddressLine(User user, CreateAddressLineDto createAddressLineDto) {
         AddressLine newAddressLine = createAddressLineFromDto(createAddressLineDto);
         newAddressLine.setUser(user);
+
         AddressLine savedAddressLine = save(newAddressLine);
 
         return convertToDto(savedAddressLine);

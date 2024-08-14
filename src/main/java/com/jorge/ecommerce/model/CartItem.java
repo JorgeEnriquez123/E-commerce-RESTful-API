@@ -26,7 +26,6 @@ public class CartItem {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(nullable = false, name = "product_id")
     @JsonIgnore
-    @ToString.Exclude
     private Product product;
 
     @Column(nullable = false)
