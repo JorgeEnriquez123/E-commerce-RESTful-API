@@ -6,7 +6,6 @@ import com.jorge.ecommerce.dto.create.CreateAddressLineDto;
 import com.jorge.ecommerce.dto.update.UpdateAddressLineDto;
 import com.jorge.ecommerce.model.User;
 import com.jorge.ecommerce.service.AddressLineService;
-import com.jorge.ecommerce.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

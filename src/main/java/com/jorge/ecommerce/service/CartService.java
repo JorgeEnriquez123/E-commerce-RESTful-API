@@ -4,7 +4,6 @@ import com.jorge.ecommerce.dto.CartDto;
 import com.jorge.ecommerce.dto.CartItemDto;
 import com.jorge.ecommerce.dto.create.CreateCartItemDto;
 import com.jorge.ecommerce.dto.update.UpdateCartItemDto;
-import com.jorge.ecommerce.handler.exception.ResourceNotFoundException;
 import com.jorge.ecommerce.model.Cart;
 import com.jorge.ecommerce.model.CartItem;
 import com.jorge.ecommerce.model.User;

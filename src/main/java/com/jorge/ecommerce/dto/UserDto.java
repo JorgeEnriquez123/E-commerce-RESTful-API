@@ -1,6 +1,5 @@
 package com.jorge.ecommerce.dto;
 
-import com.jorge.ecommerce.model.Role;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
