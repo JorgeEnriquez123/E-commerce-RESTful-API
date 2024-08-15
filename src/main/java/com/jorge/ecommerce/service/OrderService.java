@@ -2,6 +2,10 @@ package com.jorge.ecommerce.service;
 
 import com.jorge.ecommerce.dto.OrderDto;
 import com.jorge.ecommerce.dto.create.CreateOrderDto;
+import com.jorge.ecommerce.dto.update.UpdateOrderStatusDto;
+import com.jorge.ecommerce.enums.OrderStatus;
+import com.jorge.ecommerce.handler.exception.InvalidDataException;
+import com.jorge.ecommerce.handler.exception.ResourceNotFoundException;
 import com.jorge.ecommerce.model.*;
 import com.jorge.ecommerce.repository.OrderRepository;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +30,13 @@ public class OrderService {
     private final OrderDetailService orderDetailService;
     private final CartItemService cartItemService;
     private final ProductService productService;
+
+    @Transactional(readOnly = true)
+    protected Order findByIdAndUserId(Long orderId, Long userId) {
+        log.debug("Find orders by id: {}, and user id: {} using repository", orderId, userId);
+        return orderRepository.findByIdAndUserId(orderId, userId)
+                .orElseThrow(() -> new ResourceNotFoundException("Order with id: " + orderId + " and user id: " + userId + " not found."));
+    }
 
     @Transactional(readOnly = true)
     protected List<Order> findOrdersWithDetailsByUserId(Long userId){
@@ -94,6 +105,22 @@ public class OrderService {
                     productService.reduceStock(cartItem.getProduct().getId(), cartItem.getQuantity());
                 }
         );
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    public void updatedOrderStatus(User user, Long orderId, UpdateOrderStatusDto updateOrderStatusDto){
+        String status = updateOrderStatusDto.getStatus();
+        try {
+            OrderStatus orderStatus = OrderStatus.valueOf(status.toUpperCase());
+            Order order = findByIdAndUserId(orderId, user.getId());
+
+            order.setStatus(orderStatus);
+            orderRepository.save(order);
+        }
+        catch (IllegalArgumentException e){
+            log.error("Invalid order status: {}", status);
+            throw new InvalidDataException("Invalid order status: " + status);
+        }
     }
 
     private BigDecimal calculateItemTotal(CartItem cartItem) {

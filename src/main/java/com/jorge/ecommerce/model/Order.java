@@ -2,6 +2,7 @@ package com.jorge.ecommerce.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.jorge.ecommerce.enums.OrderStatus;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -25,8 +26,10 @@ public class Order {
 
     @Column(nullable = false, precision = 10, scale = 2)
     private BigDecimal total = BigDecimal.ZERO;
-    @Column(nullable = false)
-    private String status;
+
+    @Enumerated(EnumType.STRING)
+    private OrderStatus status;
+
     @Column(nullable = false)
     private LocalDateTime dateTime;
 
@@ -36,7 +39,7 @@ public class Order {
     @ToString.Exclude
     private User user;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "shipping_address_id", nullable = false)
     @ToString.Exclude
     private AddressLine shippingAddress;
@@ -49,6 +52,6 @@ public class Order {
     @PrePersist
     protected void onCreate() {
         dateTime = LocalDateTime.now();
-        status = "PENDING";
+        status = OrderStatus.PENDING;
     }
 }

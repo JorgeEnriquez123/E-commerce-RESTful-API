@@ -3,6 +3,7 @@ package com.jorge.ecommerce.controller;
 import com.jorge.ecommerce.annotations.RoleAdminOrCustomer;
 import com.jorge.ecommerce.dto.OrderDto;
 import com.jorge.ecommerce.dto.create.CreateOrderDto;
+import com.jorge.ecommerce.dto.update.UpdateOrderStatusDto;
 import com.jorge.ecommerce.model.User;
 import com.jorge.ecommerce.service.OrderService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -33,5 +34,12 @@ public class OrderController {
     public ResponseEntity<Void> createOrder(@AuthenticationPrincipal User user, @RequestBody CreateOrderDto createOrderDto) {
         orderService.createOrder(user, createOrderDto);
         return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
+
+    @PatchMapping("/{orderId}")
+    public ResponseEntity<Void> updateOrderStatus(@AuthenticationPrincipal User user,
+                                                  @PathVariable Long orderId, @RequestBody UpdateOrderStatusDto updateOrderStatusDto) {
+        orderService.updatedOrderStatus(user, orderId, updateOrderStatusDto);
+        return ResponseEntity.noContent().build();
     }
 }

@@ -1,9 +1,6 @@
 package com.jorge.ecommerce.handler;
 
-import com.jorge.ecommerce.handler.exception.FailedLoginException;
-import com.jorge.ecommerce.handler.exception.FailedRefreshTokenException;
-import com.jorge.ecommerce.handler.exception.ResourceNotFoundException;
-import com.jorge.ecommerce.handler.exception.UsernameAlreadyInUseException;
+import com.jorge.ecommerce.handler.exception.*;
 import com.jorge.ecommerce.handler.response.ErrorResponse;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
@@ -125,9 +122,9 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ErrorResponse methodArgumentNotValidExceptionHandler(MethodArgumentNotValidException ex) {
         List<String> errors = new ArrayList<>();
-        ex.getBindingResult().getFieldErrors().forEach(error -> {
-            errors.add(error.getField() + ": " + error.getDefaultMessage());
-        });
+        ex.getBindingResult().getFieldErrors().forEach(error ->
+            errors.add(error.getField() + ": " + error.getDefaultMessage())
+        );
         log.error("Validation Failed: {}", errors);
         log.debug("Exception details: ", ex);
 
@@ -147,6 +144,19 @@ public class GlobalExceptionHandler {
         return ErrorResponse.builder()
                 .httpStatus(HttpStatus.NOT_FOUND)
                 .message("Resource not found")
+                .errors(Collections.singletonList(ex.getMessage()))
+                .build();
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(InvalidDataException.class)
+    public ErrorResponse invalidDataExceptionHandler(InvalidDataException ex){
+        log.error("Invalid data");
+        log.debug("Exception Details: ", ex);
+
+        return ErrorResponse.builder()
+                .httpStatus(HttpStatus.BAD_REQUEST)
+                .message("Invalid data")
                 .errors(Collections.singletonList(ex.getMessage()))
                 .build();
     }

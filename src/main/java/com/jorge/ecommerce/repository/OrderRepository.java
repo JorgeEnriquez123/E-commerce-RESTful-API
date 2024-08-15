@@ -10,6 +10,8 @@ import java.util.Optional;
 
 @Repository
 public interface OrderRepository extends JpaRepository<Order, Long> {
+    Optional<Order> findByIdAndUserId(Long id, Long userId);
+
     @Query("SELECT o FROM Order o LEFT JOIN FETCH o.shippingAddress sa LEFT JOIN FETCH o.orderDetails od " +
             "LEFT JOIN FETCH od.product p LEFT JOIN FETCH p.category WHERE o.user.id = :userId")
     Optional<List<Order>> findOrdersWithDetailsByUserId(Long userId);

@@ -35,7 +35,7 @@ public class CartController {
         return ResponseEntity.status(HttpStatus.CREATED).body(cartService.addItemToUserCart(user, createCartItemDto));
     }
 
-    @PutMapping("/items/{productId}")
+    @PatchMapping("/items/{productId}")
     public ResponseEntity<Void> updateCartItemFromUserCart(@AuthenticationPrincipal User user, @PathVariable Long productId,
                                                            @RequestBody UpdateCartItemDto updateCartItemDto) {
         cartService.updateItemQuantityFromUserCart(user, productId, updateCartItemDto);
