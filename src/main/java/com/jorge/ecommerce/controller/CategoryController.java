@@ -1,6 +1,7 @@
 package com.jorge.ecommerce.controller;
 
 import com.jorge.ecommerce.annotations.RoleAdmin;
+import com.jorge.ecommerce.annotations.RoleAdminOrCustomer;
 import com.jorge.ecommerce.dto.CategoryDto;
 import com.jorge.ecommerce.dto.create.CreateCategoryDto;
 import com.jorge.ecommerce.dto.update.UpdateCategoryDto;
@@ -23,6 +24,7 @@ import org.springframework.web.bind.annotation.*;
 public class CategoryController {
     private final CategoryService categoryService;
 
+    @RoleAdminOrCustomer
     @GetMapping
     public ResponseEntity<Page<CategoryDto>> getAll(@RequestParam(defaultValue = "1") Integer page,
                                                     @RequestParam(defaultValue = "10") Integer size,
@@ -31,6 +33,7 @@ public class CategoryController {
         return ResponseEntity.ok(categoryService.findAll(page, size, sortOrder, sortBy));
     }
 
+    @RoleAdminOrCustomer
     @GetMapping("/{categoryId}")
     public ResponseEntity<CategoryDto> getCategoryById(@PathVariable Long categoryId) {
         return ResponseEntity.ok(categoryService.getCategoryById(categoryId));

@@ -1,5 +1,6 @@
 package com.jorge.ecommerce.controller;
 
+import com.jorge.ecommerce.annotations.RoleAdmin;
 import com.jorge.ecommerce.annotations.RoleAdminOrCustomer;
 import com.jorge.ecommerce.dto.OrderDto;
 import com.jorge.ecommerce.dto.create.CreateOrderDto;
@@ -36,6 +37,7 @@ public class OrderController {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
+    @RoleAdmin
     @PatchMapping("/{orderId}")
     public ResponseEntity<Void> updateOrderStatus(@AuthenticationPrincipal User user,
                                                   @PathVariable Long orderId, @RequestBody UpdateOrderStatusDto updateOrderStatusDto) {
