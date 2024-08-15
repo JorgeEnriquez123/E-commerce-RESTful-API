@@ -30,6 +30,7 @@ public class CartItemService {
 
     @Transactional(readOnly = true)
     protected List<CartItem> findAllByCartId(Long cartId) {
+        log.debug("Finding all cart items by cartId {}", cartId);
         return cartItemRepository.findByCartId(cartId);
     }
 

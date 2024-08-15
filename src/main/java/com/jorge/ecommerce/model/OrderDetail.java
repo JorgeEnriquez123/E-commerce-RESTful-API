@@ -24,7 +24,7 @@ public class OrderDetail {
     private Order order;
 
     @MapsId("productId")
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(nullable = false, name = "product_id")
     @ToString.Exclude
     private Product product;

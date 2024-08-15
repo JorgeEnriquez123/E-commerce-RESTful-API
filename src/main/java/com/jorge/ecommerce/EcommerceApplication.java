@@ -36,72 +36,56 @@ public class EcommerceApplication {
 	@Bean
 	public CommandLineRunner init(CategoryRepository categoryRepository,
 								  ProductRepository productRepository,
-								  RoleRepository roleRepository,
-								  AuthService authService
-	) {
+								  RoleRepository roleRepository) {
 		return args -> {
-			Category category = Category.builder().name("Phones").build();
-			Category savedCategory = categoryRepository.save(category);
+			if(categoryRepository.count() == 0) {
+				Category category = Category.builder().name("Phones").build();
+				Category savedCategory = categoryRepository.save(category);
 
-			List<Product> products = Arrays.asList(
-					Product.builder()
-							.name("iPhone 15")
-							.price(BigDecimal.valueOf(3200.00))
-							.category(savedCategory)
-							.stockQuantity(5)
-							.build(),
-					Product.builder()
-							.name("Samsung Galaxy S24")
-							.price(BigDecimal.valueOf(3100.00))
-							.category(savedCategory)
-							.stockQuantity(20)
-							.build(),
-					Product.builder()
-							.name("Xiaomi 14 Ultra")
-							.price(BigDecimal.valueOf(4200.00))
-							.category(savedCategory)
-							.stockQuantity(17)
-							.build(),
-					Product.builder()
-							.name("Huawei Pura 70 Pro")
-							.price(BigDecimal.valueOf(4400.00))
-							.category(savedCategory)
-							.stockQuantity(8)
-							.build(),
-					Product.builder()
-							.name("Google Pixel 8 pro")
-							.price(BigDecimal.valueOf(4600.00))
-							.category(savedCategory)
-							.stockQuantity(12)
-							.build()
-			);
+				if(productRepository.count() == 0) {
+					List<Product> products = Arrays.asList(
+							Product.builder()
+									.name("iPhone 15")
+									.price(BigDecimal.valueOf(3200.00))
+									.category(savedCategory)
+									.stockQuantity(5)
+									.build(),
+							Product.builder()
+									.name("Samsung Galaxy S24")
+									.price(BigDecimal.valueOf(3100.00))
+									.category(savedCategory)
+									.stockQuantity(20)
+									.build(),
+							Product.builder()
+									.name("Xiaomi 14 Ultra")
+									.price(BigDecimal.valueOf(4200.00))
+									.category(savedCategory)
+									.stockQuantity(17)
+									.build(),
+							Product.builder()
+									.name("Huawei Pura 70 Pro")
+									.price(BigDecimal.valueOf(4400.00))
+									.category(savedCategory)
+									.stockQuantity(8)
+									.build(),
+							Product.builder()
+									.name("Google Pixel 8 pro")
+									.price(BigDecimal.valueOf(4600.00))
+									.category(savedCategory)
+									.stockQuantity(12)
+									.build()
+					);
+					productRepository.saveAll(products);
+				}
+			}
 
-			productRepository.saveAll(products);
+			if(roleRepository.count() == 0) {
+				Role role = Role.builder().name("CUSTOMER").build();
+				roleRepository.save(role);
 
-			Role role = Role.builder().name("CUSTOMER").build();
-			roleRepository.save(role);
-
-			Role role1 = Role.builder().name("ADMIN").build();
-			roleRepository.save(role1);
-
-			CreateUserDto user = CreateUserDto.builder()
-					.firstName("Test")
-					.lastName("Subject")
-					.username("Test111")
-					.password("password")
-					.role("ADMIN")
-					.build();
-			authService.register(user);
-
-			CreateUserDto user2 = CreateUserDto.builder()
-					.firstName("Test 2")
-					.lastName("Subject 2")
-					.username("Test222")
-					.password("password")
-					.role("CUSTOMER")
-					.build();
-
-			authService.register(user2);
+				Role role1 = Role.builder().name("ADMIN").build();
+				roleRepository.save(role1);
+			}
 		};
 	}
 }

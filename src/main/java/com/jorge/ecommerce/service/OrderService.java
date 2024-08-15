@@ -98,7 +98,7 @@ public class OrderService {
                             .price(cartItemProduct.getPrice())
                             .build();
 
-                    orderDetailService.save(orderDetail);
+                    orderDetailService.insertOrderDetail(orderDetail);
 
                     cartItemService.deleteById(cartItem.getId());
 

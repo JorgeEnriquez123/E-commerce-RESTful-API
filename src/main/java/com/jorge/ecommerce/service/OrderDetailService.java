@@ -14,9 +14,9 @@ public class OrderDetailService {
     private final OrderDetailRepository orderDetailRepository;
 
     @Transactional(rollbackFor = Exception.class)
-    protected OrderDetail save(OrderDetail orderDetail) {
-        log.debug("Saving order detail: {} using repository", orderDetail);
-        return orderDetailRepository.save(orderDetail);
+    protected void insertOrderDetail(OrderDetail orderDetail) {
+        log.debug("Saving order detail: {} using repository with native query", orderDetail);
+        orderDetailRepository.insertOrderDetail(orderDetail);
     }
 
 }
