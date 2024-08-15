@@ -2,10 +2,7 @@ package com.jorge.ecommerce.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jorge.ecommerce.dto.auth.AddRoleToUserDto;
-import com.jorge.ecommerce.dto.create.CreateUserDto;
 import com.jorge.ecommerce.dto.update.UpdateUserDto;
-import com.jorge.ecommerce.service.AuthService;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,11 +12,8 @@ import org.springframework.http.MediaType;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-
-import java.util.ArrayList;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
