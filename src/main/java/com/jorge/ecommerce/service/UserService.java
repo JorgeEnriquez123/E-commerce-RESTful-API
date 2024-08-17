@@ -50,18 +50,20 @@ public class UserService {
     @Transactional(readOnly = true)
     public User findByUsername(String username) {
         log.debug("Finding user by username: {} using repository", username);
-        return userRepository.findByUsername(username)
+        User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new ResourceNotFoundException("User with username: " + username + " not found."));
+        log.debug("Caching user with username: {}", username);
+        return user;
     }
 
     @Transactional(rollbackFor = Exception.class)
     protected User save(User user) {
-        log.debug("Saving user: {} using repository", user);
+        log.debug("Saving user with username: {} using repository", user.getUsername());
         return userRepository.save(user);
     }
 
     public UserDto getUserInfo(User user){
-        log.debug("Getting user info for user: {}", user);
+        log.debug("Getting current user info");
         return convertToDto(user);
     }
 
@@ -92,7 +94,7 @@ public class UserService {
 
     @Transactional(rollbackFor = Exception.class)
     public UserDto registerUser(CreateUserDto createUserDto) {
-        log.debug("Registering user: {}", createUserDto);
+        log.debug("Registering user with username: {} and role: {}", createUserDto.getUsername(), createUserDto.getRole());
 
         checkIfUsernameAlreadyExists(createUserDto.getUsername());
 
@@ -126,7 +128,7 @@ public class UserService {
 
     @Transactional(rollbackFor = Exception.class)
     public UserDto updateUserPersonalInfo(User user, UpdateUserDto updateUserDto) {
-        log.debug("Updating user personal info: {}, new info: {}", user, updateUserDto);
+        log.debug("Updating personal info of user with username: {},", user.getUsername());
         String oldUsername = user.getUsername();
 
         updateUserFromDto(user, updateUserDto);
@@ -184,17 +186,17 @@ public class UserService {
     }
 
     private void encryptUserPassword(User user){
-        log.debug("Encrypting password for user: {}", user);
+        log.debug("Encrypting password for user with username: {}", user.getUsername());
         user.setPassword(passwordEncoder.encode(user.getPassword()));
     }
 
     private User createUserFromDto(CreateUserDto createUserDto) {
-        log.debug("Creating User from Dto: {}", createUserDto);
+        log.debug("Creating User from Dto");
         return modelMapper.map(createUserDto, User.class);
     }
 
     private void updateUserFromDto(User user, UpdateUserDto updateUserDto){
-        log.debug("Updating User from Dto: {}", updateUserDto);
+        log.debug("Updating User from Dto");
         modelMapper.map(updateUserDto, user);
     }
 
@@ -211,7 +213,7 @@ public class UserService {
     }
 
     private UserDto convertToDto(User user) {
-        log.debug("Mapping user: {} to Dto", user);
+        log.debug("Mapping user with username: {} to Dto", user.getUsername());
         return modelMapper.map(user, UserDto.class);
     }
 }

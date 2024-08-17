@@ -34,13 +34,13 @@ public class CartService {
 
     @Transactional(rollbackFor = Exception.class)
     protected Cart save(Cart cart){
-        log.debug("Saving cart: {} using repository", cart);
+        log.debug("Saving cart for user with username: {} using repository", cart.getUser().getUsername());
         return cartRepository.save(cart);
     }
 
     @Transactional(readOnly = true)
     public List<CartItemDto> getItemsFromUser(User user) {
-        log.debug("Getting cart items from user: {}", user);
+        log.debug("Getting cart items from user with username: {}", user.getUsername());
         Long cartId = user.getCart().getId();
         List<CartItem> cartItems = cartItemService.findAllByCartId(cartId);
         return cartItems.stream()
@@ -50,7 +50,7 @@ public class CartService {
 
     @Transactional(rollbackFor = Exception.class)
     public CartItemDto addItemToUserCart(User user, CreateCartItemDto createCartItemDto) {
-        log.debug("Adding Item to Cart from user: {}, createCartItemDto: {}", user, createCartItemDto);
+        log.debug("Adding Item to Cart from user with username: {}, createCartItemDto: {}", user.getUsername(), createCartItemDto);
         Cart cart = user.getCart();
 
         Long productId = createCartItemDto.getProductId();
@@ -61,7 +61,7 @@ public class CartService {
 
     @Transactional(rollbackFor = Exception.class)
     public void updateItemQuantityFromUserCart(User user, Long productId, UpdateCartItemDto updateCartItemDto) {
-        log.debug("Updating Item Quantity from User: {}, updateCartItemDto: {}", user, updateCartItemDto);
+        log.debug("Updating Item Quantity from user with username: {}, updateCartItemDto: {}", user.getUsername(), updateCartItemDto);
         Long cartId = user.getCart().getId();
 
         Integer quantity = updateCartItemDto.getQuantity();
@@ -71,7 +71,7 @@ public class CartService {
 
     @Transactional(rollbackFor = Exception.class)
     public void removeItem(User user, Long productId){
-        log.debug("Removing Item from Cart from user: {}, productId: {}", user, productId);
+        log.debug("Removing Item from Cart from user with username: {}, productId: {}", user.getUsername(), productId);
         Long cartId = user.getCart().getId();
         cartItemService.deleteCartItem(cartId, productId);
     }

@@ -53,7 +53,6 @@ public class JwtUtil {
     }
 
     private Claims extractAllClaims(String token){
-        log.debug("Extracting all claims from token: {}", token);
         return Jwts.parserBuilder()
                     .setSigningKey(getKey())
                     .build()
@@ -67,22 +66,22 @@ public class JwtUtil {
     }
 
     public String extractUsername(String token) {
-        log.debug("Extracting username from token: {}", token);
+        log.debug("Extracting username from token");
         return extractClaim(token, Claims::getSubject);
     }
 
     public Date extractExpiration(String token) {
-        log.debug("Extracting expiration from token: {}", token);
+        log.debug("Extracting expiration from token");
         return extractClaim(token, Claims::getExpiration);
     }
 
     private boolean isTokenExpired(String token){
-        log.debug("Checking if token has expired: {}", token);
+        log.debug("Checking if token has expired");
         return extractExpiration(token).before(new Date(System.currentTimeMillis()));
     }
 
     public boolean isTokenValid(String token, UserDetails user){
-        log.debug("Checking if token is valid: {}", token);
+        log.debug("Checking if token is valid...");
         var username = extractUsername(token);
         return (username.equals(user.getUsername()) && !isTokenExpired(token));
     }

@@ -57,7 +57,7 @@ public class AddressLineService {
 
     @Transactional(readOnly = true)
     public List<AddressLineDto> getByUser(User user) {
-        log.debug("Getting address lines from user: {}", user);
+        log.debug("Getting address lines from user with username: {}", user.getUsername());
         Long userId = user.getId();
         List<AddressLine> addressLines = findByUserId(userId);
         return addressLines.stream()
@@ -67,7 +67,7 @@ public class AddressLineService {
 
     @Transactional(rollbackFor = Exception.class)
     public AddressLineDto saveAddressLine(User user, CreateAddressLineDto createAddressLineDto) {
-        log.debug("Adding address line: {}, for user: {}", createAddressLineDto, user);
+        log.debug("Adding address line: {}, for user with username: {}", createAddressLineDto, user.getUsername());
         AddressLine newAddressLine = createAddressLineFromDto(createAddressLineDto);
         newAddressLine.setUser(user);
 
@@ -78,7 +78,7 @@ public class AddressLineService {
 
     @Transactional(rollbackFor = Exception.class)
     public AddressLineDto updateAddressLine(User user, Long addressLineId, UpdateAddressLineDto updateAddressLineDto) {
-        log.debug("Updating address line: {}, for user: {}", updateAddressLineDto, user);
+        log.debug("Updating address line: {}, from user with username: {}", updateAddressLineDto, user.getUsername());
         Long userId = user.getId();
         AddressLine toUpdateAddressLine = findByIdAndUserId(addressLineId, userId);
 
@@ -90,7 +90,7 @@ public class AddressLineService {
 
     @Transactional(rollbackFor = Exception.class)
     public AddressLineDto setDefaultAddressLine(User user, Long addressLineId) {
-        log.debug("Setting default address line by id: {}, for user: {}", addressLineId, user);
+        log.debug("Setting default address line by id: {}, for user with username: {}", addressLineId, user.getUsername());
         Long userId = user.getId();
 
         AddressLine newDefaultaddressLine = findByIdAndUserId(addressLineId, userId);

@@ -33,27 +33,27 @@ public class OrderService {
 
     @Transactional(readOnly = true)
     protected Order findByIdAndUserId(Long orderId, Long userId) {
-        log.debug("Find orders by id: {}, and user id: {} using repository", orderId, userId);
+        log.debug("Finding orders by id: {}, and user id: {} using repository", orderId, userId);
         return orderRepository.findByIdAndUserId(orderId, userId)
                 .orElseThrow(() -> new ResourceNotFoundException("Order with id: " + orderId + " and user id: " + userId + " not found."));
     }
 
     @Transactional(readOnly = true)
     protected List<Order> findOrdersWithDetailsByUserId(Long userId){
-        log.debug("Find orders with details by user id: {} using repository", userId);
+        log.debug("Finding orders with details by user id: {} using repository", userId);
         return orderRepository.findOrdersWithDetailsByUserId(userId)
                 .orElse(Collections.emptyList());
     }
 
     @Transactional(rollbackFor = Exception.class)
     protected Order save(Order order){
-        log.debug("Save order: {} using repository", order);
+        log.debug("Saving order: {} using repository", order);
         return orderRepository.save(order);
     }
 
     @Transactional(readOnly = true)
     public List<OrderDto> getOrdersWithDetailsFromUser(User user) {
-        log.debug("Get orders with details from user: {}", user);
+        log.debug("Getting orders with details from user with username: {}", user.getUsername());
         return findOrdersWithDetailsByUserId(user.getId())
                 .stream()
                 .map(this::convertToDto)
@@ -62,7 +62,7 @@ public class OrderService {
 
     @Transactional(rollbackFor = Exception.class)
     public void createOrder(User user, CreateOrderDto createOrderDto){
-        log.debug("Create order: {} from user: {}", createOrderDto, user);
+        log.debug("Creating order with shipping Address id: {} for user with username: {}", createOrderDto.getShippingAddressId(), user.getUsername());
         Long shippingAddressId = createOrderDto.getShippingAddressId();
 
         AddressLine addressLine = addressLineService.findById(shippingAddressId);
@@ -124,20 +124,20 @@ public class OrderService {
     }
 
     private BigDecimal calculateItemTotal(CartItem cartItem) {
-        log.debug("Calculate total price for cart item: {}", cartItem);
+        log.debug("Calculating total price for cart item: {}", cartItem);
         return cartItem.getProduct().getPrice()
                 .multiply(BigDecimal.valueOf(cartItem.getQuantity()));
     }
 
     private BigDecimal calculateTotal(List<CartItem> cartItems) {
-        log.debug("Calculate total of cartItems");
+        log.debug("Calculating total of cartItems");
         return cartItems.stream()
                 .map(this::calculateItemTotal)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
     private OrderDto convertToDto(Order order){
-        log.debug("Convert order: {} to Dto", order);
+        log.debug("Mapping order: {} to Dto", order);
         return modelMapper.map(order, OrderDto.class);
     }
 }

@@ -30,11 +30,11 @@ public class AuthService {
     private final UserDetailsService userDetailsService;
 
     public LoginResponseDto login(LoginRequestDto loginRequestDto) {
-        log.info("Logging request: {}", loginRequestDto);
+        log.info("Logging User with username: {}", loginRequestDto.getUsername());
         UsernamePasswordAuthenticationToken authenticationToken =
                 new UsernamePasswordAuthenticationToken(loginRequestDto.getUsername(), loginRequestDto.getPassword());
         try {
-            log.info("Attempting to Log in");
+            log.info("Attempting to Log in...");
             Authentication authResult = auth.authenticate(authenticationToken);
             var authenticatedUser = (User)authResult.getPrincipal();
             return LoginResponseDto.builder()
@@ -49,7 +49,7 @@ public class AuthService {
     }
 
     public LoginResponseDto register(CreateUserDto createUserDto){
-        log.info("Registering user: {}", createUserDto);
+        log.info("Registering new user with username: {}", createUserDto.getUsername());
         userService.registerUser(createUserDto);
         LoginRequestDto loginRequestDto = LoginRequestDto.builder()
                 .username(createUserDto.getUsername())
