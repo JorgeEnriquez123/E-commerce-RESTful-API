@@ -23,7 +23,7 @@ public class CartItem {
     private Cart cart;
 
     @MapsId("productId")
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(nullable = false, name = "product_id")
     @JsonIgnore
     private Product product;

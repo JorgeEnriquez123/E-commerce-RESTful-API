@@ -1,23 +1,17 @@
 package com.jorge.ecommerce;
 
-import com.jorge.ecommerce.dto.create.CreateUserDto;
 import com.jorge.ecommerce.model.Category;
 import com.jorge.ecommerce.model.Product;
 import com.jorge.ecommerce.model.Role;
-import com.jorge.ecommerce.model.User;
 import com.jorge.ecommerce.repository.CategoryRepository;
 import com.jorge.ecommerce.repository.ProductRepository;
 import com.jorge.ecommerce.repository.RoleRepository;
-import com.jorge.ecommerce.repository.UserRepository;
-import com.jorge.ecommerce.service.AuthService;
-import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.web.config.EnableSpringDataWebSupport;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.math.BigDecimal;
 import java.util.Arrays;

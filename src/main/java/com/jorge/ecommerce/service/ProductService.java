@@ -82,7 +82,7 @@ public class ProductService {
     }
 
     @Transactional(rollbackFor = Exception.class)
-    protected void reduceStock(Long productId, Integer quantity) {
+    protected ProductDto reduceStock(Long productId, Integer quantity) {
         log.debug("Reduce stock of product by id: {}, quantity: {}", productId, quantity);
         // Check latest stock availability
         Product product = findById(productId);
@@ -90,7 +90,8 @@ public class ProductService {
         if(product.getStockQuantity() < 0) {
             throw new InsufficientProductStockException("Product with Id: " + productId + " has insufficient stock");
         }
-        save(product);
+        Product reducedStockProduct = save(product);
+        return convertToDto(reducedStockProduct);
     }
 
     private Product createProductFromDto(CreateProductDto createProductDto) {

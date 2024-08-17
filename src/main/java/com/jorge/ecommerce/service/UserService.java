@@ -41,7 +41,7 @@ public class UserService {
 
     @Transactional(readOnly = true)
     protected User findById(Long id) {
-        log.debug("Finding user by id: {}", id);
+        log.debug("Finding user by id: {} using repository", id);
         return userRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("User with id: " + id + " not found."));
     }
@@ -49,14 +49,14 @@ public class UserService {
     @Cacheable(value = "users", key = "#username")
     @Transactional(readOnly = true)
     public User findByUsername(String username) {
-        log.debug("Finding user by username: {}", username);
+        log.debug("Finding user by username: {} using repository", username);
         return userRepository.findByUsername(username)
                 .orElseThrow(() -> new ResourceNotFoundException("User with username: " + username + " not found."));
     }
 
     @Transactional(rollbackFor = Exception.class)
     protected User save(User user) {
-        log.debug("Saving user: {}", user);
+        log.debug("Saving user: {} using repository", user);
         return userRepository.save(user);
     }
 
@@ -131,7 +131,7 @@ public class UserService {
 
         log.debug("Making Caching Up-to-date");
         if(oldUsername.equals(savedUpdatedUser.getUsername())) {
-            updatedCachedUser(oldUsername, savedUpdatedUser);
+            updateCachedUser(oldUsername, savedUpdatedUser);
         }
         else {
             evictCachedUser(oldUsername);
@@ -153,7 +153,7 @@ public class UserService {
 
         User updatedUser = userRepository.save(user);
 
-        updatedCachedUser(updatedUser.getUsername(), updatedUser);
+        updateCachedUser(updatedUser.getUsername(), updatedUser);
     }
 
     @Transactional(rollbackFor = Exception.class)
@@ -166,7 +166,7 @@ public class UserService {
 
         User updatedUser = userRepository.save(user);
 
-        updatedCachedUser(user.getUsername(), updatedUser);
+        updateCachedUser(user.getUsername(), updatedUser);
     }
 
     @Transactional(readOnly = true)
@@ -199,10 +199,10 @@ public class UserService {
         //User will have to log in again to get a new JWT with the updated username
     }
 
-    private void updatedCachedUser(String username, User savedUpdatedUser){
+    private void updateCachedUser(String username, User savedUpdatedUser){
         log.debug("Updating cached user");
         Objects.requireNonNull(cacheManager.getCache("users")).put(username, savedUpdatedUser);
-        //Current JWT will still work
+        //Current JWT will still work since the username (cache's key to retrieve the cached User) will still work
     }
 
     private UserDto convertToDto(User user) {

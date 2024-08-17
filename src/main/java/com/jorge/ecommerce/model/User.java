@@ -39,6 +39,7 @@ public class User implements UserDetails, Serializable {
     @Column(nullable = false)
     private LocalDateTime createdAt;
 
+    //Most operations need the User's cart's info. Attaching this will avoid making unnecessary database calls to retrieve the cart.
     @OneToOne(fetch = FetchType.LAZY, mappedBy = "user")
     private Cart cart;
 

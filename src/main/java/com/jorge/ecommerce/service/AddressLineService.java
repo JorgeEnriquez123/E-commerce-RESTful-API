@@ -89,27 +89,28 @@ public class AddressLineService {
     }
 
     @Transactional(rollbackFor = Exception.class)
-    public void setDefaultAddressLine(User user, Long addressLineId) {
+    public AddressLineDto setDefaultAddressLine(User user, Long addressLineId) {
         log.debug("Setting default address line by id: {}, for user: {}", addressLineId, user);
         Long userId = user.getId();
-        List<AddressLine> addressLines = findByUserId(userId);
 
-        AddressLine newDefaultAddress = addressLines.stream()
-                .filter(addressLine -> addressLine.getId().equals(addressLineId))
-                .findFirst()
-                .orElseThrow(() -> new ResourceNotFoundException("AddressLine with Id: " + addressLineId + " not found from User with id: " + userId));
+        AddressLine newDefaultaddressLine = findByIdAndUserId(addressLineId, userId);
 
-        if(!newDefaultAddress.getIsDefault()) {
-            addressLines.stream()
+        if(!newDefaultaddressLine.getIsDefault()){
+            List<AddressLine> addressLinesFromUser = findByUserId(userId);
+            addressLinesFromUser.stream()
                     .filter(AddressLine::getIsDefault)
                     .findFirst()
                     .ifPresent(addressLine -> {
                         addressLine.setIsDefault(false);
                         save(addressLine);
                     });
-            newDefaultAddress.setIsDefault(true);
-            save(newDefaultAddress);
+
+            newDefaultaddressLine.setIsDefault(true);
+
+            return convertToDto(save(newDefaultaddressLine));
         }
+
+        return convertToDto(newDefaultaddressLine);
     }
 
     private AddressLine createAddressLineFromDto(CreateAddressLineDto createAddressLineDto) {

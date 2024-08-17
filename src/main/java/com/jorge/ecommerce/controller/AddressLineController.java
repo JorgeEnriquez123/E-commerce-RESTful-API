@@ -38,8 +38,7 @@ public class AddressLineController {
     }
 
     @PutMapping("/{addressLineId}/set-default")
-    public ResponseEntity<Void> setDefaultAddressLine(@AuthenticationPrincipal User user, @PathVariable Long addressLineId){
-        addressLineService.setDefaultAddressLine(user, addressLineId);
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<AddressLineDto> setDefaultAddressLine(@AuthenticationPrincipal User user, @PathVariable Long addressLineId){
+        return ResponseEntity.ok(addressLineService.setDefaultAddressLine(user, addressLineId));
     }
 }
