@@ -12,6 +12,7 @@ import org.springframework.security.web.access.AccessDeniedHandler;
 import java.io.IOException;
 
 @Slf4j
+//This once was working but now the GlobalExceptionHandler is overriding it
 public class CustomAccessDenied implements AccessDeniedHandler {
     @Override
     public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException accessDeniedException) throws IOException, ServletException {

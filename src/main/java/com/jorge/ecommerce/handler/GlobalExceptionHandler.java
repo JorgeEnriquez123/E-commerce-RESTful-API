@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -34,6 +35,20 @@ public class GlobalExceptionHandler {
                 .errors(Collections.singletonList(ex.getMessage()))
                 .build();
     }
+
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    @ExceptionHandler(AccessDeniedException.class)
+    public ErrorResponse accessDeniedHandler(AccessDeniedException ex) {
+        log.error("Access Denied");
+        log.debug("Exception Details: ", ex);
+
+        return ErrorResponse.builder()
+                .httpStatus(HttpStatus.FORBIDDEN)
+                .message("Access Denied")
+                .errors(Collections.singletonList(ex.getMessage()))
+                .build();
+    }
+
 
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     @ExceptionHandler(FailedLoginException.class)
