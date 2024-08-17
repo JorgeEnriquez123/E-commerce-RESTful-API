@@ -83,7 +83,7 @@ public class ProductService {
 
     @Transactional(rollbackFor = Exception.class)
     protected ProductDto reduceStock(Long productId, Integer quantity) {
-        log.debug("Reduce stock of product by id: {}, quantity: {}", productId, quantity);
+        log.debug("Reducing stock of product by id: {}, quantity: {}", productId, quantity);
         // Check latest stock availability
         Product product = findById(productId);
         product.setStockQuantity(product.getStockQuantity() - quantity);
@@ -110,6 +110,7 @@ public class ProductService {
     }
 
     private ProductDto convertToDto(Product product) {
+        log.debug("Mapping product: {} to Dto", product);
         return modelMapper.map(product, ProductDto.class);
     }
 }

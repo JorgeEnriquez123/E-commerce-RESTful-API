@@ -26,20 +26,20 @@ public class CategoryService {
 
     @Transactional(readOnly = true)
     protected Category findById(Long id) {
-        log.debug("Find category by id: {} using repository", id);
+        log.debug("Finding category by id: {} using repository", id);
         return categoryRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Category with id: " + id + " not found"));
     }
 
     @Transactional(rollbackFor = Exception.class)
     protected Category save(Category category){
-        log.debug("Save category: {} using repository", category);
+        log.debug("Saving category: {} using repository", category);
         return categoryRepository.save(category);
     }
 
     @Transactional(readOnly = true)
     public Page<CategoryDto> findAll(Integer page, Integer pageSize, String sortOrder, String sortBy) {
-        log.debug("Find all categories");
+        log.debug("Finding all categories");
         Sort sort = Sort.by(sortOrder.equalsIgnoreCase("desc") ? Sort.Direction.DESC : Sort.Direction.ASC, sortBy);
         Pageable pageable = PageRequest.of(page - 1, pageSize, sort);
 
@@ -49,14 +49,14 @@ public class CategoryService {
 
     @Transactional(readOnly = true)
     public CategoryDto getCategoryById(Long id) {
-        log.debug("Get category by id: {}", id);
+        log.debug("Getting category by id: {}", id);
         Category category = findById(id);
         return convertToDto(category);
     }
 
     @Transactional(rollbackFor = Exception.class)
     public CategoryDto createCategory(CreateCategoryDto createCategoryDto) {
-        log.debug("Create category: {}", createCategoryDto);
+        log.debug("Creating category: {}", createCategoryDto);
         Category newCategory = createCategoryFromDto(createCategoryDto);
         Category savedCategory = save(newCategory);
         return convertToDto(savedCategory);
@@ -64,7 +64,7 @@ public class CategoryService {
 
     @Transactional(rollbackFor = Exception.class)
     public CategoryDto updateCategory(Long categoryId, UpdateCategoryDto updateCategoryDto) {
-        log.debug("Update category by id: {}, dto: {}", categoryId, updateCategoryDto);
+        log.debug("Updating category by id: {}, dto: {}", categoryId, updateCategoryDto);
         Category toUpdateCategory = findById(categoryId);
         updateCategoryFromDto(toUpdateCategory, updateCategoryDto);
 
@@ -73,16 +73,17 @@ public class CategoryService {
     }
 
     private Category createCategoryFromDto(CreateCategoryDto createCategoryDto) {
-        log.debug("Create category from Dto: {}", createCategoryDto);
+        log.debug("Creating category from Dto: {}", createCategoryDto);
         return modelMapper.map(createCategoryDto, Category.class);
     }
 
     private void updateCategoryFromDto(Category category, UpdateCategoryDto updateCategoryDto) {
-        log.debug("Update category from Dto: {}", updateCategoryDto);
+        log.debug("Updating category from Dto: {}", updateCategoryDto);
         modelMapper.map(updateCategoryDto, category);
     }
 
     private CategoryDto convertToDto(Category category) {
+        log.debug("Mapping category: {} to Dto", category);
         return modelMapper.map(category, CategoryDto.class);
     }
 }
