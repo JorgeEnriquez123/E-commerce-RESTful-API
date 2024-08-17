@@ -54,7 +54,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(FailedLoginException.class)
     public ErrorResponse failedLoginExceptionHandler(FailedLoginException ex) {
         log.error("Unsuccessful Login");
-        log.debug("If caching for User's info is being used, check if Serialization was successfully done");
+        log.debug("Check for User's cache information or serialization issues.");
         log.debug("Exception Details: ", ex);
 
         return ErrorResponse.builder()

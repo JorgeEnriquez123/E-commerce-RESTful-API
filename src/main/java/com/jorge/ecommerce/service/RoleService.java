@@ -21,7 +21,7 @@ public class RoleService {
                 .orElseThrow(() -> new ResourceNotFoundException("Role with id: " + id + " not found"));
     }
 
-    @Transactional(readOnly = true)
+    @Transactional(rollbackFor = Exception.class)
     protected Role findByName(String name) {
         log.debug("Finding role by name: {} using repository", name);
         return roleRepository.findByName(name)

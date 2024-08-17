@@ -60,6 +60,11 @@ public class UserService {
         return userRepository.save(user);
     }
 
+    public UserDto getUserInfo(User user){
+        log.debug("Getting user info for user: {}", user);
+        return convertToDto(user);
+    }
+
     @Transactional(readOnly = true)
     public Page<UserDto> findAll(Integer page, Integer pageSize, String sortOrder, String sortBy) {
         log.debug("Finding all users");

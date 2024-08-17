@@ -24,6 +24,11 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
     private final UserService userService;
 
+    @GetMapping("/profile")
+    public ResponseEntity<UserDto> getUserInfo(@AuthenticationPrincipal User user) {
+        return ResponseEntity.ok().body(userService.getUserInfo(user));
+    }
+
     @PutMapping
     public ResponseEntity<UserDto> updateUserPersonalInfo(@AuthenticationPrincipal User user, @RequestBody UpdateUserDto updateUserDto){
         return ResponseEntity.ok().body(userService.updateUserPersonalInfo(user, updateUserDto));
