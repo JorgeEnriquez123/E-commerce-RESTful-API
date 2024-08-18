@@ -3,7 +3,6 @@ package com.jorge.ecommerce.controller;
 import com.jorge.ecommerce.annotations.RoleAdmin;
 import com.jorge.ecommerce.annotations.RoleAdminOrCustomer;
 import com.jorge.ecommerce.dto.ProductDto;
-import com.jorge.ecommerce.dto.UserDto;
 import com.jorge.ecommerce.dto.create.CreateProductDto;
 import com.jorge.ecommerce.dto.pagination.PaginatedProductResponse;
 import com.jorge.ecommerce.dto.update.UpdateProductDto;

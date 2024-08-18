@@ -2,10 +2,7 @@ package com.jorge.ecommerce.controller;
 
 import com.jorge.ecommerce.annotations.RoleAdminOrCustomer;
 import com.jorge.ecommerce.dto.CartItemDto;
-import com.jorge.ecommerce.dto.CategoryDto;
-import com.jorge.ecommerce.dto.ProductDto;
 import com.jorge.ecommerce.dto.create.CreateCartItemDto;
-import com.jorge.ecommerce.dto.pagination.PaginatedCategoryResponse;
 import com.jorge.ecommerce.dto.update.UpdateCartItemDto;
 import com.jorge.ecommerce.handler.response.ErrorResponse;
 import com.jorge.ecommerce.model.User;

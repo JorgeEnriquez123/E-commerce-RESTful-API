@@ -2,10 +2,8 @@ package com.jorge.ecommerce.controller;
 
 import com.jorge.ecommerce.annotations.RoleAdminOrCustomer;
 import com.jorge.ecommerce.dto.AddressLineDto;
-import com.jorge.ecommerce.dto.ProductDto;
 import com.jorge.ecommerce.dto.create.CreateAddressLineDto;
 import com.jorge.ecommerce.dto.pagination.PaginatedAddressLineResponse;
-import com.jorge.ecommerce.dto.pagination.PaginatedProductResponse;
 import com.jorge.ecommerce.dto.update.UpdateAddressLineDto;
 import com.jorge.ecommerce.handler.response.ErrorResponse;
 import com.jorge.ecommerce.model.User;

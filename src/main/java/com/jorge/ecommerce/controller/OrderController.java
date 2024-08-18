@@ -3,8 +3,6 @@ package com.jorge.ecommerce.controller;
 import com.jorge.ecommerce.annotations.RoleAdmin;
 import com.jorge.ecommerce.annotations.RoleAdminOrCustomer;
 import com.jorge.ecommerce.dto.OrderDto;
-import com.jorge.ecommerce.dto.ProductDto;
-import com.jorge.ecommerce.dto.UserDto;
 import com.jorge.ecommerce.dto.create.CreateOrderDto;
 import com.jorge.ecommerce.dto.pagination.PaginatedOrderResponse;
 import com.jorge.ecommerce.dto.update.UpdateOrderStatusDto;
@@ -24,8 +22,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @SecurityRequirement(
         name = "bearerAuth"
