@@ -11,6 +11,10 @@ import com.jorge.ecommerce.repository.OrderRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,23 +30,17 @@ public class OrderService {
     private final ModelMapper modelMapper;
 
     private final OrderRepository orderRepository;
+
     private final AddressLineService addressLineService;
     private final OrderDetailService orderDetailService;
     private final CartItemService cartItemService;
     private final ProductService productService;
 
     @Transactional(readOnly = true)
-    protected Order findByIdAndUserId(Long orderId, Long userId) {
-        log.debug("Finding orders by id: {}, and user id: {} using repository", orderId, userId);
-        return orderRepository.findByIdAndUserId(orderId, userId)
-                .orElseThrow(() -> new ResourceNotFoundException("Order with id: " + orderId + " and user id: " + userId + " not found."));
-    }
-
-    @Transactional(readOnly = true)
-    protected List<Order> findOrdersWithDetailsByUserId(Long userId){
-        log.debug("Finding orders with details by user id: {} using repository", userId);
-        return orderRepository.findOrdersWithDetailsByUserId(userId)
-                .orElse(Collections.emptyList());
+    protected Order findById(Long orderId) {
+        log.debug("Finding orders by id: {} using repository", orderId);
+        return orderRepository.findById(orderId)
+                .orElseThrow(() -> new ResourceNotFoundException("Order with id: " + orderId + " not found."));
     }
 
     @Transactional(rollbackFor = Exception.class)
@@ -52,12 +50,20 @@ public class OrderService {
     }
 
     @Transactional(readOnly = true)
-    public List<OrderDto> getOrdersWithDetailsFromUser(User user) {
-        log.debug("Getting orders with details from user with username: {}", user.getUsername());
-        return findOrdersWithDetailsByUserId(user.getId())
-                .stream()
-                .map(this::convertToDto)
-                .collect(Collectors.toList());
+    public Page<OrderDto> getOrdersWithDetailsFromUser(Integer page, Integer pageSize, String sortOrder, String sortBy, User user) {
+        log.debug("Finding all orders from current User");
+
+        Sort sort = Sort.by(sortOrder.equalsIgnoreCase("DESC") ? Sort.Direction.DESC : Sort.Direction.ASC, sortBy);
+        if(page <= 1) {
+            page = 1;
+        }
+        if(pageSize <= 1) {
+            pageSize = 1;
+        }
+        Pageable pageable = PageRequest.of(page - 1, pageSize, sort);
+
+        Page<Order> orders = orderRepository.findByUserId(pageable, user.getId());
+        return orders.map(this::convertToDto);
     }
 
     @Transactional(rollbackFor = Exception.class)
@@ -108,11 +114,11 @@ public class OrderService {
     }
 
     @Transactional(rollbackFor = Exception.class)
-    public void updatedOrderStatus(User user, Long orderId, UpdateOrderStatusDto updateOrderStatusDto){
+    public void updatedOrderStatus(Long orderId, UpdateOrderStatusDto updateOrderStatusDto){
         String status = updateOrderStatusDto.getStatus();
         try {
             OrderStatus orderStatus = OrderStatus.valueOf(status.toUpperCase());
-            Order order = findByIdAndUserId(orderId, user.getId());
+            Order order = findById(orderId);
 
             order.setStatus(orderStatus);
             orderRepository.save(order);

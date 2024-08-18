@@ -4,6 +4,7 @@ import com.jorge.ecommerce.annotations.RoleAdmin;
 import com.jorge.ecommerce.annotations.RoleAdminOrCustomer;
 import com.jorge.ecommerce.dto.UserDto;
 import com.jorge.ecommerce.dto.auth.AddRoleToUserDto;
+import com.jorge.ecommerce.dto.pagination.PaginatedUserResponse;
 import com.jorge.ecommerce.dto.update.UpdateUserDto;
 import com.jorge.ecommerce.handler.response.ErrorResponse;
 import com.jorge.ecommerce.model.User;
@@ -32,9 +33,7 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
     private final UserService userService;
 
-    @Operation(
-            summary = "Get Current User's information"
-    )
+    @Operation(summary = "Get Current User's information")
     @ApiResponses(
             value = {
                     @ApiResponse(
@@ -42,11 +41,11 @@ public class UserController {
                                     schema = @Schema(implementation = UserDto.class)
                             )),
                     @ApiResponse(
-                            responseCode = "401", description = "The User is not authorized to access this", content = @Content(
+                            responseCode = "401", description = "The User is not authorized to perform this operation", content = @Content(
                                     schema = @Schema(implementation = ErrorResponse.class)
                             )),
                     @ApiResponse(
-                            responseCode = "403", description = "The User has insufficient permission to access this", content = @Content(
+                            responseCode = "403", description = "The User has insufficient permission to perform this operation", content = @Content(
                                     schema = @Schema(implementation = ErrorResponse.class)
                             )),
                     @ApiResponse(
@@ -60,9 +59,7 @@ public class UserController {
         return ResponseEntity.ok().body(userService.getUserInfo(user));
     }
 
-    @Operation(
-            summary = "Update current authenticated User"
-    )
+    @Operation(summary = "Update current authenticated User")
     @ApiResponses(
             value = {
                     @ApiResponse(
@@ -74,14 +71,13 @@ public class UserController {
                             schema = @Schema(implementation = ErrorResponse.class)
                     )),
                     @ApiResponse(
-                            responseCode = "401", description = "The User is not authorized to access this", content = @Content(
+                            responseCode = "401", description = "The User is not authorized to perform this operation", content = @Content(
                             schema = @Schema(implementation = ErrorResponse.class)
                     )),
                     @ApiResponse(
-                            responseCode = "403", description = "The User has insufficient permission to access this", content = @Content(
+                            responseCode = "403", description = "The User has insufficient permission to perform this operation", content = @Content(
                             schema = @Schema(implementation = ErrorResponse.class)
-                    )
-                    ),
+                    )),
                     @ApiResponse(
                             responseCode = "500", description = "There was an internal server error", content = @Content(
                             schema = @Schema(implementation = ErrorResponse.class)
@@ -95,21 +91,21 @@ public class UserController {
 
     // -----------
 
+    @Operation(summary = "Get all Users with pagination")
     @ApiResponses(
             value = {
                     @ApiResponse(
                             responseCode = "200", description = "Successful operation", content = @Content(
-                            schema = @Schema(type = "List", implementation = UserDto.class)
+                            schema = @Schema(implementation = PaginatedUserResponse.class)
                     )),
                     @ApiResponse(
-                            responseCode = "401", description = "The User is not authorized to access this", content = @Content(
+                            responseCode = "401", description = "The User is not authorized to perform this operation", content = @Content(
                             schema = @Schema(implementation = ErrorResponse.class)
                     )),
                     @ApiResponse(
-                            responseCode = "403", description = "The User has insufficient permission to access this", content = @Content(
+                            responseCode = "403", description = "The User has insufficient permission to perform this operation", content = @Content(
                             schema = @Schema(implementation = ErrorResponse.class)
-                    )
-                    ),
+                    )),
                     @ApiResponse(
                             responseCode = "500", description = "There was an internal server error", content = @Content(
                             schema = @Schema(implementation = ErrorResponse.class)
@@ -125,9 +121,7 @@ public class UserController {
         return ResponseEntity.ok(userService.findAll(page, size, sortOrder, sortBy));
     }
 
-    @Operation(
-            summary = "Get User by Id"
-    )
+    @Operation(summary = "Get User by Id")
     @ApiResponses(
             value = {
                     @ApiResponse(
@@ -135,18 +129,17 @@ public class UserController {
                             schema = @Schema(implementation = UserDto.class)
                     )),
                     @ApiResponse(
-                            responseCode = "404", description = "The resource has not been found", content = @Content(
+                            responseCode = "404", description = "A certain resource has not been found", content = @Content(
                             schema = @Schema(implementation = ErrorResponse.class)
                     )),
                     @ApiResponse(
-                            responseCode = "401", description = "The User is not authorized to access this", content = @Content(
+                            responseCode = "401", description = "The User is not authorized to perform this operation", content = @Content(
                             schema = @Schema(implementation = ErrorResponse.class)
                     )),
                     @ApiResponse(
-                            responseCode = "403", description = "The User has insufficient permission to access this", content = @Content(
+                            responseCode = "403", description = "The User has insufficient permission to perform this operation", content = @Content(
                             schema = @Schema(implementation = ErrorResponse.class)
-                    )
-                    ),
+                    )),
                     @ApiResponse(
                             responseCode = "500", description = "There was an internal server error", content = @Content(
                             schema = @Schema(implementation = ErrorResponse.class)
@@ -159,32 +152,29 @@ public class UserController {
         return ResponseEntity.ok(userService.getUserById(userId));
     }
 
-    @Operation(
-            summary = "Add Role to User"
-    )
+    @Operation(summary = "Add Role to User")
     @ApiResponses(
             value = {
                     @ApiResponse(
                             responseCode = "200", description = "Successful operation", content = @Content(
-                                    schema = @Schema(hidden = true)
+                            schema = @Schema(implementation = UserDto.class)
                     )),
                     @ApiResponse(
                             responseCode = "400", description = "There was a problem with the request. One or more parameteres failed some validations", content = @Content(
                             schema = @Schema(implementation = ErrorResponse.class)
                     )),
                     @ApiResponse(
-                            responseCode = "404", description = "The resource has not been found", content = @Content(
+                            responseCode = "404", description = "A certain resource has not been found", content = @Content(
                             schema = @Schema(implementation = ErrorResponse.class)
                     )),
                     @ApiResponse(
-                            responseCode = "401", description = "The User is not authorized to access this", content = @Content(
+                            responseCode = "401", description = "The User is not authorized to perform this operation", content = @Content(
                             schema = @Schema(implementation = ErrorResponse.class)
                     )),
                     @ApiResponse(
-                            responseCode = "403", description = "The User has insufficient permission to access this", content = @Content(
+                            responseCode = "403", description = "The User has insufficient permission to perform this operation", content = @Content(
                             schema = @Schema(implementation = ErrorResponse.class)
-                    )
-                    ),
+                    )),
                     @ApiResponse(
                             responseCode = "500", description = "There was an internal server error", content = @Content(
                             schema = @Schema(implementation = ErrorResponse.class)
@@ -193,30 +183,29 @@ public class UserController {
     )
     @RoleAdmin
     @PostMapping(ApiRoutes.V1.User.POST_ADD_ROLE)
-    public ResponseEntity<Void> addRoleToUser(@PathVariable Long userId, @RequestBody AddRoleToUserDto addRoleToUserDto){
-        userService.addRoleToUser(userId, addRoleToUserDto);
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<UserDto> addRoleToUser(@PathVariable Long userId, @RequestBody AddRoleToUserDto addRoleToUserDto){
+        return ResponseEntity.ok(userService.addRoleToUser(userId, addRoleToUserDto));
     }
 
+    @Operation(summary = "Remove Role from User")
     @ApiResponses(
             value = {
                     @ApiResponse(
                             responseCode = "200", description = "Successful operation", content = @Content(
-                            schema = @Schema(hidden = true)
+                            schema = @Schema(implementation = UserDto.class)
                     )),
                     @ApiResponse(
-                            responseCode = "404", description = "The resource has not been found", content = @Content(
+                            responseCode = "404", description = "A certain resource has not been found", content = @Content(
                             schema = @Schema(implementation = ErrorResponse.class)
                     )),
                     @ApiResponse(
-                            responseCode = "401", description = "The User is not authorized to access this", content = @Content(
+                            responseCode = "401", description = "The User is not authorized to perform this operation", content = @Content(
                             schema = @Schema(implementation = ErrorResponse.class)
                     )),
                     @ApiResponse(
-                            responseCode = "403", description = "The User has insufficient permission to access this", content = @Content(
+                            responseCode = "403", description = "The User has insufficient permission to perform this operation", content = @Content(
                             schema = @Schema(implementation = ErrorResponse.class)
-                    )
-                    ),
+                    )),
                     @ApiResponse(
                             responseCode = "500", description = "There was an internal server error", content = @Content(
                             schema = @Schema(implementation = ErrorResponse.class)
@@ -226,7 +215,6 @@ public class UserController {
     @RoleAdmin
     @DeleteMapping(ApiRoutes.V1.User.DELETE_ROLE)
     public ResponseEntity<UserDto> removeRoleFromUser(@PathVariable Long userId, @PathVariable Long roleId){
-        userService.deleteRoleFromUser(userId, roleId);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok(userService.deleteRoleFromUser(userId, roleId));
     }
 }

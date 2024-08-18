@@ -32,8 +32,7 @@ springdoc:
     operations-sorter: method
     tags-sorter: alpha
     disable-swagger-default-url: true
-# override-with-generic-response: false
-# Set false to enable default generated response codes by Springdoc (for now, until all of them are manually done)
+  override-with-generic-response: false
 
 logging:
   level:

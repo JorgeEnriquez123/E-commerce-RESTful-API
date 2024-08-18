@@ -150,7 +150,7 @@ public class UserService {
     // ------------
 
     @Transactional(rollbackFor = Exception.class)
-    public void addRoleToUser(Long userId, AddRoleToUserDto addRoleToUserDto) {
+    public UserDto addRoleToUser(Long userId, AddRoleToUserDto addRoleToUserDto) {
         log.debug("Adding Role: {} to User with id: {}", addRoleToUserDto.getRole(), userId);
         String roleName = addRoleToUserDto.getRole();
         Role role = roleService.findByName(roleName);
@@ -161,10 +161,11 @@ public class UserService {
         User updatedUser = userRepository.save(user);
 
         updateCachedUser(updatedUser.getUsername(), updatedUser);
+        return convertToDto(user);
     }
 
     @Transactional(rollbackFor = Exception.class)
-    public void deleteRoleFromUser(Long userId, Long roleId) {
+    public UserDto deleteRoleFromUser(Long userId, Long roleId) {
         log.debug("Deleting rol with id: {} from User with id: {}", roleId, userId);
         Role role = roleService.findById(roleId);
 
@@ -174,6 +175,7 @@ public class UserService {
         User updatedUser = userRepository.save(user);
 
         updateCachedUser(user.getUsername(), updatedUser);
+        return convertToDto(updatedUser);
     }
 
     @Transactional(readOnly = true)
