@@ -19,12 +19,12 @@ import org.springframework.web.bind.annotation.*;
 )
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/users")
+@RequestMapping(ApiRoutes.V1.User.ROOT)
 @RoleAdminOrCustomer
 public class UserController {
     private final UserService userService;
 
-    @GetMapping("/profile")
+    @GetMapping(ApiRoutes.V1.User.GET_CURRENT_USER_INFO)
     public ResponseEntity<UserDto> getUserInfo(@AuthenticationPrincipal User user) {
         return ResponseEntity.ok().body(userService.getUserInfo(user));
     }
@@ -46,20 +46,20 @@ public class UserController {
     }
 
     @RoleAdmin
-    @GetMapping("/{userId}")
+    @GetMapping(ApiRoutes.V1.User.GET_BY_ID)
     public ResponseEntity<UserDto> getUserById(@PathVariable Long userId){
         return ResponseEntity.ok(userService.getUserById(userId));
     }
 
     @RoleAdmin
-    @PostMapping("/{userId}/roles")
+    @PostMapping(ApiRoutes.V1.User.POST_ADD_ROLE)
     public ResponseEntity<Void> addRoleToUser(@PathVariable Long userId, @RequestBody AddRoleToUserDto addRoleToUserDto){
         userService.addRoleToUser(userId, addRoleToUserDto);
         return ResponseEntity.noContent().build();
     }
 
     @RoleAdmin
-    @DeleteMapping("/{userId}/roles/{roleId}")
+    @DeleteMapping(ApiRoutes.V1.User.DELETE_ROLE)
     public ResponseEntity<UserDto> removeRoleFromUser(@PathVariable Long userId, @PathVariable Long roleId){
         userService.deleteRoleFromUser(userId, roleId);
         return ResponseEntity.noContent().build();

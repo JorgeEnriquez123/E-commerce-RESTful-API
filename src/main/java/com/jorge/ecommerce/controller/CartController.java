@@ -20,29 +20,29 @@ import java.util.List;
 )
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/carts")
+@RequestMapping(ApiRoutes.V1.Cart.ROOT)
 @RoleAdminOrCustomer
 public class CartController {
     private final CartService cartService;
 
-    @GetMapping("/items")
+    @GetMapping
     public ResponseEntity<List<CartItemDto>> getCartItems(@AuthenticationPrincipal User user) {
         return ResponseEntity.ok(cartService.getItemsFromUser(user));
     }
 
-    @PostMapping("/items")
+    @PostMapping
     public ResponseEntity<CartItemDto> addItemToCart(@AuthenticationPrincipal User user, @RequestBody CreateCartItemDto createCartItemDto) {
         return ResponseEntity.status(HttpStatus.CREATED).body(cartService.addItemToUserCart(user, createCartItemDto));
     }
 
-    @PatchMapping("/items/{productId}")
+    @PatchMapping(ApiRoutes.V1.Cart.UPDATE_ITEM_FROM_CART)
     public ResponseEntity<Void> updateCartItemQuantityFromUserCart(@AuthenticationPrincipal User user, @PathVariable Long productId,
-                                                           @RequestBody UpdateCartItemDto updateCartItemDto) {
+                                                                   @RequestBody UpdateCartItemDto updateCartItemDto) {
         cartService.updateItemQuantityFromUserCart(user, productId, updateCartItemDto);
         return ResponseEntity.noContent().build();
     }
 
-    @DeleteMapping("/items/{productId}")
+    @DeleteMapping(ApiRoutes.V1.Cart.REMOVE_ITEM_FROM_CART)
     public ResponseEntity<Void> removeItemFromCart(@AuthenticationPrincipal User user, @PathVariable Long productId) {
         cartService.removeItem(user, productId);
         return ResponseEntity.noContent().build();

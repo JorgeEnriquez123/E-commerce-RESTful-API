@@ -52,7 +52,7 @@ public class UserControllerIntegrationTest {
                 .password("newPassword")
                 .build();
 
-        mockMvc.perform(MockMvcRequestBuilders.put("/users")
+        mockMvc.perform(MockMvcRequestBuilders.put("/api/v1/users")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(updateUserDto)))
                 .andExpect(status().isOk());
@@ -61,14 +61,14 @@ public class UserControllerIntegrationTest {
     // Test getAll for admin
     @Test
     public void testGetAllUsers() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.get("/users"))
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/users"))
                 .andExpect(status().isOk());
     }
 
     // Test getUserById for admin
     @Test
     public void testGetUserById() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.get("/users/2"))
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/users/2"))
                 .andExpect(status().isOk());
     }
 
@@ -78,7 +78,7 @@ public class UserControllerIntegrationTest {
         AddRoleToUserDto addRoleToUserDto = new AddRoleToUserDto();
         addRoleToUserDto.setRole("ADMIN");
 
-        mockMvc.perform(MockMvcRequestBuilders.put("/users/2/roles")
+        mockMvc.perform(MockMvcRequestBuilders.put("/api/v1/users/2/roles")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(addRoleToUserDto)))
                 .andExpect(status().isNoContent());
@@ -87,7 +87,7 @@ public class UserControllerIntegrationTest {
     // Test deleteRoleFromUser for admin
     @Test
     public void testDeleteRoleFromUser() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.delete("/users/2/roles/1"))
+        mockMvc.perform(MockMvcRequestBuilders.delete("/api/v1/users/2/roles/1"))
                 .andExpect(status().isNoContent());
     }
 }

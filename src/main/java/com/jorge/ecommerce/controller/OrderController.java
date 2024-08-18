@@ -20,7 +20,7 @@ import java.util.List;
         name = "bearerAuth"
 )
 @RestController
-@RequestMapping("/orders")
+@RequestMapping(ApiRoutes.V1.Order.ROOT)
 @RequiredArgsConstructor
 @RoleAdminOrCustomer
 public class OrderController {
@@ -38,7 +38,7 @@ public class OrderController {
     }
 
     @RoleAdmin
-    @PatchMapping("/{orderId}")
+    @PatchMapping(ApiRoutes.V1.Order.PUT_UPDATE_STATUS)
     public ResponseEntity<Void> updateOrderStatus(@AuthenticationPrincipal User user,
                                                   @PathVariable Long orderId, @RequestBody UpdateOrderStatusDto updateOrderStatusDto) {
         orderService.updatedOrderStatus(user, orderId, updateOrderStatusDto);

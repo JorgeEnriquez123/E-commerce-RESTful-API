@@ -14,22 +14,22 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/auth")
+@RequestMapping(ApiRoutes.V1.Auth.ROOT)
 @RequiredArgsConstructor
 public class AuthController {
     private final AuthService authService;
 
-    @PostMapping("/login")
+    @PostMapping(ApiRoutes.V1.Auth.LOGIN)
     public ResponseEntity<LoginResponseDto> login(@Valid @RequestBody LoginRequestDto loginRequestDto) {
         return ResponseEntity.ok(authService.login(loginRequestDto));
     }
 
-    @PostMapping("/register")
+    @PostMapping(ApiRoutes.V1.Auth.REGISTER)
     public ResponseEntity<LoginResponseDto> register(@Valid @RequestBody CreateUserDto createUserDto){
         return ResponseEntity.ok(authService.register(createUserDto));
     }
 
-    @PostMapping("/refresh-token")
+    @PostMapping(ApiRoutes.V1.Auth.REFRESH_TOKEN)
     public ResponseEntity<LoginResponseDto> refreshToken(@Valid @RequestBody RefreshTokenRequestDto requestDto){
         return ResponseEntity.ok(authService.refreshToken(requestDto));
     }

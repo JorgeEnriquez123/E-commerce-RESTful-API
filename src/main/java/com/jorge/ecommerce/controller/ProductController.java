@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.*;
         name = "bearerAuth"
 )
 @RestController
-@RequestMapping("/products")
+@RequestMapping(ApiRoutes.V1.Product.ROOT)
 @RequiredArgsConstructor
 @RoleAdmin
 public class ProductController {
@@ -34,7 +34,7 @@ public class ProductController {
     }
 
     @RoleAdminOrCustomer
-    @GetMapping("/{productId}")
+    @GetMapping(ApiRoutes.V1.Product.GET_BY_ID)
     public ResponseEntity<ProductDto> getProductById(@PathVariable Long productId){
         return ResponseEntity.ok(productService.getProductById(productId));
     }
@@ -44,7 +44,7 @@ public class ProductController {
         return ResponseEntity.status(HttpStatus.CREATED).body(productService.createProduct(createProductDto));
     }
 
-    @PutMapping("/{productId}")
+    @PutMapping(ApiRoutes.V1.Product.PUT_UPDATE)
     public ResponseEntity<ProductDto> update(@PathVariable Long productId, @Valid @RequestBody UpdateProductDto updateProductDto){
         return ResponseEntity.ok(productService.updateProduct(productId, updateProductDto));
     }

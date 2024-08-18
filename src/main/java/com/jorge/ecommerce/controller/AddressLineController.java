@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/addressLines")
+@RequestMapping(ApiRoutes.V1.AddressLine.ROOT)
 @RequiredArgsConstructor
 @RoleAdminOrCustomer
 public class AddressLineController {
@@ -31,13 +31,13 @@ public class AddressLineController {
         return ResponseEntity.status(HttpStatus.CREATED).body(addressLineService.saveAddressLine(user, createAddressLineDto));
     }
 
-    @PutMapping("/{addressLineId}")
+    @PutMapping(ApiRoutes.V1.AddressLine.UPDATE)
     public ResponseEntity<AddressLineDto> updateAddressLine(@AuthenticationPrincipal User user, @PathVariable Long addressLineId,
                                                             @RequestBody UpdateAddressLineDto updateAddressLineDto){
         return ResponseEntity.ok(addressLineService.updateAddressLine(user, addressLineId, updateAddressLineDto));
     }
 
-    @PutMapping("/{addressLineId}/set-default")
+    @PutMapping(ApiRoutes.V1.AddressLine.SET_DEFAULT)
     public ResponseEntity<AddressLineDto> setDefaultAddressLine(@AuthenticationPrincipal User user, @PathVariable Long addressLineId){
         return ResponseEntity.ok(addressLineService.setDefaultAddressLine(user, addressLineId));
     }

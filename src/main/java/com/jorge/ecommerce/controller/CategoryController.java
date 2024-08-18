@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.*;
         name = "bearerAuth"
 )
 @RestController
-@RequestMapping("/categories")
+@RequestMapping(ApiRoutes.V1.Category.ROOT)
 @RequiredArgsConstructor
 @RoleAdmin
 public class CategoryController {
@@ -34,7 +34,7 @@ public class CategoryController {
     }
 
     @RoleAdminOrCustomer
-    @GetMapping("/{categoryId}")
+    @GetMapping(ApiRoutes.V1.Category.GET_BY_ID)
     public ResponseEntity<CategoryDto> getCategoryById(@PathVariable Long categoryId) {
         return ResponseEntity.ok(categoryService.getCategoryById(categoryId));
     }
@@ -44,7 +44,7 @@ public class CategoryController {
         return ResponseEntity.status(HttpStatus.CREATED).body(categoryService.createCategory(categoryDto));
     }
 
-    @PutMapping("/{categoryId}")
+    @PutMapping(ApiRoutes.V1.Category.UPDATE)
     public ResponseEntity<CategoryDto> updateCategory(@PathVariable Long categoryId, @Valid @RequestBody UpdateCategoryDto updateCategoryDto) {
         return ResponseEntity.ok(categoryService.updateCategory(categoryId, updateCategoryDto));
     }

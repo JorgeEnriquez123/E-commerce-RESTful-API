@@ -1,6 +1,7 @@
 package com.jorge.ecommerce.configuration.security;
 
 import com.jorge.ecommerce.configuration.filter.JwtAuthenticationFilter;
+import com.jorge.ecommerce.controller.ApiRoutes;
 import com.jorge.ecommerce.handler.security.CustomAccessDenied;
 import com.jorge.ecommerce.handler.security.CustomAuthenticationEntryPoint;
 import lombok.RequiredArgsConstructor;
@@ -32,7 +33,7 @@ public class SecurityConfig {
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(request -> request
                         .requestMatchers("/v3/**", "/swagger-ui/**").permitAll()
-                        .requestMatchers("/auth/**").permitAll()
+                        .requestMatchers(ApiRoutes.V1.Auth.ROOT + "/**").permitAll()
                         .anyRequest()
                         .authenticated())
                 .exceptionHandling(ex -> ex
