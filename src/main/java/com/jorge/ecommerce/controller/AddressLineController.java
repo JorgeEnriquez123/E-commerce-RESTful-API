@@ -6,6 +6,7 @@ import com.jorge.ecommerce.dto.create.CreateAddressLineDto;
 import com.jorge.ecommerce.dto.update.UpdateAddressLineDto;
 import com.jorge.ecommerce.model.User;
 import com.jorge.ecommerce.service.AddressLineService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +15,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@SecurityRequirement(
+        name = "bearerAuth"
+)
 @RestController
 @RequestMapping(ApiRoutes.V1.AddressLine.ROOT)
 @RequiredArgsConstructor
