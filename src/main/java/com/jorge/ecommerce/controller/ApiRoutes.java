@@ -68,7 +68,7 @@ public final class ApiRoutes {
     }
 
     // Example for Version 2
-    /*public static final class V2{
+    public static final class V2{
         private V2() {}
 
         private static final String BASE_PATH = "/api/v2";
@@ -77,6 +77,7 @@ public final class ApiRoutes {
             private User() {}
 
             public static final String ROOT = BASE_PATH + "/users";
+            public static final String GET_CURRENT_USER_INFO = "/profile";
         }
-    }*/
+    }
 }
