@@ -15,6 +15,7 @@ public interface CartItemRepository extends JpaRepository<CartItem, CartItem.Car
     @EntityGraph(attributePaths = {"product", "product.category"})
     List<CartItem> findByCartId(Long cartId);
 
+    // Native query is used to avoid a SELECT query that hibernate runs before the insert
     @Modifying
     @Query(value = "INSERT INTO cart_item (cart_id, product_id, quantity) " +
             "VALUES (:#{#cartItem.cart.id}, :#{#cartItem.product.id}, :#{#cartItem.quantity})", nativeQuery = true)

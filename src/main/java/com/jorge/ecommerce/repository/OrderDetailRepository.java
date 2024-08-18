@@ -9,6 +9,8 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface OrderDetailRepository extends JpaRepository<OrderDetail, Long> {
+
+    // Native query is used to avoid a SELECT query that hibernate runs before the insert
     @Modifying
     @Query(nativeQuery = true,
     value = "INSERT INTO order_detail (order_id, product_id, quantity, price) VALUES (:#{#orderDetail.order.id}, :#{#orderDetail.product.id}, " +

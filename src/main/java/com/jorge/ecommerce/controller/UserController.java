@@ -33,7 +33,7 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
     private final UserService userService;
 
-    @Operation(summary = "Get Current User's information")
+    @Operation(summary = "Get current User's information")
     @ApiResponses(
             value = {
                     @ApiResponse(

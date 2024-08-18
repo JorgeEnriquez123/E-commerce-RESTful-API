@@ -76,7 +76,7 @@ public class OrderController {
                             schema = @Schema(hidden = true)
                     )),
                     @ApiResponse(
-                            responseCode = "400", description = "There was a problem with the request. One or more parameteres failed some validations", content = @Content(
+                            responseCode = "400", description = "There was a problem with the request. One or more parameters failed some validations", content = @Content(
                             schema = @Schema(implementation = ErrorResponse.class)
                     )),
                     @ApiResponse(
@@ -107,11 +107,11 @@ public class OrderController {
     @ApiResponses(
             value = {
                     @ApiResponse(
-                            responseCode = "204", description = "Operation successful with no content", content = @Content(
+                            responseCode = "204", description = "Successful Operation with no content", content = @Content(
                             schema = @Schema(hidden = true)
                     )),
                     @ApiResponse(
-                            responseCode = "400", description = "There was a problem with the request. One or more parameteres failed some validations", content = @Content(
+                            responseCode = "400", description = "There was a problem with the request. One or more parameters failed some validations", content = @Content(
                             schema = @Schema(implementation = ErrorResponse.class)
                     )),
                     @ApiResponse(

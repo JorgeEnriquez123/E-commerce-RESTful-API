@@ -103,7 +103,7 @@ public class ProductController {
                             schema = @Schema(implementation = ProductDto.class)
                     )),
                     @ApiResponse(
-                            responseCode = "400", description = "There was a problem with the request. One or more parameteres failed some validations", content = @Content(
+                            responseCode = "400", description = "There was a problem with the request. One or more parameters failed some validations", content = @Content(
                             schema = @Schema(implementation = ErrorResponse.class)
                     )),
                     @ApiResponse(
@@ -125,7 +125,7 @@ public class ProductController {
             }
     )
     @PostMapping
-    public ResponseEntity<ProductDto> save(@Valid @RequestBody CreateProductDto createProductDto){
+    public ResponseEntity<ProductDto> createProduct(@Valid @RequestBody CreateProductDto createProductDto){
         return ResponseEntity.status(HttpStatus.CREATED).body(productService.createProduct(createProductDto));
     }
 
@@ -137,7 +137,11 @@ public class ProductController {
                             schema = @Schema(implementation = ProductDto.class)
                     )),
                     @ApiResponse(
-                            responseCode = "400", description = "There was a problem with the request. One or more parameteres failed some validations", content = @Content(
+                            responseCode = "400", description = "There was a problem with the request. One or more parameters failed some validations", content = @Content(
+                            schema = @Schema(implementation = ErrorResponse.class)
+                    )),
+                    @ApiResponse(
+                            responseCode = "404", description = "A certain resource has not been found", content = @Content(
                             schema = @Schema(implementation = ErrorResponse.class)
                     )),
                     @ApiResponse(
@@ -155,7 +159,7 @@ public class ProductController {
             }
     )
     @PutMapping(ApiRoutes.V1.Product.PUT_UPDATE)
-    public ResponseEntity<ProductDto> update(@PathVariable Long productId, @Valid @RequestBody UpdateProductDto updateProductDto){
+    public ResponseEntity<ProductDto> updateProduct(@PathVariable Long productId, @Valid @RequestBody UpdateProductDto updateProductDto){
         return ResponseEntity.ok(productService.updateProduct(productId, updateProductDto));
     }
 }
