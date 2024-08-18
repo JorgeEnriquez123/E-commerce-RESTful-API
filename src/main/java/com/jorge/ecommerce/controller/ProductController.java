@@ -7,6 +7,7 @@ import com.jorge.ecommerce.dto.create.CreateProductDto;
 import com.jorge.ecommerce.dto.update.UpdateProductDto;
 import com.jorge.ecommerce.service.ProductService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping(ApiRoutes.V1.Product.ROOT)
 @RequiredArgsConstructor
 @RoleAdmin
+@Tag(name = "Products", description = "Products from the shop")
 public class ProductController {
     private final ProductService productService;
 

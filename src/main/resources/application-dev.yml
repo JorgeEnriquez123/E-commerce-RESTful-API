@@ -27,9 +27,12 @@ spring:
       time-to-live: 900s  # Same time as JWT's lifespan
 
 springdoc:
+  default-produces-media-type: application/json
   swagger-ui:
     operations-sorter: method
     tags-sorter: alpha
+    disable-swagger-default-url: true
+# override-with-generic-response: false #To disable default generated response codes by Springdoc (for now)
 
 logging:
   level:

@@ -8,6 +8,7 @@ import com.jorge.ecommerce.dto.update.UpdateOrderStatusDto;
 import com.jorge.ecommerce.model.User;
 import com.jorge.ecommerce.service.OrderService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,6 +24,7 @@ import java.util.List;
 @RequestMapping(ApiRoutes.V1.Order.ROOT)
 @RequiredArgsConstructor
 @RoleAdminOrCustomer
+@Tag(name = "Orders", description = "Orders from the User")
 public class OrderController {
     private final OrderService orderService;
 

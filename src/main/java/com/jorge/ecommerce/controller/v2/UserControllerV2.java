@@ -8,6 +8,7 @@ import com.jorge.ecommerce.model.Role;
 import com.jorge.ecommerce.model.User;
 import com.jorge.ecommerce.service.UserService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -22,6 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping(ApiRoutes.V2.User.ROOT)
 @RoleAdminOrCustomer
+@Tag(name = "Users", description = "Operations about Users")
 public class UserControllerV2 {
 
     //Example of a version 2 of getUserInfo

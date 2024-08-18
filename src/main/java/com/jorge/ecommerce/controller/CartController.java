@@ -7,6 +7,7 @@ import com.jorge.ecommerce.dto.update.UpdateCartItemDto;
 import com.jorge.ecommerce.model.User;
 import com.jorge.ecommerce.service.CartService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,6 +23,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping(ApiRoutes.V1.Cart.ROOT)
 @RoleAdminOrCustomer
+@Tag(name = "Carts", description = "User's cart operations")
 public class CartController {
     private final CartService cartService;
 

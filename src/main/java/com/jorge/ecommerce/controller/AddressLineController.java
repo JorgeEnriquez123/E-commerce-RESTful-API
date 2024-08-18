@@ -7,6 +7,7 @@ import com.jorge.ecommerce.dto.update.UpdateAddressLineDto;
 import com.jorge.ecommerce.model.User;
 import com.jorge.ecommerce.service.AddressLineService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,6 +23,7 @@ import java.util.List;
 @RequestMapping(ApiRoutes.V1.AddressLine.ROOT)
 @RequiredArgsConstructor
 @RoleAdminOrCustomer
+@Tag(name = "Address Lines", description = "User's Address lines (Also referred as shipping addresses")
 public class AddressLineController {
     private final AddressLineService addressLineService;
 

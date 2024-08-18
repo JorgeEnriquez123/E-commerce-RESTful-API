@@ -5,6 +5,7 @@ import com.jorge.ecommerce.dto.auth.LoginResponseDto;
 import com.jorge.ecommerce.dto.auth.RefreshTokenRequestDto;
 import com.jorge.ecommerce.dto.create.CreateUserDto;
 import com.jorge.ecommerce.service.AuthService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping(ApiRoutes.V1.Auth.ROOT)
 @RequiredArgsConstructor
+@Tag(name = "Auth", description = "Authentication operations")
 public class AuthController {
     private final AuthService authService;
 
