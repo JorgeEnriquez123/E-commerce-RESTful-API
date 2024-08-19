@@ -1,7 +1,7 @@
 package com.jorge.ecommerce.configuration.security;
 
 import com.jorge.ecommerce.jwt.JwtUtil;
-import com.jorge.ecommerce.model.AuthenticatedUserDto;
+import com.jorge.ecommerce.dto.AuthenticatedUserDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

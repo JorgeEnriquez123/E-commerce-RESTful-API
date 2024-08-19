@@ -125,6 +125,33 @@ public class AddressLineController {
         return ResponseEntity.ok(addressLineService.updateAddressLine(user, addressLineId, updateAddressLineDto));
     }
 
+    @Operation(summary = "Remove an Address line from current User")
+    @ApiResponses(
+            value = {
+                    @ApiResponse(
+                            responseCode = "200", description = "Successful operation without content", content = @Content(
+                            schema = @Schema(hidden = true)
+                    )),
+                    @ApiResponse(
+                            responseCode = "401", description = "The User is not authorized to perform this operation", content = @Content(
+                            schema = @Schema(implementation = ErrorResponse.class)
+                    )),
+                    @ApiResponse(
+                            responseCode = "403", description = "The User has insufficient permission to perform this operation", content = @Content(
+                            schema = @Schema(implementation = ErrorResponse.class)
+                    )),
+                    @ApiResponse(
+                            responseCode = "500", description = "There was an internal server error", content = @Content(
+                            schema = @Schema(implementation = ErrorResponse.class)
+                    ))
+            }
+    )
+    @DeleteMapping(ApiRoutes.V1.AddressLine.REMOVE)
+    public ResponseEntity<Void> removeAddressLine(@AuthenticationPrincipal User user, @PathVariable Long addressLineId){
+        addressLineService.removeAddressLine(user, addressLineId);
+        return ResponseEntity.noContent().build();
+    }
+
     @Operation(summary = "Set a Address line from current User as default")
     @ApiResponses(
             value = {

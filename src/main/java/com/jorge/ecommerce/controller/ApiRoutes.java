@@ -63,6 +63,7 @@ public final class ApiRoutes {
 
             public static final String ROOT = BASE_PATH + "/addressLines";
             public static final String UPDATE = "/{addressLineId}";
+            public static final String REMOVE = "/{addressLineId}";
             public static final String SET_DEFAULT = "/{addressLineId}/set-default";
         }
     }

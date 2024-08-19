@@ -51,8 +51,14 @@ public class AddressLineService {
 
     @Transactional(rollbackFor = Exception.class)
     protected AddressLine save(AddressLine addressLine){
-        log.debug("Saving address line: {} using repository", addressLine);
+        log.debug("Saving address line by id: {} using repository", addressLine);
         return addressLineRepository.save(addressLine);
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    protected void deleteByIdAndUserId(Long addressLineId, Long userId){
+        log.debug("Deleting address line by id: {} and user id: {}", addressLineId, userId);
+        addressLineRepository.deleteByIdAndUserId(addressLineId, userId);
     }
 
     @Transactional(readOnly = true)
@@ -67,7 +73,7 @@ public class AddressLineService {
 
     @Transactional(rollbackFor = Exception.class)
     public AddressLineDto saveAddressLine(User user, CreateAddressLineDto createAddressLineDto) {
-        log.debug("Adding address line: {}, for user with username: {}", createAddressLineDto, user.getUsername());
+        log.debug("Adding address line by id: {}, for user with username: {}", createAddressLineDto, user.getUsername());
         AddressLine newAddressLine = createAddressLineFromDto(createAddressLineDto);
         newAddressLine.setUser(user);
 
@@ -78,7 +84,7 @@ public class AddressLineService {
 
     @Transactional(rollbackFor = Exception.class)
     public AddressLineDto updateAddressLine(User user, Long addressLineId, UpdateAddressLineDto updateAddressLineDto) {
-        log.debug("Updating address line: {}, from user with username: {}", updateAddressLineDto, user.getUsername());
+        log.debug("Updating address line by id: {}, from user with username: {}", updateAddressLineDto, user.getUsername());
         Long userId = user.getId();
         AddressLine toUpdateAddressLine = findByIdAndUserId(addressLineId, userId);
 
@@ -86,6 +92,13 @@ public class AddressLineService {
 
         AddressLine savedUpdatedAddressLine = save(toUpdateAddressLine);
         return convertToDto(savedUpdatedAddressLine);
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    public void removeAddressLine(User user, Long addressLineId) {
+        log.debug("Removing address line by id: {}, from user with username: {}", addressLineId, user.getUsername());
+        Long userId = user.getId();
+        deleteByIdAndUserId(addressLineId, userId);
     }
 
     @Transactional(rollbackFor = Exception.class)

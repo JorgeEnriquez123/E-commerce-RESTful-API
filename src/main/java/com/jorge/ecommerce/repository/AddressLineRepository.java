@@ -12,4 +12,6 @@ public interface AddressLineRepository extends JpaRepository<AddressLine, Long> 
     Optional<List<AddressLine>> findByUserId(Long userId);
 
     Optional<AddressLine> findByIdAndUserId(Long id, Long userId);
+
+    void deleteByIdAndUserId(Long addressLineId, Long userId);
 }

@@ -1,4 +1,4 @@
-package com.jorge.ecommerce.model;
+package com.jorge.ecommerce.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

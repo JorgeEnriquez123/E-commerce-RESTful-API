@@ -3,7 +3,7 @@ package com.jorge.ecommerce.controller.v2;
 import com.jorge.ecommerce.annotations.RoleAdminOrCustomer;
 import com.jorge.ecommerce.controller.ApiRoutes;
 import com.jorge.ecommerce.handler.response.ErrorResponse;
-import com.jorge.ecommerce.model.AuthenticatedUserDto;
+import com.jorge.ecommerce.dto.AuthenticatedUserDto;
 import com.jorge.ecommerce.model.Role;
 import com.jorge.ecommerce.model.User;
 import io.swagger.v3.oas.annotations.Operation;
