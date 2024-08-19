@@ -42,7 +42,7 @@ This project's main purpose is to showcase some of the most used technologies wh
 - Each User has their own cart and can add or remove items from it, as well as update the quantity of their products in their cart. They can also check the contents of their cart.
 - Users can place an order based on their cart's items and on their selected Address Line (Shipping Address).
 - Users can check their orders and their details.
-- An Admin can change the status of an Order.
+- An Admin can persist data that Customers can not (Products, Categories, Roles)
 
 ***
 
