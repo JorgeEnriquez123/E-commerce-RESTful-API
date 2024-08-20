@@ -7,6 +7,7 @@ This project's main purpose is to showcase some of the most used technologies wh
 ### Modeling:
 * Regular & Composite Entities
 * DTO Mapping with ModelMapper
+* Avoid exposure to Entity models on Controllers
 * Lombok
 
 ### Persistence:
