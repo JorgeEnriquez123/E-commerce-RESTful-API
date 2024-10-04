@@ -4,9 +4,25 @@ spring:
   profiles:
     active: dev
 
+
 application:
   jwt:
     key: brXzPetE8ivZhetRar0MW47UcUJg8GL5hdmnSvFk2nYQdxSWkLZHLWUftkzKaPyA
     expiration: 900000 # 15 minutes
     refresh-token:
       expiration: 604800000 # 7 days
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: *
+  health:
+    readiness-state:
+      enabled: true
+    liveness-state:
+      enabled: true
+  endpoint:
+    health:
+      probes:
+        enabled: true
