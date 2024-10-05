@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: spring-boot-api
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: spring-boot-api
+  template:
+    metadata:
+      labels:
+        app: spring-boot-api
+    spec:
+      containers:
+        - name: spring-boot-api
+          image: jorgeenriquez123/ecommerceapi:1.0
+          ports:
+            - containerPort: 8080
+          env:
+            - name: SPRING_DATASOURCE_URL
+              value: jdbc:mysql://mysql-service:3306/ecommercedb
+            - name: SPRING_DATA_REDIS_HOST
+              value: redis-service
+            - name: SPRING_DATASOURCE_PASSWORD
+              value: rootpassword
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: spring-boot-api
+spec:
+  type: LoadBalancer # Using LoadBalancer here because there is no API Gateway
+  ports:
+    - port: 8090
+      targetPort: 8080
+  selector:
+    app: spring-boot-api
