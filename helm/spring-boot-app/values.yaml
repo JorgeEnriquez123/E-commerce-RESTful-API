@@ -1,0 +1,41 @@
+# Spring boot app
+replicaCount: 2
+
+image:
+  repository: jorgeenriquez123/ecommerceapi
+  tag: "1.0"
+  pullPolicy: Always
+
+service:
+  type: LoadBalancer
+  port: 8090
+  targetPort: 8080
+
+spring:
+  datasource:
+    url: jdbc:mysql://spring-boot-app-mysql:3306/ecommercedb
+    password: rootpassword
+  data:
+    redis:
+      host: spring-boot-app-redis-master
+
+# MySQL
+mysql:
+  auth:
+    rootPassword: rootpassword
+    database: ecommercedb
+  port: 3306
+
+# Redis
+redis:
+  auth:
+    enabled: false
+
+# Resources
+resources:
+  limits:
+    cpu: 500m
+    memory: 512Mi
+  requests:
+    cpu: 250m
+    memory: 256Mi

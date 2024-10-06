@@ -1,0 +1,18 @@
+apiVersion: v2
+name: spring-boot-app
+description: A Helm chart for deploying a Spring Boot REST API with MySQL and Redis
+version: 0.2.0
+appVersion: "1.0.0"
+
+# Dependencies
+# Steps:
+# Run "helm repo add bitnami https://charts.bitnami.com/bitnami"
+# Run "helm dependency update ./spring-boot-app"
+# Run
+dependencies:
+  - name: mysql
+    version: 9.14.1
+    repository: "https://charts.bitnami.com/bitnami"
+  - name: redis
+    version: 18.1.0
+    repository: "https://charts.bitnami.com/bitnami"
