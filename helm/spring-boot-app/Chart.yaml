@@ -8,7 +8,7 @@ appVersion: "1.0.0"
 # Steps:
 # Run "helm repo add bitnami https://charts.bitnami.com/bitnami"
 # Run "helm dependency update ./spring-boot-app"
-# Run
+# Run "helm install "app-name" ./spring-boot-app
 dependencies:
   - name: mysql
     version: 9.14.1
