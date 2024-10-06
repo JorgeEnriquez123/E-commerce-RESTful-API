@@ -68,7 +68,7 @@ public class UserControllerIntegrationTest {
     // Test getUserById for admin
     @Test
     public void testGetUserById() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/users/2"))
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/users/1"))
                 .andExpect(status().isOk());
     }
 
