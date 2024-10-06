@@ -36,6 +36,7 @@ This project's main purpose is to showcase some of the most used technologies wh
 * Dockerfile
 * Docker-compose
 * Kubernetes yaml files
+* Helm approach for Kubernetes deployment
 
 ## Flow:
 - Each product has one Category associated to.
