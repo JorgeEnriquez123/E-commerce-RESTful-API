@@ -1,0 +1,28 @@
+pipeline {
+    agent any
+    stages{
+        stage('Build Maven'){
+            steps{
+                checkout scmGit(branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/JorgeEnriquez123/E-commerce-RESTful-API']])
+                bat 'mvn clean install -DskipTests'
+            }
+        }
+        stage('Build docker image'){
+            steps{
+                script{
+                    bat 'docker build -t jorgeenriquez123/ecommerceapi:1.0 -f ./jenkins/Dockerfile .'
+                }
+            }
+        }
+        stage('Push image to Hub'){
+            steps{
+                script{
+                    withCredentials([string(credentialsId: 'Docker-pwd', variable: 'DOCKER_PASSWORD')]) {
+                        bat "docker login -u jorgeenriquez123 -p %DOCKER_PASSWORD%"
+                    }
+                    bat 'docker push jorgeenriquez123/ecommerceapi:1.0'
+                }
+            }
+        }
+    }
+}
