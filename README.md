@@ -32,11 +32,12 @@ This project's main purpose is to showcase some of the most used technologies wh
 * Swagger documentation with Springdoc OpenAPI (w/ manual operation setting)
 * API Versioning
 
-### Deployment
+### Deployment & Pipelines
 * Dockerfile
 * Docker-compose
 * Kubernetes yaml files
 * Helm approach for Kubernetes deployment
+* Jenkins
 
 ## Flow:
 - Each product has one Category associated to.
