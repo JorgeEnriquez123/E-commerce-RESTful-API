@@ -28,8 +28,9 @@
 	</scm>
 	<properties>
 		<java.version>17</java.version>
-		<sonar.host.url>http://localhost:9000</sonar.host.url>
-		<sonar.login>sqa_f838f07a14f905b6c1bfff9984ecfac451fd3b88</sonar.login>
+		<!-- Using Jenkins for credentials -->
+		<!--<sonar.host.url>http://localhost:9000</sonar.host.url>
+		<sonar.login>sqa_f838f07a14f905b6c1bfff9984ecfac451fd3b88</sonar.login>-->
 		<sonar.coverage.jacoco.xmlReportPaths>target/site/jacoco/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
 	</properties>
 	<dependencies>
