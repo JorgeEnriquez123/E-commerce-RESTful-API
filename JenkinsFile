@@ -4,7 +4,14 @@ pipeline {
         stage('Build Maven'){
             steps{
                 checkout scmGit(branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/JorgeEnriquez123/E-commerce-RESTful-API']])
-                bat 'mvn clean install -DskipTests'
+                bat 'mvn clean verify -DskipTests'
+            }
+        }
+        stage('SonarQube Analysis') {
+            steps {
+                withSonarQubeEnv('SonarQube') {
+                    bat 'mvn sonar:sonar'
+                }
             }
         }
         stage('Build docker image'){
