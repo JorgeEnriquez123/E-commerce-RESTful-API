@@ -131,10 +131,13 @@ public class UserService {
         log.debug("Updating personal info of user with username: {},", user.getUsername());
         String oldUsername = user.getUsername();
 
-        updateUserFromDto(user, updateUserDto);
-        encryptUserPassword(user);
+        //To make the entity in 'managed' state
+        User currentuser = userRepository.findByUsername(user.getUsername())
+                .orElseThrow(() -> new ResourceNotFoundException("User with username: " + user.getUsername() + " not found."));
+        updateUserFromDto(currentuser, updateUserDto);
+        encryptUserPassword(currentuser);
 
-        User savedUpdatedUser = save(user);
+        User savedUpdatedUser = save(currentuser);
 
         log.debug("Making Caching Up-to-date");
         if(oldUsername.equals(savedUpdatedUser.getUsername())) {

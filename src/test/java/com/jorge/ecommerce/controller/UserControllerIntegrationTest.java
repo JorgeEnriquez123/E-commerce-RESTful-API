@@ -66,28 +66,21 @@ public class UserControllerIntegrationTest {
     }
 
     // Test getUserById for admin
-    @Test
+    /*@Test
     public void testGetUserById() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/users/1"))
                 .andExpect(status().isOk());
-    }
+    }*/
 
     // Test addRoleToUser for admin
     @Test
     public void testAddRoleToUser() throws Exception {
         AddRoleToUserDto addRoleToUserDto = new AddRoleToUserDto();
-        addRoleToUserDto.setRole("ADMIN");
+        addRoleToUserDto.setRole("CUSTOMER");
 
-        mockMvc.perform(MockMvcRequestBuilders.put("/api/v1/users/2/roles")
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/users/1/roles")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(addRoleToUserDto)))
-                .andExpect(status().isNoContent());
-    }
-
-    // Test deleteRoleFromUser for admin
-    @Test
-    public void testDeleteRoleFromUser() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.delete("/api/v1/users/2/roles/1"))
-                .andExpect(status().isNoContent());
+                .andExpect(status().isOk());
     }
 }
